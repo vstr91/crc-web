@@ -1,0 +1,20 @@
+#pais : 
+#  type: rest
+#  resource:     "CircularSiteBundle:PaisRest"
+#  name_prefix:  api_
+
+circular_api_get_token:
+    pattern: /token
+    defaults: {_controller: ApiBundle:CircularRest:getToken}
+  
+circular_api_get_dados:
+    pattern: /recebe-dados/{hash}/{data}
+    defaults: {_controller: ApiBundle:CircularRest:getDados}
+    
+circular_api_set_dados:
+    pattern: /envia-dados/{hash}/{data}
+    defaults: {_controller: ApiBundle:CircularRest:setDados}
+    
+circular_api_valida_token:
+    pattern: /valida-token
+    defaults: {_controller: ApiBundle:CircularRest:validaToken}
