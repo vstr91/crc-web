@@ -8,14 +8,15 @@
 
 namespace ApiBundle\Controller;
 
+use ApiBundle\Entity\APIToken;
+use ApiBundle\Entity\MCrypt;
+use ApiBundle\Entity\Pais;
 use Doctrine\ORM\Id\AssignedGenerator;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
-use ApiBundle\Entity\APIToken;
-use ApiBundle\Entity\MCrypt;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Description of RepRestController
@@ -54,11 +55,7 @@ class CircularRestController extends FOSRestController {
     
     public function getDadosAction(Request $request, $hash, $data) {
         $em = $this->getDoctrine()->getManager();
-        die("teste");
-        dump($request->request);
-        
-        die(var_dump($request->request));
-        
+
         $crypto = new MCrypt();
         
         $hashDescriptografado = $crypto->decrypt($crypto->decrypt($hash));
@@ -116,49 +113,65 @@ class CircularRestController extends FOSRestController {
     public function setDadosAction(Request $request, $hash, $data) {
         $em = $this->getDoctrine()->getManager();
         
-        dump($request->request);
-        die(var_dump($request->request));
+        //dump($request->request);
+        //die(var_dump($request->request));
         
-        $crypto = new MCrypt();
+        //$crypto = new MCrypt();
         
-        $hashDescriptografado = $crypto->decrypt($crypto->decrypt($hash));
+        //$hashDescriptografado = $crypto->decrypt($crypto->decrypt($hash));
         
-        if(null != $em->getRepository('ApiBundle:APIToken')->validaToken($hashDescriptografado)){
+        if(null == null/* $em->getRepository('ApiBundle:APIToken')->validaToken($hashDescriptografado)*/){
             
-            $dados = $this->get('request')->request->all();
-            $dados = json_decode($dados['dados'], TRUE);
+            $json = $request->request->get("dados");
+            $dados = json_decode($json, TRUE);
             
             //die(var_dump($dados['musicas']));
             
-            $comentarios = $dados['comentarios'];
-            $total = count($comentarios);
+            $paises = $dados['paises'];
+            
+            $total = count($paises);
+            //die(var_dump($total));
             
             //$processadas = array();
             
             for($i = 0; $i < $total; $i++){
                 
-                $umComentario = new ComentarioEvento();
-                $umComentario->setId($comentarios[$i]['id']);
-                $umComentario->setTexto($comentarios[$i]['texto']);
+                $existe = false;
+                //$umMusica = null;
+                $umPais = null;
                 
-                $umEvento = new Evento();
-                $umEvento = $em->getRepository('RepSiteBundle:Evento')
-                        ->findOneBy(array('id' => $comentarios[$i]['evento']));
+                $umPais = $em->getRepository('ApiBundle:Pais')
+                        ->findOneBy(array('id' => $paises[$i]['id']));
                 
-                $umComentario->setEvento($umEvento);
-                $umComentario->setStatus(0);
-//                $umaMensagem->setDataCriacao($mensagem[0]['descricao'])
-
-                $em->persist($umComentario);
+                if($umPais == null){
+                    $umPais = new Pais();
+                    $umPais->setId($paises[$i]['id']);
+                    //$umMusica->setDataCadastro($musicas[$i]['data_cadastro']);
+                } else{
+                    $existe = true;
+                }
                 
-                $metadata = $em->getClassMetaData(get_class($umComentario));
+                $metadata = $em->getClassMetaData(get_class($umPais));
                 $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
                 $metadata->setIdGenerator(new AssignedGenerator());
-                $umComentario->setId($comentarios[$i]['id']);
+                $umPais->setId($paises[$i]['id']);
                 
-                //$processadas[] = $comentarios[$i]['id'];
+                $umPais->setNome($paises[$i]['nome']);
+                $umPais->setSigla($paises[$i]['sigla']);
+                $umPais->setSlug($paises[$i]['slug']);
+                $umPais->setDataCadastro(date_create_from_format('d-m-Y H:i', $paises[$i]['dataCadastro']));
+                $umPais->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $paises[$i]['ultimaAlteracao']));
+                
+                if(isset($paises[$i]['programadoPara'])){
+                    $umPais->setProgramadoPara(date_create_from_format('d-m-Y H:i', $paises[$i]['programadoPara']));
+                }
+                
+                $umPais->setAtivo($paises[$i]['ativo']);
+
+                $em->persist($umPais);
+                
             }
-            
+            /*
             // MUSICAS
             
             $musicas = $dados['musicas'];
@@ -332,7 +345,7 @@ class CircularRestController extends FOSRestController {
                 }
                 
             }
-            
+            */
             $em->flush();
             
             $view = View::create(
