@@ -16,35 +16,43 @@ use Gedmo\Mapping\Annotation as Gedmo;
 //use JMS\Serializer\Annotation\Expose;
 
 /**
- * Description of Pais
+ * Description of Estado
  *
  * @author Almir
  */
 
 /**
- * Pais
+ * Estado
  *
- * @ORM\Entity(repositoryClass="ApiBundle\Entity\Repository\PaisRepository")
- * @ORM\Table(name="pais")
+ * @ORM\Entity(repositoryClass="ApiBundle\Entity\Repository\EstadoRepository")
+ * @ORM\Table(name="estado")
  * @Gedmo\Loggable
  * @ORM\HasLifecycleCallbacks()
- * @UniqueEntity("nome", message="O país já foi cadastrado")
+ * @UniqueEntity("nome", message="O estado já foi cadastrado")
  * 
  */
-class Pais extends EntidadeSlug {
+class Estado extends EntidadeSlug {
 
     /**
      * @var string
      *
-     * @ORM\Column(name="sigla", type="string", length=3, unique=true)
+     * @ORM\Column(name="sigla", type="string", length=2, unique=true)
      * @Assert\NotBlank()
      * @Gedmo\Versioned
      * 
      */
     private $sigla;
     
+    /**
+     * @ORM\ManyToOne(targetEntity="Pais", inversedBy="paises")
+     * @ORM\JoinColumn(name="pais", referencedColumnName="id")
+     * @Gedmo\Versioned
+     * 
+     */
+    protected $pais;
+    
     public function __toString() {
-        return $this->getId();
+        return $this->getNome();
     }
 
     /**
@@ -261,5 +269,29 @@ class Pais extends EntidadeSlug {
     public function getUsuarioUltimaAlteracao()
     {
         return $this->usuarioUltimaAlteracao;
+    }
+
+    /**
+     * Set pais
+     *
+     * @param \ApiBundle\Entity\Pais $pais
+     *
+     * @return Estado
+     */
+    public function setPais(\ApiBundle\Entity\Pais $pais = null)
+    {
+        $this->pais = $pais;
+
+        return $this;
+    }
+
+    /**
+     * Get pais
+     *
+     * @return \ApiBundle\Entity\Pais
+     */
+    public function getPais()
+    {
+        return $this->pais;
     }
 }

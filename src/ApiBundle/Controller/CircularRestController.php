@@ -9,6 +9,7 @@
 namespace ApiBundle\Controller;
 
 use ApiBundle\Entity\APIToken;
+use ApiBundle\Entity\Estado;
 use ApiBundle\Entity\MCrypt;
 use ApiBundle\Entity\Pais;
 use Doctrine\ORM\Id\AssignedGenerator;
@@ -125,14 +126,11 @@ class CircularRestController extends FOSRestController {
             $json = $request->request->get("dados");
             $dados = json_decode($json, TRUE);
             
-            //die(var_dump($dados['musicas']));
+            // PAIS
             
             $paises = $dados['paises'];
             
             $total = count($paises);
-            //die(var_dump($total));
-            
-            //$processadas = array();
             
             for($i = 0; $i < $total; $i++){
                 
@@ -146,7 +144,6 @@ class CircularRestController extends FOSRestController {
                 if($umPais == null){
                     $umPais = new Pais();
                     $umPais->setId($paises[$i]['id']);
-                    //$umMusica->setDataCadastro($musicas[$i]['data_cadastro']);
                 } else{
                     $existe = true;
                 }
@@ -171,181 +168,58 @@ class CircularRestController extends FOSRestController {
                 $em->persist($umPais);
                 
             }
-            /*
-            // MUSICAS
             
-            $musicas = $dados['musicas'];
-            $total = count($musicas);
-            //$processadas = array();
+            // FIM PAIS
+            
+            // ESTADO
+            
+            $estados = $dados['estados'];
+            
+            $total = count($estados);
             
             for($i = 0; $i < $total; $i++){
                 
                 $existe = false;
                 //$umMusica = null;
-                $umMusica = null;
+                $umEstado = null;
                 
-                $umMusica = $em->getRepository('RepSiteBundle:Musica')
-                        ->findOneBy(array('id' => $musicas[$i]['id']));
+                $umEstado = $em->getRepository('ApiBundle:Estado')
+                        ->findOneBy(array('id' => $estados[$i]['id']));
                 
-                if($umMusica == null){
-                    $umMusica = new Musica();
-                    $umMusica->setId($musicas[$i]['id']);
-                    //$umMusica->setDataCadastro($musicas[$i]['data_cadastro']);
+                if($umEstado == null){
+                    $umEstado = new Estado();
+                    $umEstado->setId($estados[$i]['id']);
                 } else{
                     $existe = true;
                 }
                 
-                $umMusica->setId($musicas[$i]['id']);
-                $umMusica->setNome($musicas[$i]['nome']);
-                $umMusica->setTom($musicas[$i]['tom']);
+                $metadata = $em->getClassMetaData(get_class($umEstado));
+                $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
+                $metadata->setIdGenerator(new AssignedGenerator());
+                $umEstado->setId($estados[$i]['id']);
                 
-                $umArtista = new Artista();
-                $umArtista = $em->getRepository('RepSiteBundle:Artista')
-                        ->findOneBy(array('id' => $musicas[$i]['artista']));
+                $umPais = $em->getRepository('ApiBundle:Estado')
+                        ->findOneBy(array('id' => $estados[$i]['pais']));
                 
-                $umMusica->setArtista($umArtista);
-                $umMusica->setStatus($musicas[$i]['status']);
-                $umMusica->setSlug(NULL);
+                $umEstado->setNome($estados[$i]['nome']);
+                $umEstado->setSigla($estados[$i]['sigla']);
+                $umEstado->setSlug($estados[$i]['slug']);
+                $umEstado->setPais($umPais);
+                $umEstado->setDataCadastro(date_create_from_format('d-m-Y H:i', $estados[$i]['dataCadastro']));
+                $umEstado->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $estados[$i]['ultimaAlteracao']));
+                
+                if(isset($estados[$i]['programadoPara'])){
+                    $umEstado->setProgramadoPara(date_create_from_format('d-m-Y H:i', $estados[$i]['programadoPara']));
+                }
+                
+                $umEstado->setAtivo($estados[$i]['ativo']);
 
-                $em->persist($umMusica);
-                
-                if(!$existe){
-                    $metadata = $em->getClassMetaData(get_class($umMusica));
-                    $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
-                    $metadata->setIdGenerator(new AssignedGenerator());
-                    $umMusica->setId($musicas[$i]['id']);
-                }
-            }
-            
-            // ARTISTAS
-            
-            $artistas = $dados['artistas'];
-            $total = count($artistas);
-            //$processadas = array();
-            
-            for($i = 0; $i < $total; $i++){
-                
-                $existe = false;
-                $umArtista = null;
-                
-                $umArtista = $em->getRepository('RepSiteBundle:Artista')
-                        ->findOneBy(array('id' => $artistas[$i]['id']));
-                
-                if($umArtista == null){
-                    $umArtista = new Artista();
-                    $umArtista->setId($artistas[$i]['id']);
-                } else{
-                    $existe = true;
-                }
-                
-                $umArtista->setNome($artistas[$i]['nome']);
-                $umArtista->setStatus($artistas[$i]['status']);
-                $umArtista->setSlug(NULL);
-                //$umArtista->setDataCadastro($artistas[$i]['data_cadastro']);
-
-                //die(var_dump($umArtista));
-                
-                $em->persist($umArtista);
-                
-                if(!$existe){
-                    $metadata = $em->getClassMetaData(get_class($umArtista));
-                    $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
-                    $metadata->setIdGenerator(new AssignedGenerator());
-                    $umArtista->setId($artistas[$i]['id']);
-                }
+                $em->persist($umEstado);
                 
             }
             
-            // EVENTOS
+            // FIM ESTADO
             
-            $eventos = $dados['eventos'];
-            $total = count($eventos);
-            //$processadas = array();
-            
-            for($i = 0; $i < $total; $i++){
-                
-                $existe = false;
-                $umEvento = null;
-                
-                $umEvento = $em->getRepository('RepSiteBundle:Evento')
-                        ->findOneBy(array('id' => $eventos[$i]['id']));
-                
-                if($umEvento == null){
-                    $umEvento = new Evento();
-                    $umEvento->setId($eventos[$i]['id']);
-                } else{
-                    $existe = true;
-                }
-                
-                $umEvento->setNome($eventos[$i]['nome']);
-                $umEvento->setStatus($eventos[$i]['status']);
-                $umEvento->setData(date_create_from_format('Y-m-d\TH:i:sO', $eventos[$i]['data']));
-                $umEvento->setSlug(NULL);
-                
-                $umTipoEvento = new \Rep\SiteBundle\Entity\TipoEvento();
-                $umTipoEvento = $em->getRepository('RepSiteBundle:TipoEvento')
-                        ->findOneBy(array('id' => $eventos[$i]['tipo_evento']));
-                
-                $umEvento->setTipoEvento($umTipoEvento);
-                
-                $em->persist($umEvento);
-                
-                if(!$existe){
-                    $metadata = $em->getClassMetaData(get_class($umEvento));
-                    $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
-                    $metadata->setIdGenerator(new AssignedGenerator());
-                    $umEvento->setId($eventos[$i]['id']);
-                }
-                
-            }
-            
-            // MUSICAS EVENTOS
-            
-            $musicasEventos = $dados['musicas_eventos'];
-            $total = count($musicasEventos);
-            //$processadas = array();
-            
-            for($i = 0; $i < $total; $i++){
-                
-                $existe = false;
-                $umMusicaEvento = null;
-                
-                $umMusicaEvento = $em->getRepository('RepSiteBundle:MusicaEvento')
-                        ->findOneBy(array('id' => $musicasEventos[$i]['id']));
-                
-                if($umMusicaEvento == null){
-                    $umMusicaEvento = new \Rep\SiteBundle\Entity\MusicaEvento();
-                    $umMusicaEvento->setId($musicasEventos[$i]['id']);
-                } else{
-                    $existe = true;
-                }
-                
-                $umMusicaEvento->setOrdem($musicasEventos[$i]['ordem']);
-                $umMusicaEvento->setStatus($musicasEventos[$i]['status']);
-                
-                $umMusica = new \Rep\SiteBundle\Entity\Musica();
-                $umMusica = $em->getRepository('RepSiteBundle:Musica')
-                        ->findOneBy(array('id' => $musicasEventos[$i]['musica']));
-                
-                $umMusicaEvento->setMusica($umMusica);
-                
-                $umEvento = new \Rep\SiteBundle\Entity\Evento();
-                $umEvento = $em->getRepository('RepSiteBundle:Evento')
-                        ->findOneBy(array('id' => $musicasEventos[$i]['evento']));
-                
-                $umMusicaEvento->setEvento($umEvento);
-                
-                $em->persist($umMusicaEvento);
-                
-                if(!$existe){
-                    $metadata = $em->getClassMetaData(get_class($umMusicaEvento));
-                    $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
-                    $metadata->setIdGenerator(new AssignedGenerator());
-                    $umMusicaEvento->setId($musicasEventos[$i]['id']);
-                }
-                
-            }
-            */
             $em->flush();
             
             $view = View::create(
