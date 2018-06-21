@@ -171,6 +171,62 @@ class CircularRestController extends FOSRestController {
             
             // FIM PAIS
             
+            // EMPRESA
+            
+            $empresas = $dados['empresas'];
+            
+            $total = count($empresas);
+            
+            for($i = 0; $i < $total; $i++){
+                
+                $existe = false;
+                $umEmpresa = null;
+                
+                $umEmpresa = $em->getRepository('ApiBundle:Empresa')
+                        ->findOneBy(array('id' => $empresas[$i]['id']));
+                
+                if($umEmpresa == null){
+                    $umEmpresa = new \ApiBundle\Entity\Empresa();
+                    $umEmpresa->setId($empresas[$i]['id']);
+                } else{
+                    $existe = true;
+                }
+                
+                $metadata = $em->getClassMetaData(get_class($umEmpresa));
+                $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
+                $metadata->setIdGenerator(new AssignedGenerator());
+                $umEmpresa->setId($empresas[$i]['id']);
+                
+                $umEmpresa->setNome($empresas[$i]['nome']);
+                
+                if(isset($empresas[$i]['logo'])){
+                    $umEmpresa->setLogo($empresas[$i]['logo']);
+                }
+                
+                if(isset($empresas[$i]['email'])){
+                    $umEmpresa->setEmail($empresas[$i]['email']);
+                }
+                
+                if(isset($empresas[$i]['logo'])){
+                    $umEmpresa->setTelefone($empresas[$i]['telefone']);
+                }
+                
+                $umEmpresa->setSlug($empresas[$i]['slug']);
+                $umEmpresa->setDataCadastro(date_create_from_format('d-m-Y H:i', $empresas[$i]['dataCadastro']));
+                $umEmpresa->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $empresas[$i]['ultimaAlteracao']));
+                
+                if(isset($empresas[$i]['programadoPara'])){
+                    $umEmpresa->setProgramadoPara(date_create_from_format('d-m-Y H:i', $empresas[$i]['programadoPara']));
+                }
+                
+                $umEmpresa->setAtivo($empresas[$i]['ativo']);
+
+                $em->persist($umEmpresa);
+                
+            }
+            
+            // FIM EMPRESA
+            
             // ESTADO
             
             $estados = $dados['estados'];
@@ -180,7 +236,6 @@ class CircularRestController extends FOSRestController {
             for($i = 0; $i < $total; $i++){
                 
                 $existe = false;
-                //$umMusica = null;
                 $umEstado = null;
                 
                 $umEstado = $em->getRepository('ApiBundle:Estado')

@@ -37,7 +37,7 @@ abstract class EntidadeBase {
      * @Gedmo\Versioned
      * 
      */
-    protected $ativo;
+    protected $ativo = true;
     
     /**
      * @ORM\Column(type="datetime")

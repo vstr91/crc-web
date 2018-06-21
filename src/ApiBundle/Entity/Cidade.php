@@ -16,67 +16,66 @@ use Gedmo\Mapping\Annotation as Gedmo;
 //use JMS\Serializer\Annotation\Expose;
 
 /**
- * Description of Estado
+ * Description of Cidade
  *
  * @author Almir
  */
 
 /**
- * Estado
+ * Cidade
  *
- * @ORM\Entity(repositoryClass="ApiBundle\Entity\Repository\EstadoRepository")
- * @ORM\Table(name="estado")
+ * @ORM\Entity(repositoryClass="ApiBundle\Entity\Repository\CidadeRepository")
+ * @ORM\Table(name="cidade")
  * @Gedmo\Loggable
  * @ORM\HasLifecycleCallbacks()
- * @UniqueEntity("nome", message="O estado já foi cadastrado")
  * 
  */
-class Estado extends EntidadeSlug {
+class Cidade extends EntidadeSlug {
 
     /**
      * @var string
      *
-     * @ORM\Column(name="sigla", type="string", length=2, unique=true)
-     * @Assert\NotBlank()
+     * @ORM\Column(name="brasao", type="string", length=100, nullable=true)
      * @Gedmo\Versioned
      * 
      */
-    private $sigla;
+    private $brasao;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Pais")
-     * @ORM\JoinColumn(name="pais", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Estado", inversedBy="estados")
+     * @ORM\JoinColumn(name="estado", referencedColumnName="id")
      * @Gedmo\Versioned
      * 
      */
-    protected $pais;
+    protected $estado;
     
     public function __toString() {
         return $this->getNome();
     }
 
+
     /**
-     * Set sigla
+     * Set brasao
      *
-     * @param string $sigla
+     * @param string $brasao
      *
-     * @return Pais
+     * @return Cidade
      */
-    public function setSigla($sigla)
+    public function setBrasao($brasao)
     {
-        $this->sigla = $sigla;
+        $this->brasao = $brasao;
 
         return $this;
     }
 
     /**
-     * Get sigla
+     * Get brasao
      *
      * @return string
      */
-    public function getSigla()
+    public function getBrasao()
     {
-        return $this->sigla;
+        return $this->brasao;
     }
 
     /**
@@ -88,27 +87,13 @@ class Estado extends EntidadeSlug {
     {
         return $this->id;
     }
-    
-    /**
-     * Set id
-     *
-     * @param string $id
-     *
-     * @return Pais
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
 
     /**
      * Set ativo
      *
      * @param boolean $ativo
      *
-     * @return Pais
+     * @return Cidade
      */
     public function setAtivo($ativo)
     {
@@ -132,7 +117,7 @@ class Estado extends EntidadeSlug {
      *
      * @param \DateTime $dataCadastro
      *
-     * @return Pais
+     * @return Cidade
      */
     public function setDataCadastro($dataCadastro)
     {
@@ -156,7 +141,7 @@ class Estado extends EntidadeSlug {
      *
      * @param \DateTime $dataRecebimento
      *
-     * @return Pais
+     * @return Cidade
      */
     public function setDataRecebimento($dataRecebimento)
     {
@@ -180,7 +165,7 @@ class Estado extends EntidadeSlug {
      *
      * @param \DateTime $ultimaAlteracao
      *
-     * @return Pais
+     * @return Cidade
      */
     public function setUltimaAlteracao($ultimaAlteracao)
     {
@@ -204,7 +189,7 @@ class Estado extends EntidadeSlug {
      *
      * @param \DateTime $programadoPara
      *
-     * @return Pais
+     * @return Cidade
      */
     public function setProgramadoPara($programadoPara)
     {
@@ -224,11 +209,35 @@ class Estado extends EntidadeSlug {
     }
 
     /**
+     * Set estado
+     *
+     * @param \ApiBundle\Entity\Estado $estado
+     *
+     * @return Cidade
+     */
+    public function setEstado(\ApiBundle\Entity\Estado $estado = null)
+    {
+        $this->estado = $estado;
+
+        return $this;
+    }
+
+    /**
+     * Get estado
+     *
+     * @return \ApiBundle\Entity\Estado
+     */
+    public function getEstado()
+    {
+        return $this->estado;
+    }
+
+    /**
      * Set usuarioCadastro
      *
      * @param \ApiBundle\Entity\Usuario $usuarioCadastro
      *
-     * @return Pais
+     * @return Cidade
      */
     public function setUsuarioCadastro(\ApiBundle\Entity\Usuario $usuarioCadastro = null)
     {
@@ -252,7 +261,7 @@ class Estado extends EntidadeSlug {
      *
      * @param \ApiBundle\Entity\Usuario $usuarioUltimaAlteracao
      *
-     * @return Pais
+     * @return Cidade
      */
     public function setUsuarioUltimaAlteracao(\ApiBundle\Entity\Usuario $usuarioUltimaAlteracao = null)
     {
@@ -269,29 +278,5 @@ class Estado extends EntidadeSlug {
     public function getUsuarioUltimaAlteracao()
     {
         return $this->usuarioUltimaAlteracao;
-    }
-
-    /**
-     * Set pais
-     *
-     * @param \ApiBundle\Entity\Pais $pais
-     *
-     * @return Estado
-     */
-    public function setPais(\ApiBundle\Entity\Pais $pais = null)
-    {
-        $this->pais = $pais;
-
-        return $this;
-    }
-
-    /**
-     * Get pais
-     *
-     * @return \ApiBundle\Entity\Pais
-     */
-    public function getPais()
-    {
-        return $this->pais;
     }
 }

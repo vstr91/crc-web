@@ -16,67 +16,125 @@ use Gedmo\Mapping\Annotation as Gedmo;
 //use JMS\Serializer\Annotation\Expose;
 
 /**
- * Description of Estado
+ * Description of Empresa
  *
  * @author Almir
  */
 
 /**
- * Estado
+ * Empresa
  *
- * @ORM\Entity(repositoryClass="ApiBundle\Entity\Repository\EstadoRepository")
- * @ORM\Table(name="estado")
+ * @ORM\Entity(repositoryClass="ApiBundle\Entity\Repository\EmpresaRepository")
+ * @ORM\Table(name="empresa")
  * @Gedmo\Loggable
  * @ORM\HasLifecycleCallbacks()
- * @UniqueEntity("nome", message="O estado já foi cadastrado")
  * 
  */
-class Estado extends EntidadeSlug {
+class Empresa extends EntidadeSlug {
 
     /**
      * @var string
      *
-     * @ORM\Column(name="sigla", type="string", length=2, unique=true)
-     * @Assert\NotBlank()
+     * @ORM\Column(name="logo", type="string", length=100, nullable=true)
      * @Gedmo\Versioned
      * 
      */
-    private $sigla;
+    private $logo;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Pais")
-     * @ORM\JoinColumn(name="pais", referencedColumnName="id")
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=100, nullable=true)
      * @Gedmo\Versioned
      * 
      */
-    protected $pais;
+    private $email;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="telefone", type="string", length=20, nullable=true)
+     * @Gedmo\Versioned
+     * 
+     */
+    private $telefone;
     
     public function __toString() {
-        return $this->getNome();
+        return $this->getId();
     }
 
+    
+
     /**
-     * Set sigla
+     * Set logo
      *
-     * @param string $sigla
+     * @param string $logo
      *
-     * @return Pais
+     * @return Empresa
      */
-    public function setSigla($sigla)
+    public function setLogo($logo)
     {
-        $this->sigla = $sigla;
+        $this->logo = $logo;
 
         return $this;
     }
 
     /**
-     * Get sigla
+     * Get logo
      *
      * @return string
      */
-    public function getSigla()
+    public function getLogo()
     {
-        return $this->sigla;
+        return $this->logo;
+    }
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     *
+     * @return Empresa
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Set telefone
+     *
+     * @param string $telefone
+     *
+     * @return Empresa
+     */
+    public function setTelefone($telefone)
+    {
+        $this->telefone = $telefone;
+
+        return $this;
+    }
+
+    /**
+     * Get telefone
+     *
+     * @return string
+     */
+    public function getTelefone()
+    {
+        return $this->telefone;
     }
 
     /**
@@ -88,27 +146,13 @@ class Estado extends EntidadeSlug {
     {
         return $this->id;
     }
-    
-    /**
-     * Set id
-     *
-     * @param string $id
-     *
-     * @return Pais
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
 
     /**
      * Set ativo
      *
      * @param boolean $ativo
      *
-     * @return Pais
+     * @return Empresa
      */
     public function setAtivo($ativo)
     {
@@ -132,7 +176,7 @@ class Estado extends EntidadeSlug {
      *
      * @param \DateTime $dataCadastro
      *
-     * @return Pais
+     * @return Empresa
      */
     public function setDataCadastro($dataCadastro)
     {
@@ -156,7 +200,7 @@ class Estado extends EntidadeSlug {
      *
      * @param \DateTime $dataRecebimento
      *
-     * @return Pais
+     * @return Empresa
      */
     public function setDataRecebimento($dataRecebimento)
     {
@@ -180,7 +224,7 @@ class Estado extends EntidadeSlug {
      *
      * @param \DateTime $ultimaAlteracao
      *
-     * @return Pais
+     * @return Empresa
      */
     public function setUltimaAlteracao($ultimaAlteracao)
     {
@@ -204,7 +248,7 @@ class Estado extends EntidadeSlug {
      *
      * @param \DateTime $programadoPara
      *
-     * @return Pais
+     * @return Empresa
      */
     public function setProgramadoPara($programadoPara)
     {
@@ -228,7 +272,7 @@ class Estado extends EntidadeSlug {
      *
      * @param \ApiBundle\Entity\Usuario $usuarioCadastro
      *
-     * @return Pais
+     * @return Empresa
      */
     public function setUsuarioCadastro(\ApiBundle\Entity\Usuario $usuarioCadastro = null)
     {
@@ -252,7 +296,7 @@ class Estado extends EntidadeSlug {
      *
      * @param \ApiBundle\Entity\Usuario $usuarioUltimaAlteracao
      *
-     * @return Pais
+     * @return Empresa
      */
     public function setUsuarioUltimaAlteracao(\ApiBundle\Entity\Usuario $usuarioUltimaAlteracao = null)
     {
@@ -269,29 +313,5 @@ class Estado extends EntidadeSlug {
     public function getUsuarioUltimaAlteracao()
     {
         return $this->usuarioUltimaAlteracao;
-    }
-
-    /**
-     * Set pais
-     *
-     * @param \ApiBundle\Entity\Pais $pais
-     *
-     * @return Estado
-     */
-    public function setPais(\ApiBundle\Entity\Pais $pais = null)
-    {
-        $this->pais = $pais;
-
-        return $this;
-    }
-
-    /**
-     * Get pais
-     *
-     * @return \ApiBundle\Entity\Pais
-     */
-    public function getPais()
-    {
-        return $this->pais;
     }
 }

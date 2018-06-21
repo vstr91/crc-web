@@ -16,67 +16,194 @@ use Gedmo\Mapping\Annotation as Gedmo;
 //use JMS\Serializer\Annotation\Expose;
 
 /**
- * Description of Estado
+ * Description of PontoInteresse
  *
  * @author Almir
  */
 
 /**
- * Estado
+ * PontoInteresse
  *
- * @ORM\Entity(repositoryClass="ApiBundle\Entity\Repository\EstadoRepository")
- * @ORM\Table(name="estado")
+ * @ORM\Entity(repositoryClass="ApiBundle\Entity\Repository\PontoInteresseRepository")
+ * @ORM\Table(name="ponto_interesse")
  * @Gedmo\Loggable
  * @ORM\HasLifecycleCallbacks()
- * @UniqueEntity("nome", message="O estado já foi cadastrado")
  * 
  */
-class Estado extends EntidadeSlug {
+class PontoInteresse extends EntidadeSlug {
 
     /**
      * @var string
      *
-     * @ORM\Column(name="sigla", type="string", length=2, unique=true)
+     * @ORM\Column(name="latitude", type="decimal")
      * @Assert\NotBlank()
      * @Gedmo\Versioned
      * 
      */
-    private $sigla;
+    private $latitude;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Pais")
-     * @ORM\JoinColumn(name="pais", referencedColumnName="id")
+     * @var string
+     *
+     * @ORM\Column(name="longitude", type="decimal")
+     * @Assert\NotBlank()
      * @Gedmo\Versioned
      * 
      */
-    protected $pais;
+    private $longitude;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="imagem", type="string", length=100, nullable=true)
+     * @Gedmo\Versioned
+     * 
+     */
+    private $imagem;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="dataInicial", type="datetime")
+     * @Assert\NotBlank()
+     * @Gedmo\Versioned
+     * 
+     */
+    private $dataInicial;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="dataFinal", type="datetime")
+     * @Assert\NotBlank()
+     * @Gedmo\Versioned
+     * 
+     */
+    private $dataFinal;
     
     public function __toString() {
         return $this->getNome();
     }
 
+
     /**
-     * Set sigla
+     * Set latitude
      *
-     * @param string $sigla
+     * @param \double $latitude
      *
-     * @return Pais
+     * @return PontoInteresse
      */
-    public function setSigla($sigla)
+    public function setLatitude(\double $latitude)
     {
-        $this->sigla = $sigla;
+        $this->latitude = $latitude;
 
         return $this;
     }
 
     /**
-     * Get sigla
+     * Get latitude
+     *
+     * @return \double
+     */
+    public function getLatitude()
+    {
+        return $this->latitude;
+    }
+
+    /**
+     * Set longitude
+     *
+     * @param \double $longitude
+     *
+     * @return PontoInteresse
+     */
+    public function setLongitude(\double $longitude)
+    {
+        $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    /**
+     * Get longitude
+     *
+     * @return \double
+     */
+    public function getLongitude()
+    {
+        return $this->longitude;
+    }
+
+    /**
+     * Set imagem
+     *
+     * @param string $imagem
+     *
+     * @return PontoInteresse
+     */
+    public function setImagem($imagem)
+    {
+        $this->imagem = $imagem;
+
+        return $this;
+    }
+
+    /**
+     * Get imagem
      *
      * @return string
      */
-    public function getSigla()
+    public function getImagem()
     {
-        return $this->sigla;
+        return $this->imagem;
+    }
+
+    /**
+     * Set dataInicial
+     *
+     * @param \DateTime $dataInicial
+     *
+     * @return PontoInteresse
+     */
+    public function setDataInicial($dataInicial)
+    {
+        $this->dataInicial = $dataInicial;
+
+        return $this;
+    }
+
+    /**
+     * Get dataInicial
+     *
+     * @return \DateTime
+     */
+    public function getDataInicial()
+    {
+        return $this->dataInicial;
+    }
+
+    /**
+     * Set dataFinal
+     *
+     * @param \DateTime $dataFinal
+     *
+     * @return PontoInteresse
+     */
+    public function setDataFinal($dataFinal)
+    {
+        $this->dataFinal = $dataFinal;
+
+        return $this;
+    }
+
+    /**
+     * Get dataFinal
+     *
+     * @return \DateTime
+     */
+    public function getDataFinal()
+    {
+        return $this->dataFinal;
     }
 
     /**
@@ -88,27 +215,13 @@ class Estado extends EntidadeSlug {
     {
         return $this->id;
     }
-    
-    /**
-     * Set id
-     *
-     * @param string $id
-     *
-     * @return Pais
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
 
     /**
      * Set ativo
      *
      * @param boolean $ativo
      *
-     * @return Pais
+     * @return PontoInteresse
      */
     public function setAtivo($ativo)
     {
@@ -132,7 +245,7 @@ class Estado extends EntidadeSlug {
      *
      * @param \DateTime $dataCadastro
      *
-     * @return Pais
+     * @return PontoInteresse
      */
     public function setDataCadastro($dataCadastro)
     {
@@ -156,7 +269,7 @@ class Estado extends EntidadeSlug {
      *
      * @param \DateTime $dataRecebimento
      *
-     * @return Pais
+     * @return PontoInteresse
      */
     public function setDataRecebimento($dataRecebimento)
     {
@@ -180,7 +293,7 @@ class Estado extends EntidadeSlug {
      *
      * @param \DateTime $ultimaAlteracao
      *
-     * @return Pais
+     * @return PontoInteresse
      */
     public function setUltimaAlteracao($ultimaAlteracao)
     {
@@ -204,7 +317,7 @@ class Estado extends EntidadeSlug {
      *
      * @param \DateTime $programadoPara
      *
-     * @return Pais
+     * @return PontoInteresse
      */
     public function setProgramadoPara($programadoPara)
     {
@@ -228,7 +341,7 @@ class Estado extends EntidadeSlug {
      *
      * @param \ApiBundle\Entity\Usuario $usuarioCadastro
      *
-     * @return Pais
+     * @return PontoInteresse
      */
     public function setUsuarioCadastro(\ApiBundle\Entity\Usuario $usuarioCadastro = null)
     {
@@ -252,7 +365,7 @@ class Estado extends EntidadeSlug {
      *
      * @param \ApiBundle\Entity\Usuario $usuarioUltimaAlteracao
      *
-     * @return Pais
+     * @return PontoInteresse
      */
     public function setUsuarioUltimaAlteracao(\ApiBundle\Entity\Usuario $usuarioUltimaAlteracao = null)
     {
@@ -269,29 +382,5 @@ class Estado extends EntidadeSlug {
     public function getUsuarioUltimaAlteracao()
     {
         return $this->usuarioUltimaAlteracao;
-    }
-
-    /**
-     * Set pais
-     *
-     * @param \ApiBundle\Entity\Pais $pais
-     *
-     * @return Estado
-     */
-    public function setPais(\ApiBundle\Entity\Pais $pais = null)
-    {
-        $this->pais = $pais;
-
-        return $this;
-    }
-
-    /**
-     * Get pais
-     *
-     * @return \ApiBundle\Entity\Pais
-     */
-    public function getPais()
-    {
-        return $this->pais;
     }
 }

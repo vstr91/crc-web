@@ -1,5 +1,5 @@
 {
-    "name": "cefet/crc-web",
+    "name": "vst/crc-web",
     "license": "proprietary",
     "type": "project",
     "autoload": {
@@ -20,7 +20,7 @@
         ]
     },
     "require": {
-        "php": ">=5.5.9",
+        "php": ">=7.0.0",
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/orm": "2.5.14",
         "incenteev/composer-parameter-handler": "^2.0",
@@ -36,7 +36,7 @@
         "friendsofsymfony/rest-bundle": "dev-master",
         "paragonie/random_compat": "~1.4",
         "stof/doctrine-extensions-bundle": "dev-master",
-        "symfony/templating": "dev-master"
+        "symfony/templating": "3.4.*"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
