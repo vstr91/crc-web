@@ -142,7 +142,7 @@ class ParadaItinerario extends EntidadeBase {
      *
      * @return ParadaItinerario
      */
-    public function setValorAnterior(\double $valorAnterior)
+    public function setValorAnterior($valorAnterior)
     {
         $this->valorAnterior = $valorAnterior;
 
@@ -166,7 +166,7 @@ class ParadaItinerario extends EntidadeBase {
      *
      * @return ParadaItinerario
      */
-    public function setValorSeguinte(\double $valorSeguinte)
+    public function setValorSeguinte($valorSeguinte)
     {
         $this->valorSeguinte = $valorSeguinte;
 

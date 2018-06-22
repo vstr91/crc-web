@@ -93,7 +93,7 @@ class PontoInteresse extends EntidadeSlug {
      *
      * @return PontoInteresse
      */
-    public function setLatitude(\double $latitude)
+    public function setLatitude($latitude)
     {
         $this->latitude = $latitude;
 
@@ -117,7 +117,7 @@ class PontoInteresse extends EntidadeSlug {
      *
      * @return PontoInteresse
      */
-    public function setLongitude(\double $longitude)
+    public function setLongitude($longitude)
     {
         $this->longitude = $longitude;
 

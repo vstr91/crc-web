@@ -90,7 +90,7 @@ class Parada extends EntidadeSlug {
      *
      * @return Parada
      */
-    public function setLatitude(\double $latitude)
+    public function setLatitude($latitude)
     {
         $this->latitude = $latitude;
 
@@ -114,7 +114,7 @@ class Parada extends EntidadeSlug {
      *
      * @return Parada
      */
-    public function setLongitude(\double $longitude)
+    public function setLongitude($longitude)
     {
         $this->longitude = $longitude;
 
@@ -138,7 +138,7 @@ class Parada extends EntidadeSlug {
      *
      * @return Parada
      */
-    public function setTaxaDeEmbarque(\double $taxaDeEmbarque)
+    public function setTaxaDeEmbarque($taxaDeEmbarque)
     {
         $this->taxaDeEmbarque = $taxaDeEmbarque;
 

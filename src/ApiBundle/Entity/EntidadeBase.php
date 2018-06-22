@@ -20,6 +20,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *
  * @author Almir
  */
+/** @ORM\MappedSuperclass */
 abstract class EntidadeBase {
     
     /**
@@ -91,6 +92,20 @@ abstract class EntidadeBase {
     public function preUpdate()
     {
         $this->setUltimaAlteracao(new \DateTime());
+    }
+    
+    /**
+     * Set id
+     *
+     * @param string $id
+     *
+     * @return Pais
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
     }
     
 }

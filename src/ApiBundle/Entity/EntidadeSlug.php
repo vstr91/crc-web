@@ -20,6 +20,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *
  * @author Almir
  */
+/** @ORM\MappedSuperclass */
 abstract class EntidadeSlug extends EntidadeBase {
     
     /**

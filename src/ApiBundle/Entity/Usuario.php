@@ -31,9 +31,12 @@ use JMS\Serializer\Annotation\Expose;
 class Usuario extends BaseUser {
     
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="id")
      * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="UUID")
+     * 
      */
     protected $id;
     
@@ -42,7 +45,22 @@ class Usuario extends BaseUser {
      *
      * @ORM\Column(name="facebook_id", type="string", nullable=true)
      */
-    private $facebookID;
+    private $nome;
+    
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $dataCadastro;
+    
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $dataRecebimento;
+    
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $ultimaAlteracao;
  
     /**
      * @var string
@@ -58,30 +76,10 @@ class Usuario extends BaseUser {
      */
     private $googleAccessToken;
     
-
     /**
-     * Set facebookID
-     *
-     * @param string $facebookID
-     *
-     * @return Usuario
+     * @ORM\Column(type="datetime", nullable=true)
      */
-    public function setFacebookID($facebookID)
-    {
-        $this->facebookID = $facebookID;
-
-        return $this;
-    }
-
-    /**
-     * Get facebookID
-     *
-     * @return string
-     */
-    public function getFacebookID()
-    {
-        return $this->facebookID;
-    }
+    protected $programadoPara;
 
     /**
      * Set googleID
@@ -114,6 +112,140 @@ class Usuario extends BaseUser {
     function setGoogleAccessToken($googleAccessToken) {
         $this->googleAccessToken = $googleAccessToken;
     }
-
     
+
+    /**
+     * Set programadoPara
+     *
+     * @param \DateTime $programadoPara
+     *
+     * @return Usuario
+     */
+    public function setProgramadoPara($programadoPara)
+    {
+        $this->programadoPara = $programadoPara;
+
+        return $this;
+    }
+
+    /**
+     * Get programadoPara
+     *
+     * @return \DateTime
+     */
+    public function getProgramadoPara()
+    {
+        return $this->programadoPara;
+    }
+    
+    /**
+     * Set id
+     *
+     * @param string $id
+     *
+     * @return Pais
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+    
+
+    /**
+     * Set nome
+     *
+     * @param string $nome
+     *
+     * @return Usuario
+     */
+    public function setNome($nome)
+    {
+        $this->nome = $nome;
+
+        return $this;
+    }
+
+    /**
+     * Get nome
+     *
+     * @return string
+     */
+    public function getNome()
+    {
+        return $this->nome;
+    }
+
+    /**
+     * Set dataCadastro
+     *
+     * @param \DateTime $dataCadastro
+     *
+     * @return Usuario
+     */
+    public function setDataCadastro($dataCadastro)
+    {
+        $this->dataCadastro = $dataCadastro;
+
+        return $this;
+    }
+
+    /**
+     * Get dataCadastro
+     *
+     * @return \DateTime
+     */
+    public function getDataCadastro()
+    {
+        return $this->dataCadastro;
+    }
+
+    /**
+     * Set dataRecebimento
+     *
+     * @param \DateTime $dataRecebimento
+     *
+     * @return Usuario
+     */
+    public function setDataRecebimento($dataRecebimento)
+    {
+        $this->dataRecebimento = $dataRecebimento;
+
+        return $this;
+    }
+
+    /**
+     * Get dataRecebimento
+     *
+     * @return \DateTime
+     */
+    public function getDataRecebimento()
+    {
+        return $this->dataRecebimento;
+    }
+
+    /**
+     * Set ultimaAlteracao
+     *
+     * @param \DateTime $ultimaAlteracao
+     *
+     * @return Usuario
+     */
+    public function setUltimaAlteracao($ultimaAlteracao)
+    {
+        $this->ultimaAlteracao = $ultimaAlteracao;
+
+        return $this;
+    }
+
+    /**
+     * Get ultimaAlteracao
+     *
+     * @return \DateTime
+     */
+    public function getUltimaAlteracao()
+    {
+        return $this->ultimaAlteracao;
+    }
 }

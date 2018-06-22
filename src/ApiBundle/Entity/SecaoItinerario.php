@@ -110,7 +110,7 @@ class SecaoItinerario extends EntidadeBase {
      *
      * @return SecaoItinerario
      */
-    public function setTarifa(\double $tarifa)
+    public function setTarifa($tarifa)
     {
         $this->tarifa = $tarifa;
 

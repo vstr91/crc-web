@@ -125,7 +125,7 @@ class Itinerario extends EntidadeBase {
      *
      * @return Itinerario
      */
-    public function setTarifa(\double $tarifa)
+    public function setTarifa($tarifa)
     {
         $this->tarifa = $tarifa;
 
@@ -149,7 +149,7 @@ class Itinerario extends EntidadeBase {
      *
      * @return Itinerario
      */
-    public function setDistancia(\double $distancia)
+    public function setDistancia($distancia)
     {
         $this->distancia = $distancia;
 
