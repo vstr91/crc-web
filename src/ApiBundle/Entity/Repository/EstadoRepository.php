@@ -10,4 +10,45 @@ namespace ApiBundle\Entity\Repository;
  */
 class EstadoRepository extends \Doctrine\ORM\EntityRepository
 {
+    
+    public function listarTodosREST($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('e')
+                ->select('e.id, e.ativo, e.dataCadastro, e.dataRecebimento, e.ultimaAlteracao, e.usuarioCadastro, e.usuarioUltimaAlteracao, e.programadoPara, e.nome, e.slug, e.sigla, p.id AS pais')
+                ->distinct()
+                ->where("e.ultimaAlteracao > :ultimaAlteracao")
+                ->andWhere("e.programadoPara IS NULL OR e.programadoPara <= :now")
+                //->andWhere("p.ativo = 1")
+                ->innerJoin("ApiBundle:Pais", "p", "WITH", "p.id = e.pais")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->setParameter('now', new \DateTime())
+                ->addOrderBy('e.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
+    public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('e')
+                //->select('e')
+                ->select('e.id, e.ativo, e.dataCadastro AS data_cadastro, e.dataRecebimento AS data_recebimento, '
+                        . 'e.ultimaAlteracao AS ultima_alteracao, e.programadoPara AS programado_para, IDENTITY(e.usuarioCadastro) AS usuario_cadastro, '
+                        . 'IDENTITY(e.usuarioUltimaAlteracao) AS usuario_ultima_alteracao, e.nome, e.slug, e.sigla, IDENTITY(e.pais) AS pais')
+                ->distinct()
+                ->where("e.ultimaAlteracao > :ultimaAlteracao")
+                //->andWhere("e.programadoPara IS NULL OR e.programadoPara <= :now")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->addOrderBy('e.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
 }

@@ -10,4 +10,26 @@ namespace ApiBundle\Entity\Repository;
  */
 class HorarioItinerarioRepository extends \Doctrine\ORM\EntityRepository
 {
+    
+    public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('hi')
+                ->select('hi.id, hi.ativo, hi.dataCadastro AS data_cadastro, hi.dataRecebimento AS data_recebimento, '
+                        . 'hi.ultimaAlteracao AS ultima_alteracao, hi.programadoPara AS programado_para, IDENTITY(hi.usuarioCadastro) AS usuario_cadastro, '
+                        . 'IDENTITY(hi.usuarioUltimaAlteracao) AS usuario_ultima_alteracao, hi.domingo, '
+                        . 'hi.segunda, hi.terca, hi.quarta, hi.quinta, hi.sexta, hi.sabado, hi.observacao, '
+                        . 'IDENTITY(hi.horario) AS horario, IDENTITY(hi.itinerario) AS itinerario')
+                ->distinct()
+                ->where("hi.ultimaAlteracao > :ultimaAlteracao")
+                //->andWhere("c.programadoPara IS NULL OR c.programadoPara <= :now")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->addOrderBy('hi.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
 }

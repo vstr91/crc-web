@@ -10,4 +10,42 @@ namespace ApiBundle\Entity\Repository;
  */
 class OnibusRepository extends \Doctrine\ORM\EntityRepository
 {
+    
+    public function listarTodosREST($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('o')
+                ->select('o')
+                ->distinct()
+                ->where("o.ultimaAlteracao > :ultimaAlteracao")
+                ->andWhere("o.programadoPara IS NULL OR o.programadoPara <= :now")
+                //->andWhere("p.ativo = 1")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->setParameter('now', new \DateTime())
+                ->addOrderBy('o.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
+    public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('o')
+                ->select('o')
+                ->distinct()
+                ->where("o.ultimaAlteracao > :ultimaAlteracao")
+                //->andWhere("o.programadoPara IS NULL OR o.programadoPara <= :now")
+                //->andWhere("p.ativo = 1")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->addOrderBy('o.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
 }

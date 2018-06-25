@@ -10,4 +10,24 @@ namespace ApiBundle\Entity\Repository;
  */
 class UsuarioRepository extends \Doctrine\ORM\EntityRepository
 {
+    
+    public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('u')
+                ->select('u.id, u.enabled AS ativo, u.dataCadastro AS data_cadastro, u.dataRecebimento AS data_recebimento, '
+                        . 'u.ultimaAlteracao AS ultima_alteracao, u.programadoPara AS programado_para, u.nome, u.email')
+                ->distinct()
+                ->where("u.ultimaAlteracao > :ultimaAlteracao")
+                //->andWhere("p.programadoPara IS NULL OR p.programadoPara <= :now")
+                //->andWhere("p.ativo = 1")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->addOrderBy('u.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
 }

@@ -103,8 +103,8 @@ fos_rest:
         default_engine: twig
     routing_loader:
         default_format: json
-    #serializer:
-        #serialize_null: true
+    serializer:
+        serialize_null: true
         
 stof_doctrine_extensions:
     default_locale: pt_BR
@@ -117,3 +117,7 @@ stof_doctrine_extensions:
 web_profiler:
     toolbar: true
     intercept_redirects: false
+    
+jms_serializer:
+    property_naming: 
+        id: 'jms_serializer.identical_property_naming_strategy'

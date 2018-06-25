@@ -67,7 +67,7 @@ class ParadaItinerario extends EntidadeBase {
     /**
      * @var string
      *
-     * @ORM\Column(name="valorAnterior", type="decimal", nullable=true)
+     * @ORM\Column(name="valorAnterior", type="decimal", scale=2, nullable=true)
      * @Gedmo\Versioned
      * 
      */
@@ -76,7 +76,7 @@ class ParadaItinerario extends EntidadeBase {
     /**
      * @var string
      *
-     * @ORM\Column(name="valorSeguinte", type="decimal", nullable=true)
+     * @ORM\Column(name="valorSeguinte", type="decimal", scale=2, nullable=true)
      * @Gedmo\Versioned
      * 
      */

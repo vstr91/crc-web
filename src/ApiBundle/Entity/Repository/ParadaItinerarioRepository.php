@@ -10,4 +10,25 @@ namespace ApiBundle\Entity\Repository;
  */
 class ParadaItinerarioRepository extends \Doctrine\ORM\EntityRepository
 {
+    
+    public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('pi')
+                ->select('pi.id, pi.ativo, pi.dataCadastro AS data_cadastro, pi.dataRecebimento AS data_recebimento, '
+                        . 'pi.ultimaAlteracao AS ultima_alteracao, pi.programadoPara AS programado_para, IDENTITY(pi.usuarioCadastro) AS usuario_cadastro, '
+                        . 'IDENTITY(pi.usuarioUltimaAlteracao) AS usuario_ultima_alteracao, pi.ordem, pi.destaque, pi.valorAnterior AS valor_anterior, '
+                        . 'pi.valorSeguinte AS valor_seguinte, IDENTITY(pi.parada) AS parada, IDENTITY(pi.itinerario) AS itinerario')
+                ->distinct()
+                ->where("pi.ultimaAlteracao > :ultimaAlteracao")
+                //->andWhere("c.programadoPara IS NULL OR c.programadoPara <= :now")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->addOrderBy('pi.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
 }

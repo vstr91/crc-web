@@ -10,4 +10,46 @@ namespace ApiBundle\Entity\Repository;
  */
 class CidadeRepository extends \Doctrine\ORM\EntityRepository
 {
+    
+    public function listarTodosREST($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('c')
+                ->select('c.id, c.ativo, c.dataCadastro AS data_cadastro, c.dataRecebimento AS data_recebimento, '
+                        . 'c.ultimaAlteracao AS ultima_alteracao, c.programadoPara AS programado_para, IDENTITY(c.usuarioCadastro) AS usuario_cadastro, '
+                        . 'IDENTITY(c.usuarioUltimaAlteracao) AS usuario_ultima_alteracao, c.nome, c.slug, c.brasao, IDENTITY(c.estado) AS estado')
+                ->distinct()
+                ->where("c.ultimaAlteracao > :ultimaAlteracao")
+                ->andWhere("c.programadoPara IS NULL OR c.programadoPara <= :now")
+                //->andWhere("p.ativo = 1")
+                ->innerJoin("ApiBundle:Estado", "e", "WITH", "e.id = c.estado")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->setParameter('now', new \DateTime())
+                ->addOrderBy('c.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
+    public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('c')
+                ->select('c.id, c.ativo, c.dataCadastro AS data_cadastro, c.dataRecebimento AS data_recebimento, '
+                        . 'c.ultimaAlteracao AS ultima_alteracao, c.programadoPara AS programado_para, IDENTITY(c.usuarioCadastro) AS usuario_cadastro, '
+                        . 'IDENTITY(c.usuarioUltimaAlteracao) AS usuario_ultima_alteracao, c.nome, c.slug, c.brasao, IDENTITY(c.estado) AS estado')
+                ->distinct()
+                ->where("c.ultimaAlteracao > :ultimaAlteracao")
+                //->andWhere("c.programadoPara IS NULL OR c.programadoPara <= :now")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->addOrderBy('c.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
 }

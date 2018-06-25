@@ -34,7 +34,7 @@ abstract class EntidadeSlug extends EntidadeBase {
     private $nome;
     
     /**
-     * @Gedmo\Slug(fields={"nome"})
+     * @Gedmo\Slug(fields={"nome"}, unique=false)
      * @ORM\Column(unique=false)
      */
     private $slug;

@@ -57,7 +57,7 @@ abstract class EntidadeBase {
     
     /**
      * @ORM\ManyToOne(targetEntity="Usuario")
-     * @ORM\JoinColumn(name="id_usuario_cadastro", referencedColumnName="id")
+     * @ORM\JoinColumn(name="usuarioCadastro", referencedColumnName="id")
      * @Gedmo\Blameable(on="create")
      * 
      */
@@ -65,7 +65,7 @@ abstract class EntidadeBase {
     
     /**
      * @ORM\ManyToOne(targetEntity="Usuario")
-     * @ORM\JoinColumn(name="id_usuario_ultima_alteracao", referencedColumnName="id")
+     * @ORM\JoinColumn(name="usuarioUltimaAlteracao", referencedColumnName="id")
      * @Gedmo\Blameable(on="update")
      * 
      */

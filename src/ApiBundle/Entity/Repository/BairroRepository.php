@@ -10,4 +10,24 @@ namespace ApiBundle\Entity\Repository;
  */
 class BairroRepository extends \Doctrine\ORM\EntityRepository
 {
+    
+    public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('b')
+                ->select('b.id, b.ativo, b.dataCadastro AS data_cadastro, b.dataRecebimento AS data_recebimento, '
+                        . 'b.ultimaAlteracao AS ultima_alteracao, b.programadoPara AS programado_para, IDENTITY(b.usuarioCadastro) AS usuario_cadastro, '
+                        . 'IDENTITY(b.usuarioUltimaAlteracao) AS usuario_ultima_alteracao, b.nome, b.slug, IDENTITY(b.cidade) AS cidade')
+                ->distinct()
+                ->where("b.ultimaAlteracao > :ultimaAlteracao")
+                //->andWhere("c.programadoPara IS NULL OR c.programadoPara <= :now")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->addOrderBy('b.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
 }

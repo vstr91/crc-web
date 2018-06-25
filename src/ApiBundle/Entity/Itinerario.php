@@ -44,7 +44,7 @@ class Itinerario extends EntidadeBase {
     /**
      * @var string
      *
-     * @ORM\Column(name="tarifa", type="decimal")
+     * @ORM\Column(name="tarifa", type="decimal", scale=2)
      * @Assert\NotBlank()
      * @Gedmo\Versioned
      * 
@@ -54,7 +54,7 @@ class Itinerario extends EntidadeBase {
     /**
      * @var string
      *
-     * @ORM\Column(name="distancia", type="decimal", nullable=true)
+     * @ORM\Column(name="distancia", type="decimal", scale=2, nullable=true)
      * @Gedmo\Versioned
      * 
      */

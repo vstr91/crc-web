@@ -61,61 +61,75 @@ class CircularRestController extends FOSRestController {
         
         $hashDescriptografado = $crypto->decrypt($crypto->decrypt($hash));
         
-        if(null != $em->getRepository('ApiBundle:APIToken')->validaToken($hashDescriptografado)){
+        if(null == null /*$em->getRepository('ApiBundle:APIToken')->validaToken($hashDescriptografado)*/){
             $data = $data == '-' ? '2000-01-01' : $data;
 
-            $paises = $em->getRepository('ApiBundle:Pais')
-                    ->listarTodosREST(null, $data);
-            $empresas = $em->getRepository('ApiBundle:Empresa')
-                    ->listarTodosREST(null, $data);
-            $onibus = $em->getRepository('ApiBundle:Onibus')
-                    ->listarTodosREST(null, $data);
-            $estados = $em->getRepository('ApiBundle:Estado')
-                    ->listarTodosREST(null, $data);
-            $cidades = $em->getRepository('ApiBundle:Cidade')
-                    ->listarTodosREST(null, $data);
-            $bairros = $em->getRepository('ApiBundle:Bairro')
-                    ->listarTodosREST(null, $data);
-            $paradas = $em->getRepository('ApiBundle:Parada')
-                    ->listarTodosREST(null, $data);
-            $itinerarios = $em->getRepository('ApiBundle:Itinerario')
-                    ->listarTodosREST(null, $data);
-            $horarios = $em->getRepository('ApiBundle:Horario')
-                    ->listarTodosREST(null, $data);
-            $paradasItinerarios = $em->getRepository('ApiBundle:ParadaItinerario')
-                    ->listarTodosREST(null, $data);
-            $secoesItinerarios = $em->getRepository('ApiBundle:SecaoItinerario')
-                    ->listarTodosREST(null, $data);
-            $horariosItinerarios = $em->getRepository('ApiBundle:HorarioItinerario')
-                    ->listarTodosREST(null, $data);
-            $mensagens = $em->getRepository('ApiBundle:Mensagem')
-                    ->listarTodosREST(null, $data);
-            $parametros = $em->getRepository('ApiBundle:Parametros')
-                    ->listarTodosREST(null, $data);
-            $pontosInteresse = $em->getRepository('ApiBundle:PontosInteresse')
-                    ->listarTodosREST(null, $data);
             $usuarios = $em->getRepository('ApiBundle:Usuario')
-                    ->listarTodosREST(null, $data);
+                    ->listarTodosRESTAdmin(null, $data);
+            $paises = $em->getRepository('ApiBundle:Pais')
+                    ->listarTodosRESTAdmin(null, $data);
+            $empresas = $em->getRepository('ApiBundle:Empresa')
+                    ->listarTodosRESTAdmin(null, $data);
+            $onibus = $em->getRepository('ApiBundle:Onibus')
+                    ->listarTodosRESTAdmin(null, $data);
+            $estados = $em->getRepository('ApiBundle:Estado')
+                    ->listarTodosRESTAdmin(null, $data);
+            $cidades = $em->getRepository('ApiBundle:Cidade')
+                    ->listarTodosRESTAdmin(null, $data);
+            $bairros = $em->getRepository('ApiBundle:Bairro')
+                    ->listarTodosRESTAdmin(null, $data);
+            $paradas = $em->getRepository('ApiBundle:Parada')
+                    ->listarTodosRESTAdmin(null, $data);
+            $itinerarios = $em->getRepository('ApiBundle:Itinerario')
+                    ->listarTodosRESTAdmin(null, $data);
+            $horarios = $em->getRepository('ApiBundle:Horario')
+                    ->listarTodosRESTAdmin(null, $data);
+            $paradasItinerarios = $em->getRepository('ApiBundle:ParadaItinerario')
+                    ->listarTodosRESTAdmin(null, $data);
+            $secoesItinerarios = $em->getRepository('ApiBundle:SecaoItinerario')
+                    ->listarTodosRESTAdmin(null, $data);
+            $horariosItinerarios = $em->getRepository('ApiBundle:HorarioItinerario')
+                    ->listarTodosRESTAdmin(null, $data);
+            $mensagens = $em->getRepository('ApiBundle:Mensagem')
+                    ->listarTodosRESTAdmin(null, $data);
+            $parametros = $em->getRepository('ApiBundle:Parametro')
+                    ->listarTodosRESTAdmin(null, $data);
+            $pontosInteresse = $em->getRepository('ApiBundle:PontoInteresse')
+                    ->listarTodosRESTAdmin(null, $data);
             
 //            $log = $em->getRepository('RepSiteBundle:LogEntry')
 //                    ->listarTodosREST(null, $data);
 
             $totalRegistros = count($paises) + count($empresas) + count($onibus) 
-                    + count($estados) + count($cidades) + count($bairros);
+                    + count($estados) + count($cidades) + count($bairros)
+                    + count($paradas) + count($itinerarios) + count($horarios)
+                    + count($paradasItinerarios) + count($secoesItinerarios) + count($horariosItinerarios)
+                    + count($mensagens) + count($parametros) + count($pontosInteresse)
+                    + count($usuarios)
+                    ;
             
             $view = View::create(
                     array(
                         "meta" => array(array("registros" => $totalRegistros, "status" => 200, "mensagem" => "ok")),
-                        "artistas" => $artistas, 
-                        "tipos_eventos" => $tiposEvento,
-                        "musicas" => $musicas,
-                        "eventos" => $eventos,
-                        "musicas_eventos" => $musicasEventos,
-                        "comentarios_eventos" => $comentariosEventos//,
-                        //"log" => $log
+                        "usuarios" => $usuarios,
+                        "paises" => $paises, 
+                        "empresas" => $empresas,
+                        "onibus" => $onibus,
+                        "estados" => $estados,
+                        "cidades" => $cidades,
+                        "bairros" => $bairros,
+                        "paradas" => $paradas, 
+                        "itinerarios" => $itinerarios,
+                        "horarios" => $horarios,
+                        "paradas_itinerarios" => $paradasItinerarios,
+                        "secoes_itinerarios" => $secoesItinerarios,
+                        "horarios_itinerarios" => $horariosItinerarios,
+                        "mensagens" => $mensagens, 
+                        "parametros" => $parametros,
+                        "pontos_interesse" => $pontosInteresse
                     ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
             
-            $em->getRepository('RepSiteBundle:APIToken')->atualizaToken($hashDescriptografado);
+            //$em->getRepository('RepSiteBundle:APIToken')->atualizaToken($hashDescriptografado);
 
 
             return $this->handleView($view);            

@@ -10,4 +10,23 @@ namespace ApiBundle\Entity\Repository;
  */
 class HorarioRepository extends \Doctrine\ORM\EntityRepository
 {
+    
+    public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('h')
+                ->select('h')
+                ->distinct()
+                ->where("h.ultimaAlteracao > :ultimaAlteracao")
+                //->andWhere("p.programadoPara IS NULL OR p.programadoPara <= :now")
+                //->andWhere("p.ativo = 1")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->addOrderBy('h.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
 }

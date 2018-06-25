@@ -68,7 +68,7 @@ class SecaoItinerario extends EntidadeBase {
     /**
      * @var string
      *
-     * @ORM\Column(name="tarifa", type="decimal", nullable=true)
+     * @ORM\Column(name="tarifa", type="decimal", scale=2, nullable=true)
      * @Gedmo\Versioned
      * 
      */

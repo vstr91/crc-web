@@ -10,4 +10,25 @@ namespace ApiBundle\Entity\Repository;
  */
 class SecaoItinerarioRepository extends \Doctrine\ORM\EntityRepository
 {
+    
+    public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('si')
+                ->select('si.id, si.ativo, si.dataCadastro AS data_cadastro, si.dataRecebimento AS data_recebimento, '
+                        . 'si.ultimaAlteracao AS ultima_alteracao, si.programadoPara AS programado_para, IDENTITY(si.usuarioCadastro) AS usuario_cadastro, '
+                        . 'IDENTITY(si.usuarioUltimaAlteracao) AS usuario_ultima_alteracao, si.nome, si.tarifa, '
+                        . 'IDENTITY(si.paradaInicial) AS parada_inicial, IDENTITY(si.paradaFinal) AS parada_final, IDENTITY(si.itinerario) AS itinerario')
+                ->distinct()
+                ->where("si.ultimaAlteracao > :ultimaAlteracao")
+                //->andWhere("c.programadoPara IS NULL OR c.programadoPara <= :now")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->addOrderBy('si.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
 }
