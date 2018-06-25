@@ -10,4 +10,27 @@ namespace ApiBundle\Entity\Repository;
  */
 class PaisRepository extends \Doctrine\ORM\EntityRepository
 {
+    
+    public function listarTodosREST($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('p')
+//                ->select('b.id, b.nome, b.status, l.id AS local')
+                ->select('p')
+                ->distinct()
+//                ->leftJoin("CircularSiteBundle:Local", "l", "WITH", "l.id = b.local")
+                ->where("p.ultimaAlteracao > :ultimaAlteracao")
+                ->andWhere("p.programadoPara IS NULL OR p.programadoPara <= :now")
+                ->andWhere("p.ultimaAlteracao <= :now")
+                ->andWhere("p.status = 1")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->setParameter('now', new \DateTime())
+                ->addOrderBy('p.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
 }

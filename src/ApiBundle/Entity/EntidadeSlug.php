@@ -26,7 +26,7 @@ abstract class EntidadeSlug extends EntidadeBase {
     /**
      * @var string
      *
-     * @ORM\Column(name="nome", type="string", length=100, unique=true)
+     * @ORM\Column(name="nome", type="string", length=100)
      * @Assert\NotBlank()
      * @Gedmo\Versioned
      * 

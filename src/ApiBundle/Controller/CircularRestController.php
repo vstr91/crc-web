@@ -61,27 +61,47 @@ class CircularRestController extends FOSRestController {
         
         $hashDescriptografado = $crypto->decrypt($crypto->decrypt($hash));
         
-        if(null != $em->getRepository('RepSiteBundle:APIToken')->validaToken($hashDescriptografado)){
+        if(null != $em->getRepository('ApiBundle:APIToken')->validaToken($hashDescriptografado)){
             $data = $data == '-' ? '2000-01-01' : $data;
 
-            $artistas = $em->getRepository('RepSiteBundle:Artista')
+            $paises = $em->getRepository('ApiBundle:Pais')
                     ->listarTodosREST(null, $data);
-            $tiposEvento = $em->getRepository('RepSiteBundle:TipoEvento')
+            $empresas = $em->getRepository('ApiBundle:Empresa')
                     ->listarTodosREST(null, $data);
-            $musicas = $em->getRepository('RepSiteBundle:Musica')
+            $onibus = $em->getRepository('ApiBundle:Onibus')
                     ->listarTodosREST(null, $data);
-            $eventos = $em->getRepository('RepSiteBundle:Evento')
+            $estados = $em->getRepository('ApiBundle:Estado')
                     ->listarTodosREST(null, $data);
-            $musicasEventos = $em->getRepository('RepSiteBundle:MusicaEvento')
+            $cidades = $em->getRepository('ApiBundle:Cidade')
                     ->listarTodosREST(null, $data);
-            $comentariosEventos = $em->getRepository('RepSiteBundle:ComentarioEvento')
+            $bairros = $em->getRepository('ApiBundle:Bairro')
+                    ->listarTodosREST(null, $data);
+            $paradas = $em->getRepository('ApiBundle:Parada')
+                    ->listarTodosREST(null, $data);
+            $itinerarios = $em->getRepository('ApiBundle:Itinerario')
+                    ->listarTodosREST(null, $data);
+            $horarios = $em->getRepository('ApiBundle:Horario')
+                    ->listarTodosREST(null, $data);
+            $paradasItinerarios = $em->getRepository('ApiBundle:ParadaItinerario')
+                    ->listarTodosREST(null, $data);
+            $secoesItinerarios = $em->getRepository('ApiBundle:SecaoItinerario')
+                    ->listarTodosREST(null, $data);
+            $horariosItinerarios = $em->getRepository('ApiBundle:HorarioItinerario')
+                    ->listarTodosREST(null, $data);
+            $mensagens = $em->getRepository('ApiBundle:Mensagem')
+                    ->listarTodosREST(null, $data);
+            $parametros = $em->getRepository('ApiBundle:Parametros')
+                    ->listarTodosREST(null, $data);
+            $pontosInteresse = $em->getRepository('ApiBundle:PontosInteresse')
+                    ->listarTodosREST(null, $data);
+            $usuarios = $em->getRepository('ApiBundle:Usuario')
                     ->listarTodosREST(null, $data);
             
 //            $log = $em->getRepository('RepSiteBundle:LogEntry')
 //                    ->listarTodosREST(null, $data);
 
-            $totalRegistros = count($artistas) + count($tiposEvento) + count($musicas) 
-                    + count($eventos) + count($musicasEventos) + count($comentariosEventos);
+            $totalRegistros = count($paises) + count($empresas) + count($onibus) 
+                    + count($estados) + count($cidades) + count($bairros);
             
             $view = View::create(
                     array(
@@ -545,7 +565,7 @@ class CircularRestController extends FOSRestController {
                 }
                 
                 if(isset($itinerarios[$i]['tempo'])){
-                    $umItinerario->setTempo($itinerarios[$i]['tempo']);
+                    $umItinerario->setTempo(date_create_from_format('d-m-Y H:i', $itinerarios[$i]['tempo']));
                 }
                 
                 $umItinerario->setAcessivel($itinerarios[$i]['acessivel']);
@@ -966,7 +986,13 @@ class CircularRestController extends FOSRestController {
                 
                 $umUsuario->setNome($usuarios[$i]['nome']);
                 $umUsuario->setEmail($usuarios[$i]['email']);
-                $umUsuario->setGoogleID($usuarios[$i]['idGoogle']);
+                $umUsuario->setUsername($usuarios[$i]['email']);
+                $umUsuario->setPassword("");
+                
+                if(isset($usuarios[$i]['idGoogle'])){
+                    $umUsuario->setGoogleID($usuarios[$i]['idGoogle']);
+                }
+                
                 $umUsuario->setDataCadastro(date_create_from_format('d-m-Y H:i', $usuarios[$i]['dataCadastro']));
                 $umUsuario->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $usuarios[$i]['ultimaAlteracao']));
                 
@@ -983,6 +1009,8 @@ class CircularRestController extends FOSRestController {
             // FIM USUARIO
             
             $em->flush();
+            
+            return new Response('', 200);
             
             $view = View::create(
                     array(

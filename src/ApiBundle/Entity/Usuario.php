@@ -80,6 +80,24 @@ class Usuario extends BaseUser {
      * @ORM\Column(type="datetime", nullable=true)
      */
     protected $programadoPara;
+    
+    /**
+     * @ORM\PrePersist()
+     */
+    public function prePersist()
+    {
+        $this->setDataRecebimento(new \DateTime());
+        $this->setUltimaAlteracao(new \DateTime());
+        
+    }
+    
+    /**
+     * @ORM\PreUpdate()
+     */
+    public function preUpdate()
+    {
+        $this->setUltimaAlteracao(new \DateTime());
+    }
 
     /**
      * Set googleID

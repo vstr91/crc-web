@@ -35,7 +35,7 @@ class Parada extends EntidadeSlug {
     /**
      * @var string
      *
-     * @ORM\Column(name="latitude", type="decimal")
+     * @ORM\Column(name="latitude", type="string", length=50)
      * @Assert\NotBlank()
      * @Gedmo\Versioned
      * 
@@ -45,7 +45,7 @@ class Parada extends EntidadeSlug {
     /**
      * @var string
      *
-     * @ORM\Column(name="longitude", type="decimal")
+     * @ORM\Column(name="longitude", type="string", length=50)
      * @Assert\NotBlank()
      * @Gedmo\Versioned
      * 
@@ -55,7 +55,7 @@ class Parada extends EntidadeSlug {
     /**
      * @var string
      *
-     * @ORM\Column(name="taxaDeEmbarque", type="decimal", nullable=true)
+     * @ORM\Column(name="taxaDeEmbarque", type="decimal", scale=2, nullable=true)
      * @Gedmo\Versioned
      * 
      */
