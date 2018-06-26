@@ -13,9 +13,9 @@ class HorarioItinerarioRepository extends \Doctrine\ORM\EntityRepository
     
     public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
         $qb = $this->createQueryBuilder('hi')
-                ->select('hi.id, hi.ativo, hi.dataCadastro AS data_cadastro, hi.dataRecebimento AS data_recebimento, '
-                        . 'hi.ultimaAlteracao AS ultima_alteracao, hi.programadoPara AS programado_para, IDENTITY(hi.usuarioCadastro) AS usuario_cadastro, '
-                        . 'IDENTITY(hi.usuarioUltimaAlteracao) AS usuario_ultima_alteracao, hi.domingo, '
+                ->select('hi.id, hi.ativo, hi.dataCadastro, hi.dataRecebimento, '
+                        . 'hi.ultimaAlteracao, hi.programadoPara, IDENTITY(hi.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(hi.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, hi.domingo, '
                         . 'hi.segunda, hi.terca, hi.quarta, hi.quinta, hi.sexta, hi.sabado, hi.observacao, '
                         . 'IDENTITY(hi.horario) AS horario, IDENTITY(hi.itinerario) AS itinerario')
                 ->distinct()

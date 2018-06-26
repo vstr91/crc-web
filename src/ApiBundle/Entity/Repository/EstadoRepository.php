@@ -34,9 +34,9 @@ class EstadoRepository extends \Doctrine\ORM\EntityRepository
     public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
         $qb = $this->createQueryBuilder('e')
                 //->select('e')
-                ->select('e.id, e.ativo, e.dataCadastro AS data_cadastro, e.dataRecebimento AS data_recebimento, '
-                        . 'e.ultimaAlteracao AS ultima_alteracao, e.programadoPara AS programado_para, IDENTITY(e.usuarioCadastro) AS usuario_cadastro, '
-                        . 'IDENTITY(e.usuarioUltimaAlteracao) AS usuario_ultima_alteracao, e.nome, e.slug, e.sigla, IDENTITY(e.pais) AS pais')
+                ->select('e.id, e.ativo, e.dataCadastro, e.dataRecebimento, '
+                        . 'e.ultimaAlteracao, e.programadoPara, IDENTITY(e.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(e.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, e.nome, e.slug, e.sigla, IDENTITY(e.pais) AS pais')
                 ->distinct()
                 ->where("e.ultimaAlteracao > :ultimaAlteracao")
                 //->andWhere("e.programadoPara IS NULL OR e.programadoPara <= :now")

@@ -13,10 +13,10 @@ class ParadaRepository extends \Doctrine\ORM\EntityRepository
     
     public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
         $qb = $this->createQueryBuilder('p')
-                ->select('p.id, p.ativo, p.dataCadastro AS data_cadastro, p.dataRecebimento AS data_recebimento, '
-                        . 'p.ultimaAlteracao AS ultima_alteracao, p.programadoPara AS programado_para, IDENTITY(p.usuarioCadastro) AS usuario_cadastro, '
-                        . 'IDENTITY(p.usuarioUltimaAlteracao) AS usuario_ultima_alteracao, p.nome, p.slug, p.imagem, '
-                        . 'p.latitude, p.longitude, p.taxaDeEmbarque AS taxa_de_embarque, IDENTITY(p.bairro) AS bairro')
+                ->select('p.id, p.ativo, p.dataCadastro, p.dataRecebimento, '
+                        . 'p.ultimaAlteracao, p.programadoPara, IDENTITY(p.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(p.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, p.nome, p.slug, p.imagem, '
+                        . 'p.latitude, p.longitude, p.taxaDeEmbarque, IDENTITY(p.bairro) AS bairro')
                 ->distinct()
                 ->where("p.ultimaAlteracao > :ultimaAlteracao")
                 //->andWhere("c.programadoPara IS NULL OR c.programadoPara <= :now")

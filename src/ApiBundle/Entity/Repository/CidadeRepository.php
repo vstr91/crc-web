@@ -13,9 +13,9 @@ class CidadeRepository extends \Doctrine\ORM\EntityRepository
     
     public function listarTodosREST($limite = null, $dataUltimoAcesso){
         $qb = $this->createQueryBuilder('c')
-                ->select('c.id, c.ativo, c.dataCadastro AS data_cadastro, c.dataRecebimento AS data_recebimento, '
-                        . 'c.ultimaAlteracao AS ultima_alteracao, c.programadoPara AS programado_para, IDENTITY(c.usuarioCadastro) AS usuario_cadastro, '
-                        . 'IDENTITY(c.usuarioUltimaAlteracao) AS usuario_ultima_alteracao, c.nome, c.slug, c.brasao, IDENTITY(c.estado) AS estado')
+                ->select('c.id, c.ativo, c.dataCadastro, c.dataRecebimento, '
+                        . 'c.ultimaAlteracao, c.programadoPara, IDENTITY(c.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(c.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, c.nome, c.slug, c.brasao, IDENTITY(c.estado) AS estado')
                 ->distinct()
                 ->where("c.ultimaAlteracao > :ultimaAlteracao")
                 ->andWhere("c.programadoPara IS NULL OR c.programadoPara <= :now")
@@ -35,9 +35,9 @@ class CidadeRepository extends \Doctrine\ORM\EntityRepository
     
     public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
         $qb = $this->createQueryBuilder('c')
-                ->select('c.id, c.ativo, c.dataCadastro AS data_cadastro, c.dataRecebimento AS data_recebimento, '
-                        . 'c.ultimaAlteracao AS ultima_alteracao, c.programadoPara AS programado_para, IDENTITY(c.usuarioCadastro) AS usuario_cadastro, '
-                        . 'IDENTITY(c.usuarioUltimaAlteracao) AS usuario_ultima_alteracao, c.nome, c.slug, c.brasao, IDENTITY(c.estado) AS estado')
+                ->select('c.id, c.ativo, c.dataCadastro, c.dataRecebimento, '
+                        . 'c.ultimaAlteracao, c.programadoPara, IDENTITY(c.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(c.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, c.nome, c.slug, c.brasao, IDENTITY(c.estado) AS estado')
                 ->distinct()
                 ->where("c.ultimaAlteracao > :ultimaAlteracao")
                 //->andWhere("c.programadoPara IS NULL OR c.programadoPara <= :now")
