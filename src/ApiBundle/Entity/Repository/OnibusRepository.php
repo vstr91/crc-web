@@ -13,7 +13,9 @@ class OnibusRepository extends \Doctrine\ORM\EntityRepository
     
     public function listarTodosREST($limite = null, $dataUltimoAcesso){
         $qb = $this->createQueryBuilder('o')
-                ->select('o')
+                ->select('o.id, o.ativo, o.dataCadastro, o.dataRecebimento, o.ultimaAlteracao, IDENTITY(o.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(o.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, o.programadoPara, o.sufixo, o.placa, o.ano, o.marca, o.modelo, '
+                        . 'o.acessivel, o.observacao, IDENTITY(o.empresa) AS empresa')
                 ->distinct()
                 ->where("o.ultimaAlteracao > :ultimaAlteracao")
                 ->andWhere("o.programadoPara IS NULL OR o.programadoPara <= :now")
@@ -32,7 +34,9 @@ class OnibusRepository extends \Doctrine\ORM\EntityRepository
     
     public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
         $qb = $this->createQueryBuilder('o')
-                ->select('o')
+                ->select('o.id, o.ativo, o.dataCadastro, o.dataRecebimento, o.ultimaAlteracao, IDENTITY(o.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(o.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, o.programadoPara, o.sufixo, o.placa, o.ano, o.marca, o.modelo, '
+                        . 'o.acessivel, o.observacao, IDENTITY(o.empresa) AS empresa')
                 ->distinct()
                 ->where("o.ultimaAlteracao > :ultimaAlteracao")
                 //->andWhere("o.programadoPara IS NULL OR o.programadoPara <= :now")

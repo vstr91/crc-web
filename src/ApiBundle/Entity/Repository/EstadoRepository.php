@@ -13,7 +13,10 @@ class EstadoRepository extends \Doctrine\ORM\EntityRepository
     
     public function listarTodosREST($limite = null, $dataUltimoAcesso){
         $qb = $this->createQueryBuilder('e')
-                ->select('e.id, e.ativo, e.dataCadastro, e.dataRecebimento, e.ultimaAlteracao, e.usuarioCadastro, e.usuarioUltimaAlteracao, e.programadoPara, e.nome, e.slug, e.sigla, p.id AS pais')
+                ->select('e.id, e.ativo, e.dataCadastro, e.dataRecebimento, e.ultimaAlteracao, '
+                        . 'IDENTITY(e.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(e.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, '
+                        . 'e.programadoPara, e.nome, e.slug, e.sigla, p.id AS pais')
                 ->distinct()
                 ->where("e.ultimaAlteracao > :ultimaAlteracao")
                 ->andWhere("e.programadoPara IS NULL OR e.programadoPara <= :now")
