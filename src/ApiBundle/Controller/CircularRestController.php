@@ -311,7 +311,7 @@ class CircularRestController extends FOSRestController {
                 $umaEmpresa = $em->getRepository('ApiBundle:Empresa')
                         ->find($onibus[$i]['empresa']);
                 
-                $umOnibus->setEmpresa($umEmpresa);
+                $umOnibus->setEmpresa($umaEmpresa);
                 
                 $umOnibus->setDataCadastro(date_create_from_format('d-m-Y H:i', $onibus[$i]['dataCadastro']));
                 $umOnibus->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $onibus[$i]['ultimaAlteracao']));

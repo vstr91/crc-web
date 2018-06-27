@@ -30,7 +30,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\HasLifecycleCallbacks()
  * 
  */
-class Onibus extends EntidadeSlug {
+class Onibus extends EntidadeBase {
 
     /**
      * @var string
