@@ -10,4 +10,34 @@ namespace ApiBundle\Entity\Repository;
  */
 class APITokenRepository extends \Doctrine\ORM\EntityRepository
 {
+    
+    public function validaToken($token){
+        $qb = $this->createQueryBuilder('t')
+                ->select('t')
+                ->distinct()
+                ->where('t.puroTexto = :token')
+                ->andWhere('t.dataCriacao > :data')
+                ->andWhere('t.dataValidacao IS NULL')
+                ->addOrderBy('t.dataCriacao', 'DESC')
+                ->setParameter('token', $token)
+                ->setParameter('data', new \DateTime('-2 minutes'))
+                ;
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
+    public function atualizaToken($token){
+        $qb = $this->createQueryBuilder('t')
+                ->update('ApiBundle:APIToken t')
+                ->set('t.dataValidacao', ':data')
+                ->where('t.puroTexto = :token')
+                ->setParameter('token', $token)
+                ->setParameter('data', new \DateTime())
+                ;
+        
+        return $qb->getQuery()->execute();
+        
+    }
+    
 }

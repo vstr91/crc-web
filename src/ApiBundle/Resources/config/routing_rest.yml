@@ -4,7 +4,7 @@
 #  name_prefix:  api_
 
 circular_api_get_token:
-    pattern: /token
+    pattern: /{id}/token
     defaults: {_controller: ApiBundle:CircularRest:getToken}
   
 circular_api_get_dados:
@@ -13,7 +13,7 @@ circular_api_get_dados:
     
 circular_api_set_dados:
     pattern: /envia-dados/{hash}/{data}
-    defaults: {_controller: ApiBundle:CircularRest:setDados}
+    defaults: {method: POST, _controller: ApiBundle:CircularRest:setDados}
     
 circular_api_valida_token:
     pattern: /valida-token

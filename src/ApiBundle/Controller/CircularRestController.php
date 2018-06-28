@@ -26,14 +26,12 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class CircularRestController extends FOSRestController {
     
-    public function getTokenAction(){
+    public function getTokenAction(Request $request, String $id){
         $crypt = new MCrypt();
         $apiToken = new APIToken();
         $em = $this->getDoctrine()->getManager();
         
-        $request = $this->requestStack->getCurrentRequest();
-        
-        $identificadorUnico = $request->get("id");
+        $identificadorUnico = $id;
         
         if($identificadorUnico != null){
             $identificadorUnico = $crypt->decrypt($identificadorUnico);
@@ -61,7 +59,7 @@ class CircularRestController extends FOSRestController {
         
         $hashDescriptografado = $crypto->decrypt($crypto->decrypt($hash));
         
-        if(null == null /*$em->getRepository('ApiBundle:APIToken')->validaToken($hashDescriptografado)*/){
+        if(null != $em->getRepository('ApiBundle:APIToken')->validaToken($hashDescriptografado)){
             $data = $data == '-' ? '2000-01-01' : $data;
 
             $usuarios = $em->getRepository('ApiBundle:Usuario')
@@ -129,7 +127,7 @@ class CircularRestController extends FOSRestController {
                         "pontos_interesse" => $pontosInteresse
                     ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
             
-            //$em->getRepository('RepSiteBundle:APIToken')->atualizaToken($hashDescriptografado);
+            $em->getRepository('ApiBundle:APIToken')->atualizaToken($hashDescriptografado);
 
 
             return $this->handleView($view);            
@@ -151,11 +149,11 @@ class CircularRestController extends FOSRestController {
         //dump($request->request);
         //die(var_dump($request->request));
         
-        //$crypto = new MCrypt();
+        $crypto = new MCrypt();
         
-        //$hashDescriptografado = $crypto->decrypt($crypto->decrypt($hash));
+        $hashDescriptografado = $crypto->decrypt($crypto->decrypt($hash));
         
-        if(null == null/* $em->getRepository('ApiBundle:APIToken')->validaToken($hashDescriptografado)*/){
+        if(null != $em->getRepository('ApiBundle:APIToken')->validaToken($hashDescriptografado)){
             
             $json = $request->request->get("dados");
             $dados = json_decode($json, TRUE);
@@ -169,7 +167,6 @@ class CircularRestController extends FOSRestController {
             for($i = 0; $i < $total; $i++){
                 
                 $existe = false;
-                //$umMusica = null;
                 $umPais = null;
                 
                 $umPais = $em->getRepository('ApiBundle:Pais')
@@ -1025,14 +1022,15 @@ class CircularRestController extends FOSRestController {
             $em->flush();
             
             return new Response('', 200);
-            
+            /*
             $view = View::create(
                     array(
                         "meta" => array(array("registros" => 0, "status" => 200, "mensagem" => "ok"))
                     ),
                 200, array('totalRegistros' => 0))->setTemplateVar("u");
             
-            return $this->handleView($view);           
+            return $this->handleView($view);
+             */
         } else {
             $view = View::create(
                     array(
