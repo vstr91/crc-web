@@ -1046,14 +1046,44 @@ class CircularRestController extends FOSRestController {
     public function setImagemAction(Request $request, $hash) {
         $file = $request->files->get('upload');
         
-        dump($file);
-        
         if($file){
-            $file->move(__DIR__.'/../../../web/uploads/imagens', $file->getClientOriginalName());
-            return new Response('ok', 200);
+            if($file->move(__DIR__.'/../../../web/uploads/imagens', $file->getClientOriginalName())){
+                return new Response('ok', 200);
+            } else{
+                return new Response('error', 500);
+            }
         } else{
             return new Response('error', 500);
         }
+        
+    }
+    
+    public function getImagemAction(Request $request, $nome) {
+
+        $file = __DIR__.'/../../../web/uploads/imagens/'.$nome.'.png';
+        
+        $response = new \Symfony\Component\HttpFoundation\BinaryFileResponse($file);
+
+        $d = $response->headers->makeDisposition(
+                \Symfony\Component\HttpFoundation\ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $nome.".png"
+           );
+
+        $response->headers->set('Content-Disposition', $d);
+        
+        // To generate a file download, you need the mimetype of the file
+        $mimeTypeGuesser = new \Symfony\Component\HttpFoundation\File\MimeType\FileinfoMimeTypeGuesser();
+
+        // Set the mimetype with the guesser or manually
+        if($mimeTypeGuesser->isSupported()){
+            // Guess the mimetype of the file according to the extension of the file
+            $response->headers->set('Content-Type', $mimeTypeGuesser->guess($file));
+        }else{
+            // Set the mimetype of the file manually, in this case for a text file is text/plain
+            $response->headers->set('Content-Type', 'image/png');
+        }
+
+        return $response;
         
     }
     

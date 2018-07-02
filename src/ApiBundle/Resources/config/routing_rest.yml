@@ -22,3 +22,7 @@ circular_api_valida_token:
 circular_api_set_imagem:
     pattern: /envia-imagem/{hash}
     defaults: {method: POST, _controller: ApiBundle:CircularRest:setImagem}
+    
+circular_api_get_imagem:
+    pattern: /recebe-imagem/{nome}
+    defaults: {method: GET, _controller: ApiBundle:CircularRest:getImagem}
