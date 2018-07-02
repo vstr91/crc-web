@@ -143,7 +143,7 @@ class CircularRestController extends FOSRestController {
         
     }
     
-    public function setDadosAction(Request $request, $hash, $data) {
+    public function setDadosAction(Request $request, $hash) {
         $em = $this->getDoctrine()->getManager();
         
         //dump($request->request);
@@ -238,7 +238,7 @@ class CircularRestController extends FOSRestController {
                     $umEmpresa->setEmail($empresas[$i]['email']);
                 }
                 
-                if(isset($empresas[$i]['logo'])){
+                if(isset($empresas[$i]['telefone'])){
                     $umEmpresa->setTelefone($empresas[$i]['telefone']);
                 }
                 
@@ -1039,6 +1039,20 @@ class CircularRestController extends FOSRestController {
                 403, array('totalRegistros' => 0))->setTemplateVar("u");
             
             return $this->handleView($view);
+        }
+        
+    }
+    
+    public function setImagemAction(Request $request, $hash) {
+        $file = $request->files->get('upload');
+        
+        dump($file);
+        
+        if($file){
+            $file->move(__DIR__.'/../../../web/uploads/imagens', $file->getClientOriginalName());
+            return new Response('ok', 200);
+        } else{
+            return new Response('error', 500);
         }
         
     }

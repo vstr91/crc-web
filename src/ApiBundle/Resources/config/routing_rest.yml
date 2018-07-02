@@ -12,9 +12,13 @@ circular_api_get_dados:
     defaults: {_controller: ApiBundle:CircularRest:getDados}
     
 circular_api_set_dados:
-    pattern: /envia-dados/{hash}/{data}
+    pattern: /envia-dados/{hash}
     defaults: {method: POST, _controller: ApiBundle:CircularRest:setDados}
     
 circular_api_valida_token:
     pattern: /valida-token
     defaults: {_controller: ApiBundle:CircularRest:validaToken}
+    
+circular_api_set_imagem:
+    pattern: /envia-imagem/{hash}
+    defaults: {method: POST, _controller: ApiBundle:CircularRest:setImagem}
