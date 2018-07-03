@@ -1065,7 +1065,7 @@ class CircularRestController extends FOSRestController {
         $response = new \Symfony\Component\HttpFoundation\BinaryFileResponse($file);
 
         $d = $response->headers->makeDisposition(
-                \Symfony\Component\HttpFoundation\ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                \Symfony\Component\HttpFoundation\ResponseHeaderBag::DISPOSITION_INLINE,
             $nome.".png"
            );
 
