@@ -4,7 +4,7 @@
 #  name_prefix:  api_
 
 circular_api_get_token:
-    pattern: /{id}/token
+    pattern: /{id}/token/{tipo}
     defaults: {_controller: ApiBundle:CircularRest:getToken}
   
 circular_api_get_dados:

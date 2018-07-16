@@ -14,7 +14,7 @@ class UsuarioRepository extends \Doctrine\ORM\EntityRepository
     public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
         $qb = $this->createQueryBuilder('u')
                 ->select('u.id, u.enabled AS ativo, u.dataCadastro, u.dataRecebimento, '
-                        . 'u.ultimaAlteracao, u.programadoPara, u.nome, u.email')
+                        . 'u.ultimaAlteracao, u.programadoPara, u.username AS nome, u.email')
                 ->distinct()
                 ->where("u.ultimaAlteracao > :ultimaAlteracao")
                 //->andWhere("p.programadoPara IS NULL OR p.programadoPara <= :now")

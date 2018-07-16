@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class CircularRestController extends FOSRestController {
     
-    public function getTokenAction(Request $request, String $id){
+    public function getTokenAction(Request $request, String $id, $tipo){
         $crypt = new MCrypt();
         $apiToken = new APIToken();
         $em = $this->getDoctrine()->getManager();
@@ -43,6 +43,7 @@ class CircularRestController extends FOSRestController {
         
         $apiToken->setPuroTexto($puroTexto);
         $apiToken->setIdentificadorUnico($identificadorUnico);
+        $apiToken->setTipo($tipo);
         
         $token = $crypt->encrypt($puroTexto);
         

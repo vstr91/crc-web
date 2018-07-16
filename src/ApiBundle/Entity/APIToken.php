@@ -52,6 +52,11 @@ class APIToken {
      */
     protected $dataValidacao;
     
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $tipo;
+    
 
     /**
      * Set puroTexto
@@ -153,4 +158,13 @@ class APIToken {
     {
         return $this->identificadorUnico;
     }
+    
+    function getTipo() {
+        return $this->tipo;
+    }
+
+    function setTipo($tipo) {
+        $this->tipo = $tipo;
+    }
+    
 }
