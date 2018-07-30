@@ -96,6 +96,9 @@ class CircularRestController extends FOSRestController {
             $pontosInteresse = $em->getRepository('ApiBundle:PontoInteresse')
                     ->listarTodosRESTAdmin(null, $data);
             
+            $paradasSugestao = $em->getRepository('ApiBundle:ParadaSugestao')
+                    ->listarTodosRESTAdmin(null, $data);
+            
 //            $log = $em->getRepository('RepSiteBundle:LogEntry')
 //                    ->listarTodosREST(null, $data);
 
@@ -104,7 +107,7 @@ class CircularRestController extends FOSRestController {
                     + count($paradas) + count($itinerarios) + count($horarios)
                     + count($paradasItinerarios) + count($secoesItinerarios) + count($horariosItinerarios)
                     + count($mensagens) + count($parametros) + count($pontosInteresse)
-                    + count($usuarios)
+                    + count($usuarios) + count($paradasSugestao)
                     ;
             
             $view = View::create(
@@ -125,7 +128,8 @@ class CircularRestController extends FOSRestController {
                         "horarios_itinerarios" => $horariosItinerarios,
                         "mensagens" => $mensagens, 
                         "parametros" => $parametros,
-                        "pontos_interesse" => $pontosInteresse
+                        "pontos_interesse" => $pontosInteresse,
+                        "paradas_sugestoes" => $paradasSugestao
                     ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
             
             $em->getRepository('ApiBundle:APIToken')->atualizaToken($hashDescriptografado);
@@ -1019,6 +1023,71 @@ class CircularRestController extends FOSRestController {
             }
             
             // FIM USUARIO
+            
+            // PARADA SUGESTAO
+            
+            $paradasSugestoes = $dados['paradas_sugestoes'];
+            
+            $total = count($paradasSugestoes);
+            
+            for($i = 0; $i < $total; $i++){
+                
+                $existe = false;
+                $umParada = null;
+                $umParadaVinculada = null;
+                
+                $umParada = $em->getRepository('ApiBundle:ParadaSugestao')
+                        ->findOneBy(array('id' => $paradasSugestoes[$i]['id']));
+                
+                if($umParada == null){
+                    $umParada = new \ApiBundle\Entity\ParadaSugestao();
+                    $umParada->setId($paradasSugestoes[$i]['id']);
+                } else{
+                    $existe = true;
+                }
+                
+                $metadata = $em->getClassMetaData(get_class($umParada));
+                $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
+                $metadata->setIdGenerator(new AssignedGenerator());
+                $umParada->setId($paradasSugestoes[$i]['id']);
+                
+                $umBairro = $em->getRepository('ApiBundle:Bairro')
+                        ->find($paradasSugestoes[$i]['bairro']);
+                
+                if(isset($paradasSugestoes[$i]['parada'])){
+                    $umParadaVinculada = $em->getRepository('ApiBundle:Parada')
+                        ->find($paradasSugestoes[$i]['parada']);
+                }
+                
+                $umParada->setNome($paradasSugestoes[$i]['nome']);
+                $umParada->setSlug($paradasSugestoes[$i]['slug']);
+                $umParada->setLatitude($paradasSugestoes[$i]['latitude']);
+                $umParada->setLongitude($paradasSugestoes[$i]['longitude']);
+                
+                if(isset($paradasSugestoes[$i]['taxaDeEmbarque'])){
+                    $umParada->setTaxaDeEmbarque($paradasSugestoes[$i]['taxaDeEmbarque']);
+                }
+                
+                if(isset($paradasSugestoes[$i]['imagem'])){
+                    $umParada->setImagem($paradasSugestoes[$i]['imagem']);
+                }
+                
+                $umParada->setBairro($umBairro);
+                $umParada->setParada($umParadaVinculada);
+                $umParada->setDataCadastro(date_create_from_format('d-m-Y H:i', $paradasSugestoes[$i]['dataCadastro']));
+                $umParada->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $paradasSugestoes[$i]['ultimaAlteracao']));
+                
+                if(isset($paradasSugestoes[$i]['programadoPara'])){
+                    $umParada->setProgramadoPara(date_create_from_format('d-m-Y H:i', $paradasSugestoes[$i]['programadoPara']));
+                }
+                
+                $umParada->setAtivo($paradasSugestoes[$i]['ativo']);
+                
+                $em->persist($umParada);
+                
+            }
+            
+            // FIM PARADA SUGESTAO
             
             $em->flush();
             

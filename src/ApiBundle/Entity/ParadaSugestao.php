@@ -16,21 +16,22 @@ use Gedmo\Mapping\Annotation as Gedmo;
 //use JMS\Serializer\Annotation\Expose;
 
 /**
- * Description of Parada
+ * Description of ParadaSugestao
  *
  * @author Almir
  */
 
 /**
  * Parada
- * @ORM\Entity(repositoryClass="ApiBundle\Entity\Repository\ParadaRepository")
- * @ORM\Table(name="parada")
+ *
+ * @ORM\Entity(repositoryClass="ApiBundle\Entity\Repository\ParadaSugestaoRepository")
+ * @ORM\Table(name="parada_sugestao")
  * @Gedmo\Loggable
  * @ORM\HasLifecycleCallbacks()
  * 
  */
-class Parada extends EntidadeSlug {
-
+class ParadaSugestao extends EntidadeSlug {
+    
     /**
      * @var string
      *
@@ -77,17 +78,82 @@ class Parada extends EntidadeSlug {
      */
     protected $bairro;
     
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="observacao", type="text", nullable=true)
+     * @Gedmo\Versioned
+     * 
+     */
+    private $observacao;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="Parada")
+     * @ORM\JoinColumn(name="parada", referencedColumnName="id")
+     * @Gedmo\Versioned
+     * 
+     */
+    protected $parada;
+    
     public function __toString() {
         return $this->getNome();
     }
 
 
     /**
+     * Set observacao
+     *
+     * @param string $observacao
+     *
+     * @return ParadaSugestao
+     */
+    public function setObservacao($observacao)
+    {
+        $this->observacao = $observacao;
+
+        return $this;
+    }
+
+    /**
+     * Get observacao
+     *
+     * @return string
+     */
+    public function getObservacao()
+    {
+        return $this->observacao;
+    }
+
+    /**
+     * Set parada
+     *
+     * @param \ApiBundle\Entity\Parada $parada
+     *
+     * @return ParadaSugestao
+     */
+    public function setParada(\ApiBundle\Entity\Parada $parada = null)
+    {
+        $this->parada = $parada;
+
+        return $this;
+    }
+
+    /**
+     * Get parada
+     *
+     * @return \ApiBundle\Entity\Parada
+     */
+    public function getParada()
+    {
+        return $this->parada;
+    }
+
+    /**
      * Set latitude
      *
-     * @param \double $latitude
+     * @param string $latitude
      *
-     * @return Parada
+     * @return ParadaSugestao
      */
     public function setLatitude($latitude)
     {
@@ -99,7 +165,7 @@ class Parada extends EntidadeSlug {
     /**
      * Get latitude
      *
-     * @return \double
+     * @return string
      */
     public function getLatitude()
     {
@@ -109,9 +175,9 @@ class Parada extends EntidadeSlug {
     /**
      * Set longitude
      *
-     * @param \double $longitude
+     * @param string $longitude
      *
-     * @return Parada
+     * @return ParadaSugestao
      */
     public function setLongitude($longitude)
     {
@@ -123,7 +189,7 @@ class Parada extends EntidadeSlug {
     /**
      * Get longitude
      *
-     * @return \double
+     * @return string
      */
     public function getLongitude()
     {
@@ -133,9 +199,9 @@ class Parada extends EntidadeSlug {
     /**
      * Set taxaDeEmbarque
      *
-     * @param \double $taxaDeEmbarque
+     * @param string $taxaDeEmbarque
      *
-     * @return Parada
+     * @return ParadaSugestao
      */
     public function setTaxaDeEmbarque($taxaDeEmbarque)
     {
@@ -147,7 +213,7 @@ class Parada extends EntidadeSlug {
     /**
      * Get taxaDeEmbarque
      *
-     * @return \double
+     * @return string
      */
     public function getTaxaDeEmbarque()
     {
@@ -159,7 +225,7 @@ class Parada extends EntidadeSlug {
      *
      * @param string $imagem
      *
-     * @return Parada
+     * @return ParadaSugestao
      */
     public function setImagem($imagem)
     {
@@ -193,7 +259,7 @@ class Parada extends EntidadeSlug {
      *
      * @param boolean $ativo
      *
-     * @return Parada
+     * @return ParadaSugestao
      */
     public function setAtivo($ativo)
     {
@@ -217,7 +283,7 @@ class Parada extends EntidadeSlug {
      *
      * @param \DateTime $dataCadastro
      *
-     * @return Parada
+     * @return ParadaSugestao
      */
     public function setDataCadastro($dataCadastro)
     {
@@ -241,7 +307,7 @@ class Parada extends EntidadeSlug {
      *
      * @param \DateTime $dataRecebimento
      *
-     * @return Parada
+     * @return ParadaSugestao
      */
     public function setDataRecebimento($dataRecebimento)
     {
@@ -265,7 +331,7 @@ class Parada extends EntidadeSlug {
      *
      * @param \DateTime $ultimaAlteracao
      *
-     * @return Parada
+     * @return ParadaSugestao
      */
     public function setUltimaAlteracao($ultimaAlteracao)
     {
@@ -289,7 +355,7 @@ class Parada extends EntidadeSlug {
      *
      * @param \DateTime $programadoPara
      *
-     * @return Parada
+     * @return ParadaSugestao
      */
     public function setProgramadoPara($programadoPara)
     {
@@ -313,7 +379,7 @@ class Parada extends EntidadeSlug {
      *
      * @param \ApiBundle\Entity\Bairro $bairro
      *
-     * @return Parada
+     * @return ParadaSugestao
      */
     public function setBairro(\ApiBundle\Entity\Bairro $bairro = null)
     {
@@ -337,7 +403,7 @@ class Parada extends EntidadeSlug {
      *
      * @param \ApiBundle\Entity\Usuario $usuarioCadastro
      *
-     * @return Parada
+     * @return ParadaSugestao
      */
     public function setUsuarioCadastro(\ApiBundle\Entity\Usuario $usuarioCadastro = null)
     {
@@ -361,7 +427,7 @@ class Parada extends EntidadeSlug {
      *
      * @param \ApiBundle\Entity\Usuario $usuarioUltimaAlteracao
      *
-     * @return Parada
+     * @return ParadaSugestao
      */
     public function setUsuarioUltimaAlteracao(\ApiBundle\Entity\Usuario $usuarioUltimaAlteracao = null)
     {
