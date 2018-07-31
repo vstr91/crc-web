@@ -67,7 +67,7 @@ class Usuario extends BaseUser {
      *
      * @ORM\Column(name="google_id", type="string", nullable=true)
      */
-    private $googleID;
+    private $google_id;
     
     /**
      * @var string
@@ -108,7 +108,7 @@ class Usuario extends BaseUser {
      */
     public function setGoogleID($googleID)
     {
-        $this->googleID = $googleID;
+        $this->google_id = $googleID;
 
         return $this;
     }
@@ -120,7 +120,7 @@ class Usuario extends BaseUser {
      */
     public function getGoogleID()
     {
-        return $this->googleID;
+        return $this->google_id;
     }
     
     function getGoogleAccessToken() {

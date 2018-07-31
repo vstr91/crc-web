@@ -25,6 +25,15 @@ security:
                 default_target_path: /central/home
                 login_path: /central
                 check_path:  fos_user_security_check
+            oauth:
+                resource_owners:
+                    google:             "/central/login/check-google"
+                login_path:        /central/login
+                use_forward:       false
+                failure_path:      /central/login
+                check_path:  fos_user_security_check
+                oauth_user_provider:
+                    service: my_user_provider
             logout:
                 path: fos_user_security_logout
                 target: central_homepage

@@ -122,3 +122,22 @@ web_profiler:
 jms_serializer:
     property_naming: 
         id: 'jms_serializer.identical_property_naming_strategy'
+
+
+        
+hwi_oauth:
+    connect:
+        account_connector: my_user_provider
+    # name of the firewall in which this bundle is active, this setting MUST be set
+    firewall_name: [main]
+    fosub:
+        username_iterations: 30
+        properties:
+            # these properties will be used/redefined later in the custom FOSUBUserProvider service.
+            google: google_id
+    resource_owners:
+        google:
+            type:                google
+            client_id:           301375921468-s9146rmd1ih7vto7ujtqotp1v92rgacr.apps.googleusercontent.com
+            client_secret:       dHpTRpQ-IhNoEnTMOKIis_Mb
+            scope:               "email profile"

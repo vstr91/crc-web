@@ -1,3 +1,18 @@
+hwi_oauth_redirect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
+    prefix:   /central/connect
+
+hwi_oauth_connect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/connect.xml"
+    prefix:   /central/connect
+
+hwi_oauth_login:
+    resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
+    prefix:   /central/login
+
+google_login:
+    path: /central/login/check-google
+
 central:
     resource: "@CentralBundle/Resources/config/routing.yml"
     prefix:   /
