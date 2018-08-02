@@ -26,3 +26,7 @@ circular_api_set_imagem:
 circular_api_get_imagem:
     pattern: /recebe-imagem/{nome}
     defaults: {method: GET, _controller: ApiBundle:CircularRest:getImagem}
+    
+circular_api_valida_usuario:
+    pattern: /valida-usuario
+    defaults: {_controller: ApiBundle:CircularRest:validaUsuario}

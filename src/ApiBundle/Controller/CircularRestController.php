@@ -1157,12 +1157,62 @@ class CircularRestController extends FOSRestController {
         
     }
     
-    public function validaTokenAction() {
+//    public function validaTokenAction() {
+//        $em = $this->getDoctrine()->getManager();
+//
+//        // Get $id_token via HTTPS POST.
+//        $CLIENT_ID = "763791909416-aim4u63mdttsktinjqroogqdndlibf7l.apps.googleusercontent.com";
+//        $idToken = $this->get('request')->request->get('idToken');
+//        
+//        $client = new \Google_Client(['client_id' => $CLIENT_ID]);
+//        $payload = $client->verifyIdToken($idToken);
+//        
+//        if ($payload) {
+//            $email = $payload['email'];
+//            $userid = $payload['sub'];
+//            
+//            $usuario = $em->getRepository('RepSiteBundle:Usuario')
+//                        ->findOneBy(array('email' => $email));
+//            
+//            if($usuario != null){
+//                
+//                if($usuario->getGoogleId() == null){
+//                    $usuario->setGoogleID($userid);
+//                    $em->persist($usuario);
+//                    $em->flush();
+//                }
+//                
+//                $view = View::create(
+//                    array(
+//                        "meta" => array(array("registros" => 0, "status" => 200, "mensagem" => "ok"))
+//                    ),
+//                    200, array('totalRegistros' => 0))->setTemplateVar("u");
+//
+//                return $this->handleView($view); 
+//                
+//            } else {
+//                $view = View::create(
+//                        array(
+//                            "meta" => array(array("registros" => 0, "status" => 403, "mensagem" => "Acesso negado."))
+//                        ),
+//                    403, array('totalRegistros' => 0))->setTemplateVar("u");
+//
+//                return $this->handleView($view);
+//            }
+//            
+//        }
+//        
+//    }
+    
+    public function validaUsuarioAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
 
         // Get $id_token via HTTPS POST.
-        $CLIENT_ID = "763791909416-aim4u63mdttsktinjqroogqdndlibf7l.apps.googleusercontent.com";
-        $idToken = $this->get('request')->request->get('idToken');
+        $CLIENT_ID = "301375921468-s9146rmd1ih7vto7ujtqotp1v92rgacr.apps.googleusercontent.com";
+        $crypto = new MCrypt();
+        
+        $idToken = $crypto->decrypt($request->get('idToken'));
+        $id = $crypto->decrypt($request->get('id'));
         
         $client = new \Google_Client(['client_id' => $CLIENT_ID]);
         $payload = $client->verifyIdToken($idToken);
@@ -1171,36 +1221,54 @@ class CircularRestController extends FOSRestController {
             $email = $payload['email'];
             $userid = $payload['sub'];
             
-            $usuario = $em->getRepository('RepSiteBundle:Usuario')
+            $usuario = $em->getRepository('ApiBundle:Usuario')
                         ->findOneBy(array('email' => $email));
             
             if($usuario != null){
                 
                 if($usuario->getGoogleId() == null){
                     $usuario->setGoogleID($userid);
-                    $em->persist($usuario);
-                    $em->flush();
                 }
                 
-                $view = View::create(
-                    array(
-                        "meta" => array(array("registros" => 0, "status" => 200, "mensagem" => "ok"))
-                    ),
-                    200, array('totalRegistros' => 0))->setTemplateVar("u");
-
-                return $this->handleView($view); 
+                $usuario->setLastLogin(new \DateTime());
+                
+                $em->persist($usuario);
+                $em->flush();
+                
+                $idUsuario = $crypto->encrypt($usuario->getId());
+                
+                return new Response($idUsuario);
                 
             } else {
-                $view = View::create(
+                $user = $this->get('fos_user.user_manager')->createUser();
+                //I have set all requested data with the user's username
+                //modify here with relevant data
+                $user->setUsername($payload['given_name']);
+                $user->setEmail($payload['email']);
+                $user->setPlainPassword($payload['given_name']);
+                $user->setDataCadastro(new \DateTime());
+                $user->setGoogleID($payload['sub']);
+                $user->setGoogleAccessToken($idToken);
+                $user->setEnabled(true);
+                $user->setLastLogin(new \DateTime());
+
+                $this->get('fos_user.user_manager')->updateUser($user);
+                
+                $idUsuario = $crypto->encrypt($user->getId());
+                
+                return new Response($idUsuario);
+            }
+            
+        } else{
+            $view = View::create(
                         array(
                             "meta" => array(array("registros" => 0, "status" => 403, "mensagem" => "Acesso negado."))
                         ),
                     403, array('totalRegistros' => 0))->setTemplateVar("u");
 
                 return $this->handleView($view);
-            }
-            
         }
         
     }
+    
 }

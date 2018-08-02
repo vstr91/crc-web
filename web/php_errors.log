@@ -1,0 +1,3 @@
+[02-Aug-2018 14:00:39 America/Sao_Paulo] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\xampp\htdocs\crc-web\vendor\guzzlehttp\guzzle\src\Handler\StreamHandler.php on line 323
+[02-Aug-2018 14:03:18 America/Sao_Paulo] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\xampp\htdocs\crc-web\vendor\guzzlehttp\guzzle\src\Handler\StreamHandler.php on line 233
+[02-Aug-2018 14:25:23 America/Sao_Paulo] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\xampp\htdocs\crc-web\vendor\guzzlehttp\guzzle\src\Handler\StreamHandler.php on line 323
