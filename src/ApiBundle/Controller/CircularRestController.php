@@ -1072,6 +1072,20 @@ class CircularRestController extends FOSRestController {
                     $umParada->setImagem($paradasSugestoes[$i]['imagem']);
                 }
                 
+                if(isset($paradasSugestoes[$i]['usuario_cadastro'])){
+                    $umUsuarioCadastro = $em->getRepository('ApiBundle:Usuario')
+                        ->find($paradasSugestoes[$i]['usuario_cadastro']);
+                    
+                    $umParada->setUsuarioCadastro($umUsuarioCadastro);
+                }
+                
+                if(isset($paradasSugestoes[$i]['usuario_ultima_alteracao'])){
+                    $umUsuario = $em->getRepository('ApiBundle:Usuario')
+                        ->find($paradasSugestoes[$i]['usuario_ultima_alteracao']);
+                    
+                    $umParada->setUsuarioUltimaAlteracao($umUsuario);
+                }
+                
                 $umParada->setBairro($umBairro);
                 $umParada->setParada($umParadaVinculada);
                 $umParada->setDataCadastro(date_create_from_format('d-m-Y H:i', $paradasSugestoes[$i]['dataCadastro']));
