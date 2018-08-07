@@ -863,6 +863,7 @@ class CircularRestController extends FOSRestController {
                 $umMensagem->setDescricao($mensagens[$i]['descricao']);
                 $umMensagem->setDataCadastro(date_create_from_format('d-m-Y H:i', $mensagens[$i]['dataCadastro']));
                 $umMensagem->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $mensagens[$i]['ultimaAlteracao']));
+                $umMensagem->setServidor($mensagens[$i]['servidor']);
                 
                 if(isset($mensagens[$i]['programadoPara'])){
                     $umMensagem->setProgramadoPara(date_create_from_format('d-m-Y H:i', $mensagens[$i]['programadoPara']));

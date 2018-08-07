@@ -61,6 +61,12 @@ class Mensagem extends EntidadeBase {
      */
     private $descricao;
     
+    /**
+     * @ORM\Column(type="boolean")
+     * 
+     */
+    protected $servidor;
+    
     public function __toString() {
         return $this->getId();
     }
@@ -315,4 +321,13 @@ class Mensagem extends EntidadeBase {
     {
         return $this->usuarioUltimaAlteracao;
     }
+    
+    function getServidor() {
+        return $this->servidor;
+    }
+
+    function setServidor($servidor) {
+        $this->servidor = $servidor;
+    }
+    
 }
