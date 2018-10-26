@@ -23,6 +23,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Parada
+ *
  * @ORM\Entity(repositoryClass="ApiBundle\Entity\Repository\ParadaRepository")
  * @ORM\Table(name="parada")
  * @Gedmo\Loggable
@@ -76,6 +77,15 @@ class Parada extends EntidadeSlug {
      * 
      */
     protected $bairro;
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="sentido", type="integer", nullable=true)
+     * @Gedmo\Versioned
+     * 
+     */
+    private $sentido;
     
     public function __toString() {
         return $this->getNome();
@@ -378,5 +388,29 @@ class Parada extends EntidadeSlug {
     public function getUsuarioUltimaAlteracao()
     {
         return $this->usuarioUltimaAlteracao;
+    }
+
+    /**
+     * Set sentido
+     *
+     * @param integer $sentido
+     *
+     * @return Parada
+     */
+    public function setSentido($sentido)
+    {
+        $this->sentido = $sentido;
+
+        return $this;
+    }
+
+    /**
+     * Get sentido
+     *
+     * @return integer
+     */
+    public function getSentido()
+    {
+        return $this->sentido;
     }
 }

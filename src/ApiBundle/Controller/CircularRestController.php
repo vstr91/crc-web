@@ -235,6 +235,10 @@ class CircularRestController extends FOSRestController {
                 
                 $umEmpresa->setNome($empresas[$i]['nome']);
                 
+                if(isset($empresas[$i]['prefixo'])){
+                    $umEmpresa->setPrefixo($empresas[$i]['prefixo']);
+                }
+                
                 if(isset($empresas[$i]['logo'])){
                     $umEmpresa->setLogo($empresas[$i]['logo']);
                 }
@@ -516,6 +520,10 @@ class CircularRestController extends FOSRestController {
                 $umParada->setSlug($paradas[$i]['slug']);
                 $umParada->setLatitude($paradas[$i]['latitude']);
                 $umParada->setLongitude($paradas[$i]['longitude']);
+                                
+                if(isset($paradas[$i]['sentido'])){
+                    $umParada->setSentido($paradas[$i]['sentido']);
+                }
                 
                 if(isset($paradas[$i]['taxaDeEmbarque'])){
                     $umParada->setTaxaDeEmbarque($paradas[$i]['taxaDeEmbarque']);
@@ -740,11 +748,17 @@ class CircularRestController extends FOSRestController {
                         ->find($secoesItinerarios[$i]['itinerario']);
                 
                 if(isset($secoesItinerarios[$i]['paradaInicial'])){
-                    $umSecaoItinerario->setParadaInicial($secoesItinerarios[$i]['paradaInicial']);
+                    $umParadaInicial = $em->getRepository('ApiBundle:Parada')
+                        ->find($secoesItinerarios[$i]['paradaInicial']);
+                        
+                    $umSecaoItinerario->setParadaInicial($umParadaInicial);
                 }
                 
                 if(isset($secoesItinerarios[$i]['paradaFinal'])){
-                    $umSecaoItinerario->setParadaFinal($secoesItinerarios[$i]['paradaFinal']);
+                    $umParadaFinal = $em->getRepository('ApiBundle:Parada')
+                        ->find($secoesItinerarios[$i]['paradaFinal']);
+                        
+                    $umSecaoItinerario->setParadaFinal($umParadaFinal);
                 }
                 
                 $umSecaoItinerario->setItinerario($umItinerario);
@@ -860,6 +874,10 @@ class CircularRestController extends FOSRestController {
                     $umMensagem->setResumo($mensagens[$i]['resumo']);
                 }
                 
+                if(isset($mensagens[$i]['email'])){
+                    $umMensagem->setEmail($mensagens[$i]['email']);
+                }
+                
                 $umMensagem->setDescricao($mensagens[$i]['descricao']);
                 $umMensagem->setDataCadastro(date_create_from_format('d-m-Y H:i', $mensagens[$i]['dataCadastro']));
                 $umMensagem->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $mensagens[$i]['ultimaAlteracao']));
@@ -953,8 +971,14 @@ class CircularRestController extends FOSRestController {
                 $umPontoInteresse->setLatitude(doubleval($pontosInteresse[$i]['latitude']));
                 $umPontoInteresse->setLongitude($pontosInteresse[$i]['longitude']);
                 
-                $umPontoInteresse->setDataInicial(date_create_from_format('d-m-Y H:i', $pontosInteresse[$i]['dataInicial']));
-                $umPontoInteresse->setDataFinal(date_create_from_format('d-m-Y H:i', $pontosInteresse[$i]['dataFinal']));
+                if(isset($pontosInteresse[$i]['dataInicial'])){
+                        $umPontoInteresse->setDataInicial(date_create_from_format('d-m-Y H:i', $pontosInteresse[$i]['dataInicial']));
+                }
+                
+                
+                if(isset($pontosInteresse[$i]['dataFinal'])){
+                        $umPontoInteresse->setDataFinal(date_create_from_format('d-m-Y H:i', $pontosInteresse[$i]['dataFinal']));
+                }
                 
                 if(isset($pontosInteresse[$i]['imagem'])){
                     $umPontoInteresse->setImagem($pontosInteresse[$i]['imagem']);

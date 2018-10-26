@@ -54,6 +54,15 @@ class Mensagem extends EntidadeBase {
     /**
      * @var string
      *
+     * @ORM\Column(name="email", type="string", length=100, nullable=true)
+     * @Gedmo\Versioned
+     * 
+     */
+    private $email;
+    
+    /**
+     * @var string
+     *
      * @ORM\Column(name="descricao", type="text")
      * @Assert\NotBlank()
      * @Gedmo\Versioned
@@ -330,4 +339,28 @@ class Mensagem extends EntidadeBase {
         $this->servidor = $servidor;
     }
     
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     *
+     * @return Mensagem
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
 }

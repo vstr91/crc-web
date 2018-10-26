@@ -35,6 +35,15 @@ class PontoInteresse extends EntidadeSlug {
     /**
      * @var string
      *
+     * @ORM\Column(name="descricao", type="text", nullable=true)
+     * @Gedmo\Versioned
+     * 
+     */
+    private $descricao;
+    
+    /**
+     * @var string
+     *
      * @ORM\Column(name="latitude", type="string", length=50)
      * @Assert\NotBlank()
      * @Gedmo\Versioned
@@ -74,8 +83,7 @@ class PontoInteresse extends EntidadeSlug {
     /**
      * @var string
      *
-     * @ORM\Column(name="dataFinal", type="datetime")
-     * @Assert\NotBlank()
+     * @ORM\Column(name="dataFinal", type="datetime", nullable=true)
      * @Gedmo\Versioned
      * 
      */
@@ -382,5 +390,29 @@ class PontoInteresse extends EntidadeSlug {
     public function getUsuarioUltimaAlteracao()
     {
         return $this->usuarioUltimaAlteracao;
+    }
+
+    /**
+     * Set descricao
+     *
+     * @param string $descricao
+     *
+     * @return PontoInteresse
+     */
+    public function setDescricao($descricao)
+    {
+        $this->descricao = $descricao;
+
+        return $this;
+    }
+
+    /**
+     * Get descricao
+     *
+     * @return string
+     */
+    public function getDescricao()
+    {
+        return $this->descricao;
     }
 }

@@ -44,6 +44,15 @@ class Empresa extends EntidadeSlug {
     /**
      * @var string
      *
+     * @ORM\Column(name="prefixo", type="string", length=10, nullable=true)
+     * @Gedmo\Versioned
+     * 
+     */
+    private $prefixo;
+    
+    /**
+     * @var string
+     *
      * @ORM\Column(name="email", type="string", length=100, nullable=true)
      * @Gedmo\Versioned
      * 
@@ -313,5 +322,29 @@ class Empresa extends EntidadeSlug {
     public function getUsuarioUltimaAlteracao()
     {
         return $this->usuarioUltimaAlteracao;
+    }
+
+    /**
+     * Set prefixo
+     *
+     * @param string $prefixo
+     *
+     * @return Empresa
+     */
+    public function setPrefixo($prefixo)
+    {
+        $this->prefixo = $prefixo;
+
+        return $this;
+    }
+
+    /**
+     * Get prefixo
+     *
+     * @return string
+     */
+    public function getPrefixo()
+    {
+        return $this->prefixo;
     }
 }
