@@ -53,7 +53,7 @@ class CircularRestController extends FOSRestController {
         return new Response($token);
     }
     
-    public function getDadosAction(Request $request, $hash, $data) {
+    public function getDadosAction(Request $request, $hash, $data, $id) {
         $em = $this->getDoctrine()->getManager();
 
         $crypto = new MCrypt();
@@ -63,41 +63,79 @@ class CircularRestController extends FOSRestController {
         if(null != $em->getRepository('ApiBundle:APIToken')->validaToken($hashDescriptografado)){
             $data = $data == '-' ? '2000-01-01' : $data;
 
-            $usuarios = $em->getRepository('ApiBundle:Usuario')
+            if($id != 'admin'){
+                $usuarios = $em->getRepository('ApiBundle:Usuario')
+                        ->listarTodosREST(null, $data, $id);
+                $paises = $em->getRepository('ApiBundle:Pais')
+                        ->listarTodosREST(null, $data);
+                $empresas = $em->getRepository('ApiBundle:Empresa')
+                        ->listarTodosREST(null, $data);
+                $onibus = $em->getRepository('ApiBundle:Onibus')
+                        ->listarTodosREST(null, $data);
+                $estados = $em->getRepository('ApiBundle:Estado')
+                        ->listarTodosREST(null, $data);
+                $cidades = $em->getRepository('ApiBundle:Cidade')
+                        ->listarTodosREST(null, $data);
+                $bairros = $em->getRepository('ApiBundle:Bairro')
+                        ->listarTodosREST(null, $data);
+                $paradas = $em->getRepository('ApiBundle:Parada')
+                        ->listarTodosREST(null, $data);
+                $itinerarios = $em->getRepository('ApiBundle:Itinerario')
+                        ->listarTodosREST(null, $data);
+                $horarios = $em->getRepository('ApiBundle:Horario')
+                        ->listarTodosREST(null, $data);
+                $paradasItinerarios = $em->getRepository('ApiBundle:ParadaItinerario')
+                        ->listarTodosREST(null, $data);
+                $secoesItinerarios = $em->getRepository('ApiBundle:SecaoItinerario')
+                        ->listarTodosREST(null, $data);
+                $horariosItinerarios = $em->getRepository('ApiBundle:HorarioItinerario')
+                        ->listarTodosREST(null, $data);
+                $mensagens = $em->getRepository('ApiBundle:Mensagem')
+                        ->listarTodosREST(null, $data);
+                $parametros = $em->getRepository('ApiBundle:Parametro')
+                        ->listarTodosREST(null, $data);
+                $pontosInteresse = $em->getRepository('ApiBundle:PontoInteresse')
+                        ->listarTodosREST(null, $data);
+                
+                $paradasSugestao = $em->getRepository('ApiBundle:ParadaSugestao')
+                    ->listarTodosREST(null, $data);
+            } else{
+                $usuarios = $em->getRepository('ApiBundle:Usuario')
+                        ->listarTodosRESTAdmin(null, $data);
+                $paises = $em->getRepository('ApiBundle:Pais')
+                        ->listarTodosRESTAdmin(null, $data);
+                $empresas = $em->getRepository('ApiBundle:Empresa')
+                        ->listarTodosRESTAdmin(null, $data);
+                $onibus = $em->getRepository('ApiBundle:Onibus')
+                        ->listarTodosRESTAdmin(null, $data);
+                $estados = $em->getRepository('ApiBundle:Estado')
+                        ->listarTodosRESTAdmin(null, $data);
+                $cidades = $em->getRepository('ApiBundle:Cidade')
+                        ->listarTodosRESTAdmin(null, $data);
+                $bairros = $em->getRepository('ApiBundle:Bairro')
+                        ->listarTodosRESTAdmin(null, $data);
+                $paradas = $em->getRepository('ApiBundle:Parada')
+                        ->listarTodosRESTAdmin(null, $data);
+                $itinerarios = $em->getRepository('ApiBundle:Itinerario')
+                        ->listarTodosRESTAdmin(null, $data);
+                $horarios = $em->getRepository('ApiBundle:Horario')
+                        ->listarTodosRESTAdmin(null, $data);
+                $paradasItinerarios = $em->getRepository('ApiBundle:ParadaItinerario')
+                        ->listarTodosRESTAdmin(null, $data);
+                $secoesItinerarios = $em->getRepository('ApiBundle:SecaoItinerario')
+                        ->listarTodosRESTAdmin(null, $data);
+                $horariosItinerarios = $em->getRepository('ApiBundle:HorarioItinerario')
+                        ->listarTodosRESTAdmin(null, $data);
+                $mensagens = $em->getRepository('ApiBundle:Mensagem')
+                        ->listarTodosRESTAdmin(null, $data);
+                $parametros = $em->getRepository('ApiBundle:Parametro')
+                        ->listarTodosRESTAdmin(null, $data);
+                $pontosInteresse = $em->getRepository('ApiBundle:PontoInteresse')
+                        ->listarTodosRESTAdmin(null, $data);
+                
+                $paradasSugestao = $em->getRepository('ApiBundle:ParadaSugestao')
                     ->listarTodosRESTAdmin(null, $data);
-            $paises = $em->getRepository('ApiBundle:Pais')
-                    ->listarTodosRESTAdmin(null, $data);
-            $empresas = $em->getRepository('ApiBundle:Empresa')
-                    ->listarTodosRESTAdmin(null, $data);
-            $onibus = $em->getRepository('ApiBundle:Onibus')
-                    ->listarTodosRESTAdmin(null, $data);
-            $estados = $em->getRepository('ApiBundle:Estado')
-                    ->listarTodosRESTAdmin(null, $data);
-            $cidades = $em->getRepository('ApiBundle:Cidade')
-                    ->listarTodosRESTAdmin(null, $data);
-            $bairros = $em->getRepository('ApiBundle:Bairro')
-                    ->listarTodosRESTAdmin(null, $data);
-            $paradas = $em->getRepository('ApiBundle:Parada')
-                    ->listarTodosRESTAdmin(null, $data);
-            $itinerarios = $em->getRepository('ApiBundle:Itinerario')
-                    ->listarTodosRESTAdmin(null, $data);
-            $horarios = $em->getRepository('ApiBundle:Horario')
-                    ->listarTodosRESTAdmin(null, $data);
-            $paradasItinerarios = $em->getRepository('ApiBundle:ParadaItinerario')
-                    ->listarTodosRESTAdmin(null, $data);
-            $secoesItinerarios = $em->getRepository('ApiBundle:SecaoItinerario')
-                    ->listarTodosRESTAdmin(null, $data);
-            $horariosItinerarios = $em->getRepository('ApiBundle:HorarioItinerario')
-                    ->listarTodosRESTAdmin(null, $data);
-            $mensagens = $em->getRepository('ApiBundle:Mensagem')
-                    ->listarTodosRESTAdmin(null, $data);
-            $parametros = $em->getRepository('ApiBundle:Parametro')
-                    ->listarTodosRESTAdmin(null, $data);
-            $pontosInteresse = $em->getRepository('ApiBundle:PontoInteresse')
-                    ->listarTodosRESTAdmin(null, $data);
-            
-            $paradasSugestao = $em->getRepository('ApiBundle:ParadaSugestao')
-                    ->listarTodosRESTAdmin(null, $data);
+            }
             
 //            $log = $em->getRepository('RepSiteBundle:LogEntry')
 //                    ->listarTodosREST(null, $data);
@@ -1097,16 +1135,16 @@ class CircularRestController extends FOSRestController {
                     $umParada->setImagem($paradasSugestoes[$i]['imagem']);
                 }
                 
-                if(isset($paradasSugestoes[$i]['usuario_cadastro'])){
+                if(isset($paradasSugestoes[$i]['usuarioCadastro'])){
                     $umUsuarioCadastro = $em->getRepository('ApiBundle:Usuario')
-                        ->find($paradasSugestoes[$i]['usuario_cadastro']);
+                        ->find($paradasSugestoes[$i]['usuarioCadastro']);
                     
                     $umParada->setUsuarioCadastro($umUsuarioCadastro);
                 }
                 
-                if(isset($paradasSugestoes[$i]['usuario_ultima_alteracao'])){
+                if(isset($paradasSugestoes[$i]['usuarioUltimaAlteracao'])){
                     $umUsuario = $em->getRepository('ApiBundle:Usuario')
-                        ->find($paradasSugestoes[$i]['usuario_ultima_alteracao']);
+                        ->find($paradasSugestoes[$i]['usuarioUltimaAlteracao']);
                     
                     $umParada->setUsuarioUltimaAlteracao($umUsuario);
                 }
@@ -1121,6 +1159,7 @@ class CircularRestController extends FOSRestController {
                 }
                 
                 $umParada->setAtivo($paradasSugestoes[$i]['ativo']);
+                $umParada->setStatus($paradasSugestoes[$i]['status']);
                 
                 $em->persist($umParada);
                 

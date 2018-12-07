@@ -31,4 +31,25 @@ class ItinerarioRepository extends \Doctrine\ORM\EntityRepository
         
     }
     
+    public function listarTodosREST($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('i')
+                ->select('i.id, i.ativo, i.dataCadastro, i.dataRecebimento, '
+                        . 'i.ultimaAlteracao, i.programadoPara, IDENTITY(i.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(i.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, i.tarifa, i.sigla, i.distancia, i.tempo, i.acessivel, '
+                        . 'i.observacao, IDENTITY(i.empresa) AS empresa')
+                ->distinct()
+                ->where("i.ultimaAlteracao > :ultimaAlteracao")
+                ->andWhere("i.programadoPara IS NULL OR i.programadoPara <= :now")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->setParameter('now', new \DateTime())
+                ->addOrderBy('i.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
 }

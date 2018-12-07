@@ -17,11 +17,33 @@ class ParadaSugestaoRepository extends \Doctrine\ORM\EntityRepository
                         . 'p.ultimaAlteracao, p.programadoPara, IDENTITY(p.usuarioCadastro) AS usuarioCadastro, '
                         . 'IDENTITY(p.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, '
                         . 'IDENTITY(p.parada) AS parada, p.nome, p.slug, p.imagem, '
-                        . 'p.latitude, p.longitude, p.taxaDeEmbarque, IDENTITY(p.bairro) AS bairro')
+                        . 'p.latitude, p.longitude, p.taxaDeEmbarque, p.status, IDENTITY(p.bairro) AS bairro')
                 ->distinct()
                 ->where("p.ultimaAlteracao > :ultimaAlteracao")
                 //->andWhere("c.programadoPara IS NULL OR c.programadoPara <= :now")
                 ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->addOrderBy('p.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
+    public function listarTodosREST($limite = null, $dataUltimoAcesso, $id){
+        $qb = $this->createQueryBuilder('p')
+                ->select('p.id, p.ativo, p.dataCadastro, p.dataRecebimento, '
+                        . 'p.ultimaAlteracao, p.programadoPara, IDENTITY(p.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(p.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, '
+                        . 'IDENTITY(p.parada) AS parada, p.nome, p.slug, p.imagem, '
+                        . 'p.latitude, p.longitude, p.taxaDeEmbarque, p.status, IDENTITY(p.bairro) AS bairro')
+                ->distinct()
+                ->where("p.ultimaAlteracao > :ultimaAlteracao")
+                ->andWhere("p.usuarioUltimaAlteracao = :id")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->setParameter('id', $id)
                 ->addOrderBy('p.id');
         
         if(false == is_null($limite)){

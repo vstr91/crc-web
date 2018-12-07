@@ -29,4 +29,23 @@ class HorarioRepository extends \Doctrine\ORM\EntityRepository
         
     }
     
+    public function listarTodosREST($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('h')
+                ->select('h')
+                ->distinct()
+                ->where("h.ultimaAlteracao > :ultimaAlteracao")
+                ->andWhere("h.programadoPara IS NULL OR h.programadoPara <= :now")
+                //->andWhere("p.ativo = 1")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->setParameter('now', new \DateTime())
+                ->addOrderBy('h.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
 }

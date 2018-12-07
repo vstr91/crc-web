@@ -30,4 +30,24 @@ class BairroRepository extends \Doctrine\ORM\EntityRepository
         
     }
     
+    public function listarTodosREST($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('b')
+                ->select('b.id, b.ativo, b.dataCadastro, b.dataRecebimento, '
+                        . 'b.ultimaAlteracao, b.programadoPara, IDENTITY(b.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(b.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, b.nome, b.slug, IDENTITY(b.cidade) AS cidade')
+                ->distinct()
+                ->where("b.ultimaAlteracao > :ultimaAlteracao")
+                ->andWhere("b.programadoPara IS NULL OR b.programadoPara <= :now")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->setParameter('now', new \DateTime())
+                ->addOrderBy('b.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
 }

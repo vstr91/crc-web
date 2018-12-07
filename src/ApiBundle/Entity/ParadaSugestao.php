@@ -95,6 +95,15 @@ class ParadaSugestao extends EntidadeSlug {
      */
     protected $parada;
     
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="status", type="integer")
+     * @Gedmo\Versioned
+     * 
+     */
+    private $status;
+    
     public function __toString() {
         return $this->getNome();
     }
@@ -444,5 +453,29 @@ class ParadaSugestao extends EntidadeSlug {
     public function getUsuarioUltimaAlteracao()
     {
         return $this->usuarioUltimaAlteracao;
+    }
+
+    /**
+     * Set status
+     *
+     * @param integer $status
+     *
+     * @return ParadaSugestao
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return integer
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 }

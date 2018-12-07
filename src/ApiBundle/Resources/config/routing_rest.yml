@@ -8,8 +8,8 @@ circular_api_get_token:
     defaults: {_controller: ApiBundle:CircularRest:getToken}
   
 circular_api_get_dados:
-    pattern: /recebe-dados/{hash}/{data}
-    defaults: {_controller: ApiBundle:CircularRest:getDados}
+    pattern: /recebe-dados/{hash}/{data}/{id}
+    defaults: {_controller: ApiBundle:CircularRest:getDados, id: -1}
     
 circular_api_set_dados:
     pattern: /envia-dados/{hash}

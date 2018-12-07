@@ -29,4 +29,23 @@ class MensagemRepository extends \Doctrine\ORM\EntityRepository
         
     }
     
+    public function listarTodosREST($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('m')
+                ->select('m')
+                ->distinct()
+                ->where("m.ultimaAlteracao > :ultimaAlteracao")
+                ->andWhere("m.programadoPara IS NULL OR m.programadoPara <= :now")
+                //->andWhere("p.ativo = 1")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->setParameter('now', new \DateTime())
+                ->addOrderBy('m.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
 }

@@ -30,4 +30,25 @@ class UsuarioRepository extends \Doctrine\ORM\EntityRepository
         
     }
     
+    public function listarTodosREST($limite = null, $dataUltimoAcesso, $id){
+        $qb = $this->createQueryBuilder('u')
+                ->select('u.id, u.enabled AS ativo, u.dataCadastro, u.dataRecebimento, '
+                        . 'u.ultimaAlteracao, u.programadoPara, u.username AS nome, u.email')
+                ->distinct()
+                ->where("u.ultimaAlteracao > :ultimaAlteracao")
+                ->andWhere("u.programadoPara IS NULL OR u.programadoPara <= :now")
+                ->andWhere("u.id = :id")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->setParameter('id', $id)
+                ->setParameter('now', new \DateTime())
+                ->addOrderBy('u.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
 }

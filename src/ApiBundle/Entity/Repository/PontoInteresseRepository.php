@@ -32,4 +32,26 @@ class PontoInteresseRepository extends \Doctrine\ORM\EntityRepository
         
     }
     
+    public function listarTodosREST($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('p')
+                ->select('p.id, p.ativo, p.dataCadastro, p.dataRecebimento, '
+                        . 'p.ultimaAlteracao, p.programadoPara, IDENTITY(p.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(p.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, p.nome, p.descricao, '
+                        . 'p.slug, p.imagem, '
+                        . 'p.latitude, p.longitude, p.dataInicial, p.dataFinal')
+                ->distinct()
+                ->where("p.ultimaAlteracao > :ultimaAlteracao")
+                ->andWhere("p.programadoPara IS NULL OR p.programadoPara <= :now")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->setParameter('now', new \DateTime())
+                ->addOrderBy('p.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
 }
