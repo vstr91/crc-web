@@ -98,7 +98,7 @@ class CircularRestController extends FOSRestController {
                         ->listarTodosREST(null, $data);
                 
                 $paradasSugestao = $em->getRepository('ApiBundle:ParadaSugestao')
-                    ->listarTodosREST(null, $data);
+                    ->listarTodosREST(null, $data, $id);
             } else{
                 $usuarios = $em->getRepository('ApiBundle:Usuario')
                         ->listarTodosRESTAdmin(null, $data);
@@ -1300,7 +1300,7 @@ class CircularRestController extends FOSRestController {
             $userid = $payload['sub'];
             
             $usuario = $em->getRepository('ApiBundle:Usuario')
-                        ->findOneBy(array('email' => $email));
+                        ->findOneBy(array('google_id' => $userid));
             
             if($usuario != null){
                 
@@ -1322,7 +1322,7 @@ class CircularRestController extends FOSRestController {
                 //I have set all requested data with the user's username
                 //modify here with relevant data
                 $user->setUsername($payload['given_name']);
-                $user->setEmail($payload['email']);
+                $user->setEmail("none");
                 $user->setPlainPassword($payload['given_name']);
                 $user->setDataCadastro(new \DateTime());
                 $user->setGoogleID($payload['sub']);

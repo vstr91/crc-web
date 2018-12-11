@@ -40,9 +40,9 @@ class ParadaSugestaoRepository extends \Doctrine\ORM\EntityRepository
                         . 'IDENTITY(p.parada) AS parada, p.nome, p.slug, p.imagem, '
                         . 'p.latitude, p.longitude, p.taxaDeEmbarque, p.status, IDENTITY(p.bairro) AS bairro')
                 ->distinct()
-                ->where("p.ultimaAlteracao > :ultimaAlteracao")
-                ->andWhere("p.usuarioUltimaAlteracao = :id")
-                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                //->where("p.ultimaAlteracao > :ultimaAlteracao")
+                ->where("p.usuarioUltimaAlteracao = :id")
+                //->setParameter('ultimaAlteracao', $dataUltimoAcesso)
                 ->setParameter('id', $id)
                 ->addOrderBy('p.id');
         
