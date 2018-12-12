@@ -17,7 +17,7 @@ class PontoInteresseRepository extends \Doctrine\ORM\EntityRepository
                         . 'p.ultimaAlteracao, p.programadoPara, IDENTITY(p.usuarioCadastro) AS usuarioCadastro, '
                         . 'IDENTITY(p.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, p.nome, p.descricao, '
                         . 'p.slug, p.imagem, '
-                        . 'p.latitude, p.longitude, p.dataInicial, p.dataFinal')
+                        . 'p.latitude, p.longitude, p.dataInicial, p.dataFinal, p.permanente, IDENTITY(p.bairro) AS bairro')
                 ->distinct()
                 ->where("p.ultimaAlteracao > :ultimaAlteracao")
                 //->andWhere("c.programadoPara IS NULL OR c.programadoPara <= :now")
@@ -38,7 +38,7 @@ class PontoInteresseRepository extends \Doctrine\ORM\EntityRepository
                         . 'p.ultimaAlteracao, p.programadoPara, IDENTITY(p.usuarioCadastro) AS usuarioCadastro, '
                         . 'IDENTITY(p.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, p.nome, p.descricao, '
                         . 'p.slug, p.imagem, '
-                        . 'p.latitude, p.longitude, p.dataInicial, p.dataFinal')
+                        . 'p.latitude, p.longitude, p.dataInicial, p.dataFinal, p.permanente, IDENTITY(p.bairro) AS bairro')
                 ->distinct()
                 ->where("p.ultimaAlteracao > :ultimaAlteracao")
                 ->andWhere("p.programadoPara IS NULL OR p.programadoPara <= :now")

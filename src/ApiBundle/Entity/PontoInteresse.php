@@ -89,6 +89,21 @@ class PontoInteresse extends EntidadeSlug {
      */
     private $dataFinal;
     
+    /**
+     * @ORM\ManyToOne(targetEntity="Bairro")
+     * @ORM\JoinColumn(name="bairro", referencedColumnName="id")
+     * @Gedmo\Versioned
+     * 
+     */
+    protected $bairro;
+    
+    /**
+     * @ORM\Column(type="boolean")
+     * @Gedmo\Versioned
+     * 
+     */
+    protected $permanente = true;
+    
     public function __toString() {
         return $this->getNome();
     }
@@ -414,5 +429,53 @@ class PontoInteresse extends EntidadeSlug {
     public function getDescricao()
     {
         return $this->descricao;
+    }
+
+    /**
+     * Set permanente
+     *
+     * @param boolean $permanente
+     *
+     * @return PontoInteresse
+     */
+    public function setPermanente($permanente)
+    {
+        $this->permanente = $permanente;
+
+        return $this;
+    }
+
+    /**
+     * Get permanente
+     *
+     * @return boolean
+     */
+    public function getPermanente()
+    {
+        return $this->permanente;
+    }
+
+    /**
+     * Set bairro
+     *
+     * @param \ApiBundle\Entity\Bairro $bairro
+     *
+     * @return PontoInteresse
+     */
+    public function setBairro(\ApiBundle\Entity\Bairro $bairro = null)
+    {
+        $this->bairro = $bairro;
+
+        return $this;
+    }
+
+    /**
+     * Get bairro
+     *
+     * @return \ApiBundle\Entity\Bairro
+     */
+    public function getBairro()
+    {
+        return $this->bairro;
     }
 }

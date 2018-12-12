@@ -1030,6 +1030,12 @@ class CircularRestController extends FOSRestController {
                 }
                 
                 $umPontoInteresse->setAtivo($pontosInteresse[$i]['ativo']);
+                $umPontoInteresse->setPermanente($pontosInteresse[$i]['permanente']);
+                
+                $umBairro = $em->getRepository('ApiBundle:Bairro')
+                        ->find($pontosInteresse[$i]['bairro']);
+                
+                $umPontoInteresse->setBairro($umBairro);
                 
                 $em->persist($umPontoInteresse);
                 
