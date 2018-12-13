@@ -99,6 +99,9 @@ class CircularRestController extends FOSRestController {
                 
                 $paradasSugestao = $em->getRepository('ApiBundle:ParadaSugestao')
                     ->listarTodosREST(null, $data, $id);
+                
+                $preferencias = $em->getRepository('ApiBundle:UsuarioPreferencia')
+                    ->listarTodosREST(null, $data, $id);
             } else{
                 $usuarios = $em->getRepository('ApiBundle:Usuario')
                         ->listarTodosRESTAdmin(null, $data);
@@ -135,6 +138,9 @@ class CircularRestController extends FOSRestController {
                 
                 $paradasSugestao = $em->getRepository('ApiBundle:ParadaSugestao')
                     ->listarTodosRESTAdmin(null, $data);
+                
+                $preferencias = $em->getRepository('ApiBundle:UsuarioPreferencia')
+                    ->listarTodosREST(null, $data, '-1');
             }
             
 //            $log = $em->getRepository('RepSiteBundle:LogEntry')
@@ -145,7 +151,7 @@ class CircularRestController extends FOSRestController {
                     + count($paradas) + count($itinerarios) + count($horarios)
                     + count($paradasItinerarios) + count($secoesItinerarios) + count($horariosItinerarios)
                     + count($mensagens) + count($parametros) + count($pontosInteresse)
-                    + count($usuarios) + count($paradasSugestao)
+                    + count($usuarios) + count($paradasSugestao) + count($preferencias)
                     ;
             
             $view = View::create(
@@ -167,7 +173,8 @@ class CircularRestController extends FOSRestController {
                         "mensagens" => $mensagens, 
                         "parametros" => $parametros,
                         "pontos_interesse" => $pontosInteresse,
-                        "paradas_sugestoes" => $paradasSugestao
+                        "paradas_sugestoes" => $paradasSugestao,
+                        "preferencias" => $preferencias
                     ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
             
             $em->getRepository('ApiBundle:APIToken')->atualizaToken($hashDescriptografado);
@@ -1173,6 +1180,45 @@ class CircularRestController extends FOSRestController {
             
             // FIM PARADA SUGESTAO
             
+            // PREFERENCIAS
+            
+            $preferencias = $dados['usuarios_preferencias'];
+            
+            $total = count($preferencias);
+            
+            for($i = 0; $i < $total; $i++){
+                
+                $existe = false;
+                $umPref = null;
+                
+                $umPref = $em->getRepository('ApiBundle:UsuarioPreferencia')
+                        ->findOneBy(array('id' => $preferencias[$i]['id']));
+                
+                if($umPref == null){
+                    $umPref = new \ApiBundle\Entity\UsuarioPreferencia();
+                    $umPref->setId($preferencias[$i]['id']);
+                } else{
+                    $existe = true;
+                }
+                
+                $metadata = $em->getClassMetaData(get_class($umPref));
+                $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
+                $metadata->setIdGenerator(new AssignedGenerator());
+                $umPref->setId($preferencias[$i]['id']);
+                
+                $umPref->setUsuario($preferencias[$i]['usuario']);
+                $umPref->setPreferencia($preferencias[$i]['preferencia']);
+                $umPref->setDataCadastro(date_create_from_format('d-m-Y H:i', $preferencias[$i]['dataCadastro']));
+                $umPref->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $preferencias[$i]['ultimaAlteracao']));
+                
+                $umPref->setAtivo($preferencias[$i]['ativo']);
+
+                $em->persist($umPref);
+                
+            }
+            
+            // FIM PREFERENCIAS
+            
             $em->flush();
             
             return new Response('', 200);
@@ -1352,6 +1398,29 @@ class CircularRestController extends FOSRestController {
 
                 return $this->handleView($view);
         }
+        
+    }
+    
+    public function getPreferenciasAction(Request $request, $id) {
+        $em = $this->getDoctrine()->getManager();
+
+        $crypto = new MCrypt();
+        
+        $idDescriptografado = $crypto->decrypt($id);
+        
+        $preferencias = $em->getRepository('ApiBundle:UsuarioPreferencia')
+                ->listarTodosRESTSemData(null, $idDescriptografado);
+        
+        $totalRegistros = count($preferencias);
+        
+            $view = View::create(
+                    array(
+                        "meta" => array(array("registros" => $totalRegistros, "status" => 200, "mensagem" => "ok")),
+                        "preferencias" => $crypto->encrypt($preferencias)
+                    ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
+
+
+            return $this->handleView($view);
         
     }
     
