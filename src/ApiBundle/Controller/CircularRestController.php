@@ -1192,7 +1192,7 @@ class CircularRestController extends FOSRestController {
                 $umPref = null;
                 
                 $umPref = $em->getRepository('ApiBundle:UsuarioPreferencia')
-                        ->findOneBy(array('id' => $preferencias[$i]['id']));
+                        ->findOneBy(array('usuario' => $preferencias[$i]['usuario']));
                 
                 if($umPref == null){
                     $umPref = new \ApiBundle\Entity\UsuarioPreferencia();
@@ -1214,6 +1214,8 @@ class CircularRestController extends FOSRestController {
                 $umPref->setAtivo($preferencias[$i]['ativo']);
 
                 $em->persist($umPref);
+
+                
                 
             }
             
@@ -1352,11 +1354,11 @@ class CircularRestController extends FOSRestController {
             $userid = $payload['sub'];
             
             $usuario = $em->getRepository('ApiBundle:Usuario')
-                        ->findOneBy(array('google_id' => $userid));
+                        ->findOneBy(array('googleID' => $userid));
             
             if($usuario != null){
                 
-                if($usuario->getGoogleId() == null){
+                if($usuario->getGoogleID() == null){
                     $usuario->setGoogleID($userid);
                 }
                 
@@ -1367,14 +1369,17 @@ class CircularRestController extends FOSRestController {
                 
                 $idUsuario = $crypto->encrypt($usuario->getId());
                 
-                return new Response($idUsuario);
+                $pref = $em->getRepository('ApiBundle:UsuarioPreferencia')
+                        ->listarPreferenciaSemData(null, $usuario->getId());
+                
+                return new Response($idUsuario.";".$pref[0]['preferencia']);
                 
             } else {
                 $user = $this->get('fos_user.user_manager')->createUser();
                 //I have set all requested data with the user's username
                 //modify here with relevant data
                 $user->setUsername($payload['given_name']);
-                $user->setEmail("none");
+                $user->setEmail($payload['given_name'].".none@email.com");
                 $user->setPlainPassword($payload['given_name']);
                 $user->setDataCadastro(new \DateTime());
                 $user->setGoogleID($payload['sub']);
@@ -1416,7 +1421,7 @@ class CircularRestController extends FOSRestController {
             $view = View::create(
                     array(
                         "meta" => array(array("registros" => $totalRegistros, "status" => 200, "mensagem" => "ok")),
-                        "preferencias" => $crypto->encrypt($preferencias)
+                        "preferencias" => $preferencias
                     ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
 
 

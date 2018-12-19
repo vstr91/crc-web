@@ -46,4 +46,20 @@ class UsuarioPreferenciaRepository extends \Doctrine\ORM\EntityRepository
         
     }
     
+    public function listarPreferenciaSemData($limite = null, $id){
+        $qb = $this->createQueryBuilder('u')
+                ->select('u.preferencia')
+                ->distinct()
+                ->andWhere("u.usuario = :id")
+                ->setParameter('id', $id)
+                ->addOrderBy('u.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_OBJECT);
+        
+    }
+    
 }
