@@ -102,6 +102,9 @@ class CircularRestController extends FOSRestController {
                 
                 $preferencias = $em->getRepository('ApiBundle:UsuarioPreferencia')
                     ->listarTodosREST(null, $data, $id);
+                
+                $historicos = $em->getRepository('ApiBundle:HistoricoItinerario')
+                    ->listarTodosREST(null, $data);
             } else{
                 $usuarios = $em->getRepository('ApiBundle:Usuario')
                         ->listarTodosRESTAdmin(null, $data);
@@ -141,6 +144,9 @@ class CircularRestController extends FOSRestController {
                 
                 $preferencias = $em->getRepository('ApiBundle:UsuarioPreferencia')
                     ->listarTodosREST(null, $data, '-1');
+                
+                $historicos = $em->getRepository('ApiBundle:HistoricoItinerario')
+                    ->listarTodosRESTAdmin(null, $data);
             }
             
 //            $log = $em->getRepository('RepSiteBundle:LogEntry')
@@ -151,7 +157,7 @@ class CircularRestController extends FOSRestController {
                     + count($paradas) + count($itinerarios) + count($horarios)
                     + count($paradasItinerarios) + count($secoesItinerarios) + count($horariosItinerarios)
                     + count($mensagens) + count($parametros) + count($pontosInteresse)
-                    + count($usuarios) + count($paradasSugestao) + count($preferencias)
+                    + count($usuarios) + count($paradasSugestao) + count($preferencias) + count($historicos)
                     ;
             
             $view = View::create(
@@ -174,7 +180,8 @@ class CircularRestController extends FOSRestController {
                         "parametros" => $parametros,
                         "pontos_interesse" => $pontosInteresse,
                         "paradas_sugestoes" => $paradasSugestao,
-                        "preferencias" => $preferencias
+                        "preferencias" => $preferencias,
+                        "historicos_itinerarios" => $historicos
                     ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
             
             $em->getRepository('ApiBundle:APIToken')->atualizaToken($hashDescriptografado);
@@ -1220,6 +1227,50 @@ class CircularRestController extends FOSRestController {
             }
             
             // FIM PREFERENCIAS
+            
+            // HISTORICO ITINERARIO
+            
+            $historicosItinerarios = $dados['historicos_itinerarios'];
+            
+            $total = count($historicosItinerarios);
+            
+            for($i = 0; $i < $total; $i++){
+                
+                $existe = false;
+                $umHistoricoItinerario = null;
+                
+                $umHistoricoItinerario = $em->getRepository('ApiBundle:HistoricoItinerario')
+                        ->findOneBy(array('id' => $historicosItinerarios[$i]['id']));
+                
+                if($umHistoricoItinerario == null){
+                    $umHistoricoItinerario = new \ApiBundle\Entity\HistoricoItinerario();
+                    $umHistoricoItinerario->setId($historicosItinerarios[$i]['id']);
+                } else{
+                    $existe = true;
+                }
+                
+                $metadata = $em->getClassMetaData(get_class($umHistoricoItinerario));
+                $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
+                $metadata->setIdGenerator(new AssignedGenerator());
+                $umHistoricoItinerario->setId($historicosItinerarios[$i]['id']);
+                
+                $umItinerario = $em->getRepository('ApiBundle:Itinerario')
+                        ->find($historicosItinerarios[$i]['itinerario']);
+                
+                $umHistoricoItinerario->setItinerario($umItinerario);
+                
+                $umHistoricoItinerario->setTarifa($historicosItinerarios[$i]['tarifa']);
+                
+                $umHistoricoItinerario->setDataCadastro(date_create_from_format('d-m-Y H:i', $historicosItinerarios[$i]['dataCadastro']));
+                $umHistoricoItinerario->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $historicosItinerarios[$i]['ultimaAlteracao']));
+                
+                $umHistoricoItinerario->setAtivo($historicosItinerarios[$i]['ativo']);
+                
+                $em->persist($umHistoricoItinerario);
+                
+            }
+            
+            // FIM HISTORICO ITINERARIO
             
             $em->flush();
             
