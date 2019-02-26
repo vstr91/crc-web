@@ -105,6 +105,8 @@ class CircularRestController extends FOSRestController {
                 
                 $historicos = $em->getRepository('ApiBundle:HistoricoItinerario')
                     ->listarTodosREST(null, $data);
+                
+                $acessos = array();
             } else{
                 $usuarios = $em->getRepository('ApiBundle:Usuario')
                         ->listarTodosRESTAdmin(null, $data);
@@ -147,6 +149,9 @@ class CircularRestController extends FOSRestController {
                 
                 $historicos = $em->getRepository('ApiBundle:HistoricoItinerario')
                     ->listarTodosRESTAdmin(null, $data);
+                
+                $acessos = $em->getRepository('ApiBundle:APIToken')
+                    ->listarTodosRESTAdmin(null, $data);
             }
             
 //            $log = $em->getRepository('RepSiteBundle:LogEntry')
@@ -157,7 +162,9 @@ class CircularRestController extends FOSRestController {
                     + count($paradas) + count($itinerarios) + count($horarios)
                     + count($paradasItinerarios) + count($secoesItinerarios) + count($horariosItinerarios)
                     + count($mensagens) + count($parametros) + count($pontosInteresse)
-                    + count($usuarios) + count($paradasSugestao) + count($preferencias) + count($historicos)
+                    + count($usuarios) + count($paradasSugestao) + count($preferencias) 
+                    + count($historicos)
+                    + count($acessos)
                     ;
             
             $view = View::create(
@@ -181,7 +188,8 @@ class CircularRestController extends FOSRestController {
                         "pontos_interesse" => $pontosInteresse,
                         "paradas_sugestoes" => $paradasSugestao,
                         "preferencias" => $preferencias,
-                        "historicos_itinerarios" => $historicos
+                        "historicos_itinerarios" => $historicos,
+                        "acessos" => $acessos
                     ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
             
             $em->getRepository('ApiBundle:APIToken')->atualizaToken($hashDescriptografado);
@@ -747,6 +755,14 @@ class CircularRestController extends FOSRestController {
                 
                 if(isset($paradasItinerarios[$i]['valorSeguinte'])){
                     $umParadaItinerario->setValorSeguinte($paradasItinerarios[$i]['valorSeguinte']);
+                }
+                
+                if(isset($paradasItinerarios[$i]['distanciaSeguinte'])){
+                    $umParadaItinerario->setDistanciaSeguinte($paradasItinerarios[$i]['distanciaSeguinte']);
+                }
+                
+                if(isset($paradasItinerarios[$i]['tempoSeguinte'])){
+                    $umParadaItinerario->setTempoSeguinte(date_create_from_format('d-m-Y H:i', $paradasItinerarios[$i]['tempoSeguinte']));
                 }
                 
                 $umParadaItinerario->setParada($umParada);
@@ -1473,6 +1489,120 @@ class CircularRestController extends FOSRestController {
                     array(
                         "meta" => array(array("registros" => $totalRegistros, "status" => 200, "mensagem" => "ok")),
                         "preferencias" => $preferencias
+                    ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
+
+
+            return $this->handleView($view);
+        
+    }
+
+    public function getEmpresasAction(Request $request, $slug = "") {
+        $em = $this->getDoctrine()->getManager();
+        
+        $empresas = $em->getRepository('ApiBundle:Empresa')
+                ->listarTodosRESTSemData(null, $slug);
+        
+        $totalRegistros = count($empresas);
+        
+            $view = View::create(
+                    array(
+                        "meta" => array(array("registros" => $totalRegistros, "status" => 200, "mensagem" => "ok")),
+                        "empresas" => $empresas
+                    ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
+
+
+            return $this->handleView($view);
+        
+    }
+    
+    public function getCidadesAction(Request $request, $uf = "", $slug = "") {
+        $em = $this->getDoctrine()->getManager();
+        
+        $cidades = $em->getRepository('ApiBundle:Cidade')
+                ->listarTodosRESTSemData(null, $uf, $slug);
+        
+        $totalRegistros = count($cidades);
+        
+            $view = View::create(
+                    array(
+                        "meta" => array(array("registros" => $totalRegistros, "status" => 200, "mensagem" => "ok")),
+                        "cidades" => $cidades
+                    ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
+
+
+            return $this->handleView($view);
+        
+    }
+    
+    public function getBairrosAction(Request $request, $uf = "", $cidade = "", $slug = "") {
+        $em = $this->getDoctrine()->getManager();
+        
+        $bairros = $em->getRepository('ApiBundle:Bairro')
+                ->listarTodosRESTSemData(null, $uf, $cidade, $slug);
+        
+        $totalRegistros = count($bairros);
+        
+            $view = View::create(
+                    array(
+                        "meta" => array(array("registros" => $totalRegistros, "status" => 200, "mensagem" => "ok")),
+                        "bairros" => $bairros
+                    ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
+
+
+            return $this->handleView($view);
+        
+    }
+    
+    public function getParadasAction(Request $request, $uf = "", $cidade = "", $bairro = "", $slug = "") {
+        $em = $this->getDoctrine()->getManager();
+        
+        $paradas = $em->getRepository('ApiBundle:Parada')
+                ->listarTodosRESTSemData(null, $uf, $cidade, $bairro, $slug);
+        
+        $totalRegistros = count($paradas);
+        
+            $view = View::create(
+                    array(
+                        "meta" => array(array("registros" => $totalRegistros, "status" => 200, "mensagem" => "ok")),
+                        "paradas" => $paradas
+                    ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
+
+
+            return $this->handleView($view);
+        
+    }
+    
+    public function getPontosInteresseAction(Request $request, $uf = "", $cidade = "", $bairro = "", $slug = "") {
+        $em = $this->getDoctrine()->getManager();
+        
+        $pois = $em->getRepository('ApiBundle:PontoInteresse')
+                ->listarTodosRESTSemData(null, $uf, $cidade, $bairro, $slug);
+        
+        $totalRegistros = count($pois);
+        
+            $view = View::create(
+                    array(
+                        "meta" => array(array("registros" => $totalRegistros, "status" => 200, "mensagem" => "ok")),
+                        "pontos_interesse" => $pois
+                    ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
+
+
+            return $this->handleView($view);
+        
+    }
+    
+        public function getItinerariosParadaAction(Request $request, $uf = "", $cidade = "", $bairro = "", $slug = "") {
+        $em = $this->getDoctrine()->getManager();
+        
+        $itinerarios = $em->getRepository('ApiBundle:ParadaItinerario')
+                ->listarTodosRESTSemData(null, $uf, $cidade, $bairro, $slug);
+        
+        $totalRegistros = count($itinerarios);
+        
+            $view = View::create(
+                    array(
+                        "meta" => array(array("registros" => $totalRegistros, "status" => 200, "mensagem" => "ok")),
+                        "itinerarios_parada" => $itinerarios
                     ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
 
 

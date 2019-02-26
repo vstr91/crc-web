@@ -50,4 +50,58 @@ class BairroRepository extends \Doctrine\ORM\EntityRepository
         
     }
     
+    public function listarTodosRESTSemData($limite = null, $uf = "", $cidade = "", $slug = ""){
+        
+        if($uf && $cidade && $slug){
+            $qb = $this->createQueryBuilder('b')
+                ->select('b.id, b.ativo, b.dataCadastro, b.dataRecebimento, '
+                        . 'b.ultimaAlteracao, b.programadoPara, IDENTITY(b.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(b.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, b.nome, b.slug, IDENTITY(b.cidade) AS cidade')
+                ->distinct()
+                ->where("e.sigla = :uf")
+                ->andWhere("c.slug = :cidade")
+                ->andWhere("b.slug = :slug")
+                ->andWhere("b.programadoPara IS NULL OR b.programadoPara <= :now")
+                ->andWhere("b.ativo = 1")
+                ->innerJoin("ApiBundle:Cidade", "c", "WITH", "c.id = b.cidade")
+                ->innerJoin("ApiBundle:Estado", "e", "WITH", "e.id = c.estado")
+                ->setParameter('uf', $uf)
+                ->setParameter('cidade', $cidade)
+                ->setParameter('slug', $slug)
+                ->setParameter('now', new \DateTime())
+                ->addOrderBy('b.id');
+        
+            if(false == is_null($limite)){
+                $qb->setMaxResults($limite);
+            }
+
+            return $qb->getQuery()->getResult();
+        } else if($uf && $cidade){
+            $qb = $this->createQueryBuilder('b')
+                ->select('b.id, b.ativo, b.dataCadastro, b.dataRecebimento, '
+                        . 'b.ultimaAlteracao, b.programadoPara, IDENTITY(b.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(b.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, b.nome, b.slug, IDENTITY(b.cidade) AS cidade')
+                ->distinct()
+                ->where("e.sigla = :uf")
+                ->andWhere("c.slug = :cidade")
+                ->andWhere("b.programadoPara IS NULL OR b.programadoPara <= :now")
+                ->andWhere("b.ativo = 1")
+                ->innerJoin("ApiBundle:Cidade", "c", "WITH", "c.id = b.cidade")
+                ->innerJoin("ApiBundle:Estado", "e", "WITH", "e.id = c.estado")
+                ->setParameter('uf', $uf)
+                ->setParameter('cidade', $cidade)
+                ->setParameter('now', new \DateTime())
+                ->addOrderBy('b.id');
+        
+            if(false == is_null($limite)){
+                $qb->setMaxResults($limite);
+            }
+
+            return $qb->getQuery()->getResult();
+        }
+        
+        
+        
+    }
+    
 }

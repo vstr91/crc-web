@@ -30,6 +30,38 @@ class EmpresaRepository extends \Doctrine\ORM\EntityRepository
         
     }
     
+    public function listarTodosRESTSemData($limite = null, $slug){
+        
+        if($slug){
+            $qb = $this->createQueryBuilder('e')
+                ->select('e')
+                ->distinct()
+                ->where("e.slug = :slug")
+                ->andWhere("e.programadoPara IS NULL OR e.programadoPara <= :now")
+                ->andWhere("e.ativo = 1")
+                ->setParameter('slug', $slug)
+                ->setParameter('now', new \DateTime())
+                ->addOrderBy('e.id');
+        } else{
+            $qb = $this->createQueryBuilder('e')
+                ->select('e')
+                ->distinct()
+                ->andWhere("e.programadoPara IS NULL OR e.programadoPara <= :now")
+                ->andWhere("e.ativo = 1")
+                ->setParameter('now', new \DateTime())
+                ->addOrderBy('e.id');
+        }
+        
+        
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
     public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
         $qb = $this->createQueryBuilder('e')
                 ->select('e')

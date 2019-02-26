@@ -16,7 +16,7 @@ class ParadaItinerarioRepository extends \Doctrine\ORM\EntityRepository
                 ->select('pi.id, pi.ativo, pi.dataCadastro, pi.dataRecebimento, '
                         . 'pi.ultimaAlteracao, pi.programadoPara, IDENTITY(pi.usuarioCadastro) AS usuarioCadastro, '
                         . 'IDENTITY(pi.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, pi.ordem, pi.destaque, pi.valorAnterior, '
-                        . 'pi.valorSeguinte, IDENTITY(pi.parada) AS parada, IDENTITY(pi.itinerario) AS itinerario')
+                        . 'pi.valorSeguinte, pi.distanciaSeguinte, pi.tempoSeguinte, IDENTITY(pi.parada) AS parada, IDENTITY(pi.itinerario) AS itinerario')
                 ->distinct()
                 ->where("pi.ultimaAlteracao > :ultimaAlteracao")
                 //->andWhere("c.programadoPara IS NULL OR c.programadoPara <= :now")
@@ -36,7 +36,7 @@ class ParadaItinerarioRepository extends \Doctrine\ORM\EntityRepository
                 ->select('pi.id, pi.ativo, pi.dataCadastro, pi.dataRecebimento, '
                         . 'pi.ultimaAlteracao, pi.programadoPara, IDENTITY(pi.usuarioCadastro) AS usuarioCadastro, '
                         . 'IDENTITY(pi.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, pi.ordem, pi.destaque, pi.valorAnterior, '
-                        . 'pi.valorSeguinte, IDENTITY(pi.parada) AS parada, IDENTITY(pi.itinerario) AS itinerario')
+                        . 'pi.valorSeguinte, pi.distanciaSeguinte, pi.tempoSeguinte, IDENTITY(pi.parada) AS parada, IDENTITY(pi.itinerario) AS itinerario')
                 ->distinct()
                 ->where("pi.ultimaAlteracao > :ultimaAlteracao")
                 ->andWhere("pi.programadoPara IS NULL OR pi.programadoPara <= :now")
@@ -51,5 +51,40 @@ class ParadaItinerarioRepository extends \Doctrine\ORM\EntityRepository
         return $qb->getQuery()->getResult();
         
     }
+    
+        public function listarTodosRESTSemData($limite = null, $uf = "", $cidade = "", $bairro = "", $slug = ""){
+            
+            $qb = $this->createQueryBuilder('pi')
+                    ->select('i.id, i.ativo, i.dataCadastro, i.dataRecebimento, '
+                            . 'i.ultimaAlteracao, i.programadoPara, IDENTITY(i.usuarioCadastro) AS usuarioCadastro, '
+                            . 'IDENTITY(i.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, i.tarifa, i.sigla, i.distancia, i.tempo, i.acessivel, '
+                            . 'i.observacao, IDENTITY(i.empresa) AS empresa')
+                    ->distinct()
+                    ->where("pi.ativo = 1")
+                    ->andWhere("e.sigla = :uf")
+                    ->andWhere("c.slug = :cidade")
+                    ->andWhere("b.slug = :bairro")
+                    ->andWhere("p.slug = :slug")
+                    ->andWhere('pi.ordem < (SELECT MAX(pi2.ordem) FROM ApiBundle:ParadaItinerario pi2 WHERE pi2.itinerario = i.id)')
+                    ->andWhere("p.programadoPara IS NULL OR p.programadoPara <= :now")
+                    ->innerJoin("ApiBundle:Parada", "p", "WITH", "p.id = pi.parada")
+                    ->innerJoin("ApiBundle:Itinerario", "i", "WITH", "i.id = pi.itinerario")
+                    ->innerJoin("ApiBundle:Bairro", "b", "WITH", "b.id = p.bairro")
+                    ->innerJoin("ApiBundle:Cidade", "c", "WITH", "c.id = b.cidade")
+                    ->innerJoin("ApiBundle:Estado", "e", "WITH", "e.id = c.estado")
+                    ->setParameter('uf', $uf)
+                    ->setParameter('cidade', $cidade)
+                    ->setParameter('bairro', $bairro)
+                    ->setParameter('slug', $slug)
+                    ->setParameter('now', new \DateTime())
+                    ->addOrderBy('pi.id');
+
+            if(false == is_null($limite)){
+                $qb->setMaxResults($limite);
+            }
+
+            return $qb->getQuery()->getResult();
+
+        }
     
 }

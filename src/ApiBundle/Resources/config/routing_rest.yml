@@ -30,6 +30,30 @@ circular_api_get_imagem:
 circular_api_get_preferencias:
     pattern: /recebe-preferencias/{id}
     defaults: {method: GET, _controller: ApiBundle:CircularRest:getPreferencias}
+
+circular_api_get_empresas:
+    pattern: /empresas/{slug}
+    defaults: {method: GET, _controller: ApiBundle:CircularRest:getEmpresas, slug: ''}
+    
+circular_api_get_cidades:
+    pattern: /cidades/{uf}/{slug}
+    defaults: {method: GET, _controller: ApiBundle:CircularRest:getCidades, uf: '', slug: ''}
+    
+circular_api_get_bairros:
+    pattern: /bairros/{uf}/{cidade}/{slug}
+    defaults: {method: GET, _controller: ApiBundle:CircularRest:getBairros, uf: '', cidade: '', slug: ''}
+    
+circular_api_get_paradas:
+    pattern: /paradas/{uf}/{cidade}/{bairro}/{slug}
+    defaults: {method: GET, _controller: ApiBundle:CircularRest:getParadas, uf: '', cidade: '', bairro: '', slug: ''}
+    
+circular_api_get_pontos_interesse:
+    pattern: /pontos-interesse/{uf}/{cidade}/{bairro}/{slug}
+    defaults: {method: GET, _controller: ApiBundle:CircularRest:getPontosInteresse, uf: '', cidade: '', bairro: '', slug: ''}
+    
+circular_api_get_itinerarios_parada:
+    pattern: /paradas/{uf}/{cidade}/{bairro}/{slug}/itinerarios
+    defaults: {method: GET, _controller: ApiBundle:CircularRest:getItinerariosParada, uf: '', cidade: '', bairro: '', slug: ''}
     
 circular_api_valida_usuario:
     pattern: /valida-usuario

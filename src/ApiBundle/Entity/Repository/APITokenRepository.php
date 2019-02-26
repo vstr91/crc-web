@@ -40,4 +40,21 @@ class APITokenRepository extends \Doctrine\ORM\EntityRepository
         
     }
     
+    public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('a')
+                ->select('-1 AS id, a.identificadorUnico, a.dataCriacao, a.dataValidacao')
+                ->distinct()
+                ->where("a.dataValidacao > :ultimaAlteracao")
+                //->andWhere("c.programadoPara IS NULL OR c.programadoPara <= :now")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->addOrderBy('a.dataValidacao', 'DESC');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
 }

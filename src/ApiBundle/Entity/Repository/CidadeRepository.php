@@ -33,6 +33,68 @@ class CidadeRepository extends \Doctrine\ORM\EntityRepository
         
     }
     
+    public function listarTodosRESTSemData($limite = null, $uf = null, $slug = null){
+        
+        if($uf && !$slug){
+            $qb = $this->createQueryBuilder('c')
+                ->select("c.id, c.ativo, c.dataCadastro, c.dataRecebimento, "
+                        . "c.ultimaAlteracao, c.programadoPara, IDENTITY(c.usuarioCadastro) AS usuarioCadastro, "
+                        . "IDENTITY(c.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, c.nome, c.slug, "
+//                        . "CONCAT('http://vostre.com.br/imagens/', c.brasao) AS brasao, "
+                        . "c.brasao, "
+                        . "IDENTITY(c.estado) AS estado")
+                ->distinct()
+                //->where("c.ultimaAlteracao > :ultimaAlteracao")
+                ->where("c.programadoPara IS NULL OR c.programadoPara <= :now")
+                ->andWhere("c.ativo = 1")
+                ->andWhere("e.sigla = :uf")
+                ->innerJoin("ApiBundle:Estado", "e", "WITH", "e.id = c.estado")
+                ->setParameter('now', new \DateTime())
+                ->setParameter('uf', $uf)
+                ->addOrderBy('c.id');
+        } else if($uf && $slug){
+            $qb = $this->createQueryBuilder('c')
+                ->select("c.id, c.ativo, c.dataCadastro, c.dataRecebimento, "
+                        . "c.ultimaAlteracao, c.programadoPara, IDENTITY(c.usuarioCadastro) AS usuarioCadastro, "
+                        . "IDENTITY(c.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, c.nome, c.slug, "
+//                        . "CONCAT('http://vostre.com.br/imagens/', c.brasao) AS brasao, "
+                        . "c.brasao, "
+                        . "IDENTITY(c.estado) AS estado")
+                ->distinct()
+                //->where("c.ultimaAlteracao > :ultimaAlteracao")
+                ->where("c.programadoPara IS NULL OR c.programadoPara <= :now")
+                ->andWhere("c.ativo = 1")
+                ->andWhere("e.sigla = :uf")
+                ->andWhere("c.slug = :slug")
+                ->innerJoin("ApiBundle:Estado", "e", "WITH", "e.id = c.estado")
+                ->setParameter('now', new \DateTime())
+                ->setParameter('uf', $uf)
+                ->setParameter('slug', $slug)
+                ->addOrderBy('c.id');
+        } else{
+            $qb = $this->createQueryBuilder('c')
+                ->select('c.id, c.ativo, c.dataCadastro, c.dataRecebimento, '
+                        . 'c.ultimaAlteracao, c.programadoPara, IDENTITY(c.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(c.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, c.nome, c.slug, c.brasao, IDENTITY(c.estado) AS estado')
+                ->distinct()
+                //->where("c.ultimaAlteracao > :ultimaAlteracao")
+                ->where("c.programadoPara IS NULL OR c.programadoPara <= :now")
+                ->andWhere("c.ativo = 1")
+                ->innerJoin("ApiBundle:Estado", "e", "WITH", "e.id = c.estado")
+                ->setParameter('now', new \DateTime())
+                ->addOrderBy('c.id');
+        }
+        
+        
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
     public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
         $qb = $this->createQueryBuilder('c')
                 ->select('c.id, c.ativo, c.dataCadastro, c.dataRecebimento, '

@@ -17,7 +17,7 @@ class MensagemRepository extends \Doctrine\ORM\EntityRepository
                 ->distinct()
                 ->where("m.ultimaAlteracao > :ultimaAlteracao")
                 //->andWhere("p.programadoPara IS NULL OR p.programadoPara <= :now")
-                ->andWhere("m.ativo = 1")
+                //->andWhere("p.ativo = 1")
                 ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
                 ->addOrderBy('m.id');
         

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ asset('css/vegas.min.css') }}">
+
+        <title>Hello, world!</title>
+    </head>
+    <body>
+        <nav class="navbar navbar-light" style="width: fit-content; background-color: #FFF; border-radius: 0 0px 10px 0; z-index: 10">
+            <a class="navbar-brand" href="#" style="color: #008">Circular</a>
+            <a class="nav-link" href="#" style="color: #008;" id="link-sobre">Sobre</a>
+        </nav>
+        
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Sobre o Projeto</h4>
+                    <p>Aplicativo de mobilidade urbana voltado inicialmente para o Sul do Estado do Rio de Janeiro e 
+                                regi&otilde;es pr&oacute;ximas. Traz de maneira simples e r&aacute;pida a informa&ccedil;&atilde;o 
+                                sempre que voc&ecirc; precisar, mesmo que n&atilde;o haja conex&atilde;o com a internet 
+                                no momento.</p>
+                            <p>Voc&ecirc; vai encontrar no Circular:</p>
+                            <ul>
+                                <li>Itiner&aacute;rios</li>
+                                <li>Paradas e Rodovi&aacute;rias</li>
+                                <li>Quadro de Hor&aacute;rios</li>
+                                <li>Pr&oacute;ximo Hor&aacute;rio Dispon&iacute;vel</li>
+                                <li>Tarifas</li>
+                                <li>Se&ccedil;&otilde;es</li>
+                                <li>Itiner&aacute;rios e Paradas Favoritas</li>
+                                <li>Quadro de Mensagens</li>
+                                <li>Modo Mapa</li>
+                            </ul>
+                            <p>Todos os dados s&atilde;o colhidos de fontes oficiais, ou seja, 
+                                informa&ccedil;&otilde;es prestadas pela pr&oacute;pria empresa respons&aacute;vel pelo 
+                                itiner&aacute;rio, seja por ve&iacute;culos oficiais ou por cartazes e afins colados em 
+                                rodovi&aacute;rias e pontos de parada. 
+                                <span class="text-bold">N&atilde;o h&aacute;, atualmente, qualquer v&iacute;nculo com qualquer 
+                                    empresa p&uacute;blica ou privada. Os dados s&atilde;o sempre colhidos e atualizados nas 
+                                    formas listadas acima.</span></p>
+                            <p>Caso verifique alguma inconsist&ecirc;ncia nos dados apresentados, por favor nos informe! 
+                                Faremos a corre&ccedil;&atilde;o o mais breve poss&iacute;vel.</p>
+                </div>
+                <div class="col-md-6">
+                    IMAGEM
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    IMAGEM 2
+                </div>
+                <div class="col-md-6">
+                    <h4>Alguns Dados</h4>
+                    <ul>
+                        <li>Quase 100 itiner&aacute;rios</li>
+                        <li>+50 pontos de parada, entre pontos comuns e rodovi&aacute;rias</li>
+                        <li>14 cidades</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <nav class="navbar fixed-bottom navbar-light" style="background-color: #000088; border-radius: 0 0px 10px 0;">
+            <div class="text-center navbar-text" style="color: white; width: 100%; z-index: 10">Almir Junior - 2015-2019</div>
+        </nav>
+
+{#        <div style="background-color: black; position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: .4"></div>#}
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" 
+        integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+        <script src="{{ asset('js/vegas.min.js') }}"></script>
+        <script>
+            $(document).ready(function(){
+                $('#link-sobre').click(function(){
+                    $('#modal-sobre').modal('show');
+                });
+                
+                {#$('body').vegas({
+                    slides: [
+                        { src: '{{ asset('imagens/bg.jpg') }}' }
+                    ]
+                });#}
+                
+            });
+        </script>
+    </body>
+</html>

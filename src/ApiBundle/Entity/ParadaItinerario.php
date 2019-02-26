@@ -82,6 +82,20 @@ class ParadaItinerario extends EntidadeBase {
      */
     private $valorSeguinte;
     
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="distanciaSeguinte", type="decimal", scale=2, nullable=true)
+     * @Gedmo\Versioned
+     * 
+     */
+    private $distanciaSeguinte;
+    
+    /**
+     * @ORM\Column(name="tempoSeguinte", type="datetime", nullable=true)
+     */
+    protected $tempoSeguinte;
+    
     public function __toString() {
         return $this->getNome();
     }
@@ -407,5 +421,53 @@ class ParadaItinerario extends EntidadeBase {
     public function getUsuarioUltimaAlteracao()
     {
         return $this->usuarioUltimaAlteracao;
+    }
+
+    /**
+     * Set distanciaSeguinte
+     *
+     * @param string $distanciaSeguinte
+     *
+     * @return ParadaItinerario
+     */
+    public function setDistanciaSeguinte($distanciaSeguinte)
+    {
+        $this->distanciaSeguinte = $distanciaSeguinte;
+
+        return $this;
+    }
+
+    /**
+     * Get distanciaSeguinte
+     *
+     * @return string
+     */
+    public function getDistanciaSeguinte()
+    {
+        return $this->distanciaSeguinte;
+    }
+
+    /**
+     * Set tempoSeguinte
+     *
+     * @param \DateTime $tempoSeguinte
+     *
+     * @return ParadaItinerario
+     */
+    public function setTempoSeguinte($tempoSeguinte)
+    {
+        $this->tempoSeguinte = $tempoSeguinte;
+
+        return $this;
+    }
+
+    /**
+     * Get tempoSeguinte
+     *
+     * @return \DateTime
+     */
+    public function getTempoSeguinte()
+    {
+        return $this->tempoSeguinte;
     }
 }
