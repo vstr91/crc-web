@@ -55,10 +55,13 @@ class ParadaItinerarioRepository extends \Doctrine\ORM\EntityRepository
         public function listarTodosRESTSemData($limite = null, $uf = "", $cidade = "", $bairro = "", $slug = ""){
             
             $qb = $this->createQueryBuilder('pi')
-                    ->select('i.id, i.ativo, i.dataCadastro, i.dataRecebimento, '
-                            . 'i.ultimaAlteracao, i.programadoPara, IDENTITY(i.usuarioCadastro) AS usuarioCadastro, '
-                            . 'IDENTITY(i.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, i.tarifa, i.sigla, i.distancia, i.tempo, i.acessivel, '
-                            . 'i.observacao, IDENTITY(i.empresa) AS empresa')
+                    ->select("i.id, i.ativo, i.dataCadastro, i.dataRecebimento, "
+                            . "i.ultimaAlteracao, i.programadoPara, IDENTITY(i.usuarioCadastro) AS usuarioCadastro, "
+                            . "IDENTITY(i.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, i.tarifa, i.sigla, i.distancia, i.tempo, i.acessivel, "
+                            . "i.observacao, "
+                            . "IDENTITY(i.empresa) AS empresa"
+//                            . "CONCAT('http://localhost/crc-web/web/app_dev.php/api/empresas/', em.slug) AS empresa"
+                            . "")
                     ->distinct()
                     ->where("pi.ativo = 1")
                     ->andWhere("e.sigla = :uf")
@@ -72,6 +75,7 @@ class ParadaItinerarioRepository extends \Doctrine\ORM\EntityRepository
                     ->innerJoin("ApiBundle:Bairro", "b", "WITH", "b.id = p.bairro")
                     ->innerJoin("ApiBundle:Cidade", "c", "WITH", "c.id = b.cidade")
                     ->innerJoin("ApiBundle:Estado", "e", "WITH", "e.id = c.estado")
+//                    ->innerJoin("ApiBundle:Empresa", "em", "WITH", "em.id = i.empresa")
                     ->setParameter('uf', $uf)
                     ->setParameter('cidade', $cidade)
                     ->setParameter('bairro', $bairro)

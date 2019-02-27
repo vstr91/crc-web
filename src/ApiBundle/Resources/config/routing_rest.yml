@@ -55,6 +55,18 @@ circular_api_get_itinerarios_parada:
     pattern: /paradas/{uf}/{cidade}/{bairro}/{slug}/itinerarios
     defaults: {method: GET, _controller: ApiBundle:CircularRest:getItinerariosParada, uf: '', cidade: '', bairro: '', slug: ''}
     
+circular_api_get_horarios_itinerario:
+    pattern: /horarios/{itinerario}
+    defaults: {method: GET, _controller: ApiBundle:CircularRest:getHorariosItinerario, itinerario: ''}
+    
+circular_api_get_proximo_horario_itinerario:
+    pattern: /horarios/{itinerario}/proximo
+    defaults: {method: GET, _controller: ApiBundle:CircularRest:getProximoHorarioItinerario, itinerario: ''}
+    
+circular_api_get_horario_anterior_itinerario:
+    pattern: /horarios/{itinerario}/anterior
+    defaults: {method: GET, _controller: ApiBundle:CircularRest:getHorarioAnteriorItinerario, itinerario: ''}
+    
 circular_api_valida_usuario:
     pattern: /valida-usuario
     defaults: {_controller: ApiBundle:CircularRest:validaUsuario}

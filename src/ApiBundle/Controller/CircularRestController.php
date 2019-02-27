@@ -1591,7 +1591,7 @@ class CircularRestController extends FOSRestController {
         
     }
     
-        public function getItinerariosParadaAction(Request $request, $uf = "", $cidade = "", $bairro = "", $slug = "") {
+    public function getItinerariosParadaAction(Request $request, $uf = "", $cidade = "", $bairro = "", $slug = "") {
         $em = $this->getDoctrine()->getManager();
         
         $itinerarios = $em->getRepository('ApiBundle:ParadaItinerario')
@@ -1603,6 +1603,63 @@ class CircularRestController extends FOSRestController {
                     array(
                         "meta" => array(array("registros" => $totalRegistros, "status" => 200, "mensagem" => "ok")),
                         "itinerarios_parada" => $itinerarios
+                    ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
+
+
+            return $this->handleView($view);
+        
+    }
+    
+    public function getHorariosItinerarioAction(Request $request, $itinerario) {
+        $em = $this->getDoctrine()->getManager();
+        
+        $horarios = $em->getRepository('ApiBundle:HorarioItinerario')
+                ->listarTodosRESTSemData(null, $itinerario);
+        
+        $totalRegistros = count($horarios);
+        
+            $view = View::create(
+                    array(
+                        "meta" => array(array("registros" => $totalRegistros, "status" => 200, "mensagem" => "ok")),
+                        "horarios_itinerario" => $horarios
+                    ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
+
+
+            return $this->handleView($view);
+        
+    }
+    
+    public function getProximoHorarioItinerarioAction(Request $request, $itinerario) {
+        $em = $this->getDoctrine()->getManager();
+        
+        $horarios = $em->getRepository('ApiBundle:HorarioItinerario')
+                ->listarProximoHorarioREST(1, $itinerario);
+        
+        $totalRegistros = count($horarios);
+        
+            $view = View::create(
+                    array(
+                        "meta" => array(array("registros" => $totalRegistros, "status" => 200, "mensagem" => "ok")),
+                        "horarios_itinerario" => $horarios
+                    ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
+
+
+            return $this->handleView($view);
+        
+    }
+    
+    public function getHorarioAnteriorItinerarioAction(Request $request, $itinerario) {
+        $em = $this->getDoctrine()->getManager();
+        
+        $horarios = $em->getRepository('ApiBundle:HorarioItinerario')
+                ->listarHorarioAnteriorREST(1, $itinerario);
+        
+        $totalRegistros = count($horarios);
+        
+            $view = View::create(
+                    array(
+                        "meta" => array(array("registros" => $totalRegistros, "status" => 200, "mensagem" => "ok")),
+                        "horarios_itinerario" => $horarios
                     ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
 
 
