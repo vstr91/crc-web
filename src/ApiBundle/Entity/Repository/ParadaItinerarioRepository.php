@@ -90,5 +90,38 @@ class ParadaItinerarioRepository extends \Doctrine\ORM\EntityRepository
             return $qb->getQuery()->getResult();
 
         }
+        
+        public function listarTodosRESTSemDataPorId($limite = null, $id){
+            
+            $qb = $this->createQueryBuilder('pi')
+                    ->select("i.id, i.ativo, i.dataCadastro, i.dataRecebimento, "
+                            . "i.ultimaAlteracao, i.programadoPara, IDENTITY(i.usuarioCadastro) AS usuarioCadastro, "
+                            . "IDENTITY(i.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, i.tarifa, i.sigla, i.distancia, i.tempo, i.acessivel, "
+                            . "i.observacao, "
+                            . "IDENTITY(i.empresa) AS empresa"
+//                            . "CONCAT('http://localhost/crc-web/web/app_dev.php/api/empresas/', em.slug) AS empresa"
+                            . "")
+                    ->distinct()
+                    ->where("pi.ativo = 1")
+                    ->andWhere("pi.parada = :id")
+                    ->andWhere('pi.ordem < (SELECT MAX(pi2.ordem) FROM ApiBundle:ParadaItinerario pi2 WHERE pi2.itinerario = i.id)')
+                    ->andWhere("p.programadoPara IS NULL OR p.programadoPara <= :now")
+                    ->innerJoin("ApiBundle:Parada", "p", "WITH", "p.id = pi.parada")
+                    ->innerJoin("ApiBundle:Itinerario", "i", "WITH", "i.id = pi.itinerario")
+                    ->innerJoin("ApiBundle:Bairro", "b", "WITH", "b.id = p.bairro")
+                    ->innerJoin("ApiBundle:Cidade", "c", "WITH", "c.id = b.cidade")
+                    ->innerJoin("ApiBundle:Estado", "e", "WITH", "e.id = c.estado")
+//                    ->innerJoin("ApiBundle:Empresa", "em", "WITH", "em.id = i.empresa")
+                    ->setParameter('id', $id)
+                    ->setParameter('now', new \DateTime())
+                    ->addOrderBy('pi.id');
+
+            if(false == is_null($limite)){
+                $qb->setMaxResults($limite);
+            }
+
+            return $qb->getQuery()->getResult();
+
+        }
     
 }

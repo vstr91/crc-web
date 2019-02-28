@@ -185,4 +185,174 @@ class HorarioItinerarioRepository extends \Doctrine\ORM\EntityRepository
         
     }
     
+    public function listarPrimeiroHorarioREST($limite = null, $itinerario, $umDia = null){
+        
+        $date = new \DateTime('now');
+        $dia = $date->format('D');
+        
+        if($umDia != null){
+            $dia = $umDia;
+        } else{
+            switch($dia){
+                case 'Sun':
+                    $dia = "domingo";
+                    break;
+                case 'Mon':
+                    $dia = "segunda";
+                    break;
+                case 'Tue':
+                    $dia = "terca";
+                    break;
+                case 'Wed':
+                    $dia = "quarta";
+                    break;
+                case 'Thu':
+                    $dia = "quinta";
+                    break;
+                case 'Fri':
+                    $dia = "sexta";
+                    break;
+                case 'Sat':
+                    $dia = "sabado";
+                    break;
+            }
+        }
+        
+        
+        
+        $qb = $this->createQueryBuilder('hi')
+                ->select('hi.id, hi.ativo, hi.dataCadastro, hi.dataRecebimento, '
+                        . 'hi.ultimaAlteracao, hi.programadoPara, IDENTITY(hi.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(hi.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, hi.domingo, '
+                        . 'hi.segunda, hi.terca, hi.quarta, hi.quinta, hi.sexta, hi.sabado, hi.observacao, '
+                        . 'SUBSTRING(h.nome, 12, 5) AS horario, IDENTITY(hi.itinerario) AS itinerario')
+                ->distinct()
+                ->where("hi.itinerario = :itinerario")
+                ->andWhere("hi.$dia = 1")
+                ->andWhere("hi.programadoPara IS NULL OR hi.programadoPara <= :now")
+                ->innerJoin("ApiBundle:Horario", "h", "WITH", "h.id = hi.horario")
+                ->setParameter('itinerario', $itinerario)
+                ->setParameter('now', new \DateTime())
+                ->addOrderBy('SUBSTRING(h.nome, 12, 5)');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
+    public function listarUltimoHorarioREST($limite = null, $itinerario, $umDia = null){
+        
+        $date = new \DateTime('now');
+        $dia = $date->format('D');
+        
+        if($umDia != null){
+            $dia = $umDia;
+        } else{
+            switch($dia){
+                case 'Sun':
+                    $dia = "domingo";
+                    break;
+                case 'Mon':
+                    $dia = "segunda";
+                    break;
+                case 'Tue':
+                    $dia = "terca";
+                    break;
+                case 'Wed':
+                    $dia = "quarta";
+                    break;
+                case 'Thu':
+                    $dia = "quinta";
+                    break;
+                case 'Fri':
+                    $dia = "sexta";
+                    break;
+                case 'Sat':
+                    $dia = "sabado";
+                    break;
+            }
+        }
+        
+        
+        
+        $qb = $this->createQueryBuilder('hi')
+                ->select('hi.id, hi.ativo, hi.dataCadastro, hi.dataRecebimento, '
+                        . 'hi.ultimaAlteracao, hi.programadoPara, IDENTITY(hi.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(hi.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, hi.domingo, '
+                        . 'hi.segunda, hi.terca, hi.quarta, hi.quinta, hi.sexta, hi.sabado, hi.observacao, '
+                        . 'SUBSTRING(h.nome, 12, 5) AS horario, IDENTITY(hi.itinerario) AS itinerario')
+                ->distinct()
+                ->where("hi.itinerario = :itinerario")
+                ->andWhere("hi.$dia = 1")
+                ->andWhere("hi.programadoPara IS NULL OR hi.programadoPara <= :now")
+                ->innerJoin("ApiBundle:Horario", "h", "WITH", "h.id = hi.horario")
+                ->setParameter('itinerario', $itinerario)
+                ->setParameter('now', new \DateTime())
+                ->addOrderBy('SUBSTRING(h.nome, 12, 5)', 'DESC');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
+    public function listarHorarioSeguinteREST($limite = null, $itinerario, $hora){
+        
+        $date = new \DateTime('now');
+        $dia = $date->format('D');
+        
+        switch($dia){
+            case 'Sun':
+                $dia = "domingo";
+                break;
+            case 'Mon':
+                $dia = "segunda";
+                break;
+            case 'Tue':
+                $dia = "terca";
+                break;
+            case 'Wed':
+                $dia = "quarta";
+                break;
+            case 'Thu':
+                $dia = "quinta";
+                break;
+            case 'Fri':
+                $dia = "sexta";
+                break;
+            case 'Sat':
+                $dia = "sabado";
+                break;
+        }
+        
+        $qb = $this->createQueryBuilder('hi')
+                ->select('hi.id, hi.ativo, hi.dataCadastro, hi.dataRecebimento, '
+                        . 'hi.ultimaAlteracao, hi.programadoPara, IDENTITY(hi.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(hi.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, hi.domingo, '
+                        . 'hi.segunda, hi.terca, hi.quarta, hi.quinta, hi.sexta, hi.sabado, hi.observacao, '
+                        . 'SUBSTRING(h.nome, 12, 5) AS horario, IDENTITY(hi.itinerario) AS itinerario')
+                ->distinct()
+                ->where("hi.itinerario = :itinerario")
+                ->andWhere("SUBSTRING(h.nome, 12, 5) > :hora")
+                ->andWhere("hi.$dia = 1")
+                ->andWhere("hi.programadoPara IS NULL OR hi.programadoPara <= :now")
+                ->innerJoin("ApiBundle:Horario", "h", "WITH", "h.id = hi.horario")
+                ->setParameter('itinerario', $itinerario)
+                ->setParameter('now', new \DateTime())
+                ->setParameter('hora', $hora)
+                ->addOrderBy('SUBSTRING(h.nome, 12, 5)');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
 }

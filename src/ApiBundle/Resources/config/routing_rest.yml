@@ -50,6 +50,10 @@ circular_api_get_paradas:
 circular_api_get_pontos_interesse:
     pattern: /pontos-interesse/{uf}/{cidade}/{bairro}/{slug}
     defaults: {method: GET, _controller: ApiBundle:CircularRest:getPontosInteresse, uf: '', cidade: '', bairro: '', slug: ''}
+
+circular_api_get_itinerarios_parada_por_id:
+    pattern: /paradas-id/{id}/itinerarios
+    defaults: {method: GET, _controller: ApiBundle:CircularRest:getItinerariosParadaPorId, id: ''}
     
 circular_api_get_itinerarios_parada:
     pattern: /paradas/{uf}/{cidade}/{bairro}/{slug}/itinerarios
@@ -66,6 +70,18 @@ circular_api_get_proximo_horario_itinerario:
 circular_api_get_horario_anterior_itinerario:
     pattern: /horarios/{itinerario}/anterior
     defaults: {method: GET, _controller: ApiBundle:CircularRest:getHorarioAnteriorItinerario, itinerario: ''}
+
+circular_api_get_primeiro_horario_itinerario:
+    pattern: /horarios/{itinerario}/primeiro/{dia}
+    defaults: {method: GET, _controller: ApiBundle:CircularRest:getPrimeiroHorarioItinerario, itinerario: '', dia: ''}
+    
+circular_api_get_ultimo_horario_itinerario:
+    pattern: /horarios/{itinerario}/ultimo/{dia}
+    defaults: {method: GET, _controller: ApiBundle:CircularRest:getUltimoHorarioItinerario, itinerario: '', dia: ''}
+    
+circular_api_get_horario_seguinte_itinerario:
+    pattern: /horarios/{itinerario}/seguinte/{hora}
+    defaults: {method: GET, _controller: ApiBundle:CircularRest:getHorarioSeguinteItinerario, itinerario: '', hora: ''}
     
 circular_api_valida_usuario:
     pattern: /valida-usuario

@@ -1,0 +1,193 @@
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" 
+              integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+   integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+   crossorigin=""/>
+        <title>Teste{#Circular | Itiner&aacute;rios e Hor&aacute;rios de &Ocirc;nibus#}</title>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-dark" id="nav">
+            <a class="navbar-brand" href="/circular">
+                <img src="{{ asset('imagens/circular.png') }}"
+                                                  class="md-none"
+                                                  style="height: 50px;" /></a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" 
+                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" id="link-sobre" 
+                           href="#" style="font-weight: bold; color: white;">Sobre o Projeto</a>
+                    </li>
+                </ul>
+                <a href="https://play.google.com/store/apps/details?id=br.com.vostre.circular" 
+                   target="_blank">
+                    <img src="{{ asset('imagens/badge.png') }}"
+                         class="right"
+                         style="height: 60px;" />
+                </a>
+            </div>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12 m-0 p-0">
+                    <div id="map" style="height: 500px"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" tabindex="-1" role="dialog" id="modal-sobre">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Sobre o Projeto</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Circular é um aplicativo de mobilidade urbana criado 
+                            para facilitar a consulta de horários de ônibus municipais e 
+                            intermunicipais em Barra do Piraí-RJ e região.</p>
+                        <p>Foi desenvolvido e lançado por Almir Junior em 2015 e 
+                            completamente remodelado no ano de 2018, sendo 
+                            relançado em 2019 com novas funções e uma navegação 
+                            mais fácil e intuitiva.</p>
+                        <p>O aplicativo está disponível de forma gratuita para 
+                            smartphones com sistema Android. O download pode ser 
+                            realizado diretamente na loja de aplicativos oficial do Google, Google Play.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn bg-dark text-white" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- MODAL PARADA -->
+        <div class="modal fade" tabindex="-1" role="dialog" id="modal-parada">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="parada-title">Sobre o Projeto</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="parada-conteudo">
+                        <div class="row">
+                            <div class="col-6"><div id="parada-imagem"></div></div>
+                            <div class="col-6"><div id="parada-lista"></div></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn bg-dark text-white" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" 
+                integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" 
+        crossorigin="anonymous"></script>
+         <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+        integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+        crossorigin=""></script>
+        <script type="text/javascript">
+            
+            var map;
+            
+            function criarMarker($latitude, $longitude, $nome, $imagem, $id, $mapa){
+                marker = L.marker([$latitude, $longitude]).addTo($mapa);
+                
+                // onClick
+                marker.on('click', function(){
+                    $('#parada-title').html($nome);
+                    
+                    carregaItinerarios($id);
+                    
+                    $('#parada-lista').html();
+                    $('#parada-imagem').html("<div style='height: 200px; width: 200px; background-position: center; background-repeat: no-repeat; background-size: contain; background-image: url({{ asset('uploads/imagens/') }}"+$imagem+")' />");
+                    $('#modal-parada').modal('show');
+                });
+                
+                return marker;
+            }
+            
+            function carregaParadas(){
+                $.ajax({
+                    url: '{{ path('circular_api_get_paradas') }}',
+                    method: 'GET',
+                    success: function (response, status, xhr, form) {
+                        console.log(response.paradas);
+                        $.each(response.paradas, function(i, item){
+                            var parada = response.paradas[i];
+                            criarMarker(parada.latitude, parada.longitude, parada.nome, parada.imagem, parada.id, map);
+                        });
+                    }
+                });
+            }
+            
+            function carregaItinerarios($id){
+                var path = "{{ path('circular_api_get_itinerarios_parada_por_id', {'id': '-1'}) }}";
+                path = path.replace("-1", $id);
+                
+                console.log(path);
+                
+                $.ajax({
+                    url: path,
+                    method: 'GET',
+                    success: function (response, status, xhr, form) {
+                        console.log(response);
+                        $.each(response.paradas, function(i, item){
+                            var parada = response.paradas[i];
+                            criarMarker(parada.latitude, parada.longitude, parada.nome, parada.imagem, parada.slug, map);
+                        });
+                    }
+                });
+            }
+            
+            $(document).ready(function () {
+                $('#link-sobre').click(function () {
+                    $('#modal-sobre').modal('show');
+                    return false;
+                });
+                
+                $('#map').css('height', ($(window).height() - $('#nav').outerHeight()));
+                
+                map = L.map('map').setView([-22.470616, -43.825333], 16);
+                
+                L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+                    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                    maxZoom: 18,
+                    id: 'mapbox.streets',
+                    accessToken: 'pk.eyJ1IjoiYWxtaXJqdW5pb3I5MSIsImEiOiJjanNvdnV5OXEwcjNzM3luNWc5anA3OHJnIn0.Uj8yuT4uCHMdHhyjjX2B-A'
+                }).addTo(map);
+                
+                carregaParadas();
+                
+                
+                
+            });
+        </script>
+    </body>
+</html>

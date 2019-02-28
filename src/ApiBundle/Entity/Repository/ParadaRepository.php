@@ -71,6 +71,7 @@ class ParadaRepository extends \Doctrine\ORM\EntityRepository
                 ->innerJoin("ApiBundle:Bairro", "b", "WITH", "b.id = p.bairro")
                 ->innerJoin("ApiBundle:Cidade", "c", "WITH", "c.id = b.cidade")
                 ->innerJoin("ApiBundle:Estado", "e", "WITH", "e.id = c.estado")
+                ->innerJoin("ApiBundle:ParadaItinerario", "pi", "WITH", "pi.parada = p.id")
                 ->setParameter('uf', $uf)
                 ->setParameter('cidade', $cidade)
                 ->setParameter('bairro', $bairro)
@@ -94,6 +95,7 @@ class ParadaRepository extends \Doctrine\ORM\EntityRepository
                 ->innerJoin("ApiBundle:Bairro", "b", "WITH", "b.id = p.bairro")
                 ->innerJoin("ApiBundle:Cidade", "c", "WITH", "c.id = b.cidade")
                 ->innerJoin("ApiBundle:Estado", "e", "WITH", "e.id = c.estado")
+                ->innerJoin("ApiBundle:ParadaItinerario", "pi", "WITH", "pi.parada = p.id")
                 ->setParameter('uf', $uf)
                 ->setParameter('cidade', $cidade)
                 ->setParameter('bairro', $bairro)
@@ -115,11 +117,46 @@ class ParadaRepository extends \Doctrine\ORM\EntityRepository
                 ->innerJoin("ApiBundle:Bairro", "b", "WITH", "b.id = p.bairro")
                 ->innerJoin("ApiBundle:Cidade", "c", "WITH", "c.id = b.cidade")
                 ->innerJoin("ApiBundle:Estado", "e", "WITH", "e.id = c.estado")
+                ->innerJoin("ApiBundle:ParadaItinerario", "pi", "WITH", "pi.parada = p.id")
                 ->setParameter('uf', $uf)
                 ->setParameter('cidade', $cidade)
                 ->setParameter('now', new \DateTime())
                 ->addOrderBy('p.id');
             
+        } else if($uf && !$cidade && !$bairro && !$slug){
+            
+            $qb = $this->createQueryBuilder('p')
+                ->select('p.id, p.ativo, p.dataCadastro, p.dataRecebimento, '
+                        . 'p.ultimaAlteracao, p.programadoPara, IDENTITY(p.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(p.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, p.nome, p.slug, p.imagem, '
+                        . 'p.latitude, p.longitude, p.taxaDeEmbarque, IDENTITY(p.bairro) AS bairro, p.sentido')
+                ->distinct()
+                ->where("p.ativo = 1")
+                ->andWhere("e.sigla = :uf")
+                ->andWhere("p.programadoPara IS NULL OR p.programadoPara <= :now")
+                ->innerJoin("ApiBundle:Bairro", "b", "WITH", "b.id = p.bairro")
+                ->innerJoin("ApiBundle:Cidade", "c", "WITH", "c.id = b.cidade")
+                ->innerJoin("ApiBundle:Estado", "e", "WITH", "e.id = c.estado")
+                ->innerJoin("ApiBundle:ParadaItinerario", "pi", "WITH", "pi.parada = p.id")
+                ->setParameter('uf', $uf)
+                ->setParameter('now', new \DateTime())
+                ->addOrderBy('p.id');
+            
+        } else{
+            $qb = $this->createQueryBuilder('p')
+                ->select('p.id, p.ativo, p.dataCadastro, p.dataRecebimento, '
+                        . 'p.ultimaAlteracao, p.programadoPara, IDENTITY(p.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(p.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, p.nome, p.slug, p.imagem, '
+                        . 'p.latitude, p.longitude, p.taxaDeEmbarque, IDENTITY(p.bairro) AS bairro, p.sentido')
+                ->distinct()
+                ->where("p.ativo = 1")
+                ->andWhere("p.programadoPara IS NULL OR p.programadoPara <= :now")
+                ->innerJoin("ApiBundle:Bairro", "b", "WITH", "b.id = p.bairro")
+                ->innerJoin("ApiBundle:Cidade", "c", "WITH", "c.id = b.cidade")
+                ->innerJoin("ApiBundle:Estado", "e", "WITH", "e.id = c.estado")
+                ->innerJoin("ApiBundle:ParadaItinerario", "pi", "WITH", "pi.parada = p.id")
+                ->setParameter('now', new \DateTime())
+                ->addOrderBy('p.id');
         }
         
         

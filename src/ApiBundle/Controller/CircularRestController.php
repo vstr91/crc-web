@@ -1610,6 +1610,25 @@ class CircularRestController extends FOSRestController {
         
     }
     
+        public function getItinerariosParadaPorIdAction(Request $request, $id = "") {
+        $em = $this->getDoctrine()->getManager();
+        
+        $itinerarios = $em->getRepository('ApiBundle:ParadaItinerario')
+                ->listarTodosRESTSemDataPorId(null, $id);
+        
+        $totalRegistros = count($itinerarios);
+        
+            $view = View::create(
+                    array(
+                        "meta" => array(array("registros" => $totalRegistros, "status" => 200, "mensagem" => "ok")),
+                        "itinerarios_parada" => $itinerarios
+                    ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
+
+
+            return $this->handleView($view);
+        
+    }
+    
     public function getHorariosItinerarioAction(Request $request, $itinerario) {
         $em = $this->getDoctrine()->getManager();
         
@@ -1653,6 +1672,63 @@ class CircularRestController extends FOSRestController {
         
         $horarios = $em->getRepository('ApiBundle:HorarioItinerario')
                 ->listarHorarioAnteriorREST(1, $itinerario);
+        
+        $totalRegistros = count($horarios);
+        
+            $view = View::create(
+                    array(
+                        "meta" => array(array("registros" => $totalRegistros, "status" => 200, "mensagem" => "ok")),
+                        "horarios_itinerario" => $horarios
+                    ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
+
+
+            return $this->handleView($view);
+        
+    }
+    
+    public function getPrimeiroHorarioItinerarioAction(Request $request, $itinerario, $dia) {
+        $em = $this->getDoctrine()->getManager();
+        
+        $horarios = $em->getRepository('ApiBundle:HorarioItinerario')
+                ->listarPrimeiroHorarioREST(1, $itinerario, $dia);
+        
+        $totalRegistros = count($horarios);
+        
+            $view = View::create(
+                    array(
+                        "meta" => array(array("registros" => $totalRegistros, "status" => 200, "mensagem" => "ok")),
+                        "horarios_itinerario" => $horarios
+                    ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
+
+
+            return $this->handleView($view);
+        
+    }
+    
+    public function getUltimoHorarioItinerarioAction(Request $request, $itinerario, $dia) {
+        $em = $this->getDoctrine()->getManager();
+        
+        $horarios = $em->getRepository('ApiBundle:HorarioItinerario')
+                ->listarUltimoHorarioREST(1, $itinerario, $dia);
+        
+        $totalRegistros = count($horarios);
+        
+            $view = View::create(
+                    array(
+                        "meta" => array(array("registros" => $totalRegistros, "status" => 200, "mensagem" => "ok")),
+                        "horarios_itinerario" => $horarios
+                    ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
+
+
+            return $this->handleView($view);
+        
+    }
+    
+    public function getHorarioSeguinteItinerarioAction(Request $request, $itinerario, $hora) {
+        $em = $this->getDoctrine()->getManager();
+        
+        $horarios = $em->getRepository('ApiBundle:HorarioItinerario')
+                ->listarHorarioSeguinteREST(1, $itinerario, $hora);
         
         $totalRegistros = count($horarios);
         
