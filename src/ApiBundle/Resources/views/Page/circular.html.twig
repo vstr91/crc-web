@@ -12,10 +12,25 @@
          <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
    integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
    crossorigin=""/>
+         <style>
+             .horario{
+                 color: #008;
+                 font-weight: bold;
+             }
+             
+             .obs-itinerario{
+                 color: #008;
+                 font-weight: bold;
+             }
+             
+             .cidade{
+                 color: #AAA;
+             }
+         </style>
         <title>Teste{#Circular | Itiner&aacute;rios e Hor&aacute;rios de &Ocirc;nibus#}</title>
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-light bg-dark" id="nav">
+        <nav class="navbar navbar-expand-lg navbar-light" id="nav" style="background-color: #008;">
             <a class="navbar-brand" href="/circular">
                 <img src="{{ asset('imagens/circular.png') }}"
                                                   class="md-none"
@@ -73,7 +88,7 @@
                             realizado diretamente na loja de aplicativos oficial do Google, Google Play.</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn bg-dark text-white" data-dismiss="modal">Fechar</button>
+                        <button type="button" class="btn text-white" style="background-color: #008;" data-dismiss="modal">Fechar</button>
                     </div>
                 </div>
             </div>
@@ -89,14 +104,18 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body" id="parada-conteudo">
+                    <div class="modal-body" id="parada-conteudo" style="overflow-y: auto; max-height: 600px;">
                         <div class="row">
-                            <div class="col-6"><div id="parada-imagem"></div></div>
-                            <div class="col-6"><div id="parada-lista"></div></div>
+                            <div class="col-12"><div id="parada-imagem"></div></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12" id="tabela">
+                                
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn bg-dark text-white" data-dismiss="modal">Fechar</button>
+                        <button type="button" class="btn text-white" style="background-color: #008;" data-dismiss="modal">Fechar</button>
                     </div>
                 </div>
             </div>
@@ -126,7 +145,7 @@
                     carregaItinerarios($id);
                     
                     $('#parada-lista').html();
-                    $('#parada-imagem').html("<div style='height: 200px; width: 200px; background-position: center; background-repeat: no-repeat; background-size: contain; background-image: url({{ asset('uploads/imagens/') }}"+$imagem+")' />");
+                    $('#parada-imagem').html("<div style='height: 300px; width: auto; background-position: center; background-repeat: no-repeat; background-size: contain; background-image: url({{ asset('uploads/imagens/') }}"+$imagem+")' />");
                     $('#modal-parada').modal('show');
                 });
                 
@@ -138,7 +157,7 @@
                     url: '{{ path('circular_api_get_paradas') }}',
                     method: 'GET',
                     success: function (response, status, xhr, form) {
-                        console.log(response.paradas);
+                        //console.log(response.paradas);
                         $.each(response.paradas, function(i, item){
                             var parada = response.paradas[i];
                             criarMarker(parada.latitude, parada.longitude, parada.nome, parada.imagem, parada.id, map);
@@ -148,20 +167,61 @@
             }
             
             function carregaItinerarios($id){
+                $('#parada-lista').html("");
                 var path = "{{ path('circular_api_get_itinerarios_parada_por_id', {'id': '-1'}) }}";
                 path = path.replace("-1", $id);
-                
-                console.log(path);
                 
                 $.ajax({
                     url: path,
                     method: 'GET',
                     success: function (response, status, xhr, form) {
-                        console.log(response);
-                        $.each(response.paradas, function(i, item){
-                            var parada = response.paradas[i];
-                            criarMarker(parada.latitude, parada.longitude, parada.nome, parada.imagem, parada.slug, map);
+                        
+                        $.each(response.itinerarios_parada, function(i, item){
+                            var itinerario = response.itinerarios_parada[i][0];
+                            var horario = response.itinerarios_parada[i][1];
+                            
+                            var paradas = response.itinerarios_parada[i][2];
+                            
+                            var partida = paradas[0]['bairro'];
+                            var cidadePartida = paradas[0]['cidade'];
+                            var destino = paradas[paradas.length-1]['bairro'];
+                            var cidadeDestino = paradas[paradas.length-1]['cidade'];
+                            
+                            var obsItinerario = itinerario['observacao'];
+                            var obsHorario = response.itinerarios_parada[i][3];
+                            
+                            if(obsItinerario && obsHorario){
+                                
+                                $linha = "<div class='row' style='padding: 10px 0 10px 0; border-top: 1px solid blue;border-bottom: 1px solid blue;'><div class='col-7'><div class='row'><div class='col-6'>"+partida+"<br /><small><span class='cidade'>"
+                                    +cidadePartida+"</span></small></div><div class='col-6'>"+destino+"<br /><small><span class='cidade'>"
+                                    +cidadeDestino+"</span></small></div></div><div class='row'><div class='col-12 text-center'><small><span class='obs-itinerario'>"
+                                    +obsItinerario+"</span></small></div></div></div><div class='col-2' style='margin-top: 3%'><span class='horario'>"+horario+"</span><br /><small>("+obsHorario+")</small></div><div class='col-3'><a href='#' class='btn btn-sm btn-default horario' style='margin-top: 5%'>Ver Todos</a></div></div>";
+                            
+                            } else if(obsItinerario && !obsHorario){
+                                
+                                $linha = "<div class='row' style='padding: 10px 0 10px 0; border-top: 1px solid blue;border-bottom: 1px solid blue;'><div class='col-7'><div class='row'><div class='col-6'>"+partida+"<br /><small><span class='cidade'>"
+                                    +cidadePartida+"</span></small></div><div class='col-6'>"+destino+"<br /><small><span class='cidade'>"
+                                    +cidadeDestino+"</span></small></div></div><div class='row'><div class='col-12 text-center'><small><span class='obs-itinerario'>"
+                                    +obsItinerario+"</span></small></div></div></div><div class='col-2' style='margin-top: 3%'><span class='horario'>"+horario+"</span></div><div class='col-3'><a href='#' class='btn btn-sm btn-default horario' style='margin-top: 5%'>Ver Todos</a></div></div>";
+                            
+                            } else if(!obsItinerario && obsHorario){
+                                
+                                $linha = "<div class='row' style='padding: 10px 0 10px 0; border-top: 1px solid blue;border-bottom: 1px solid blue;'><div class='col-7'><div class='row'><div class='col-6'>"+partida+"<br /><small><span class='cidade'>"
+                                    +cidadePartida+"</span></small></div><div class='col-6'>"+destino+"<br /><small><span class='cidade'>"
+                                    +cidadeDestino+"</span></small></div></div></div><div class='col-2' style='margin-top: 3%'><span class='horario'>"+horario+"</span><br /><small>("+obsHorario+")</small></div><div class='col-3'><a href='#' class='btn btn-sm btn-default horario' style='margin-top: 5%'>Ver Todos</a></div></div>";
+                            
+                            } else{
+                                
+                                $linha = "<div class='row' style='padding: 10px 0 10px 0; border-top: 1px solid blue;border-bottom: 1px solid blue;'><div class='col-7'><div class='row'><div class='col-6'>"+partida+"<br /><small><span class='cidade'>"
+                                    +cidadePartida+"</span></small></div><div class='col-6'>"+destino+"<br /><small><span class='cidade'>"
+                                    +cidadeDestino+"</span></small></div></div></div><div class='col-2' style='margin-top: 3%'><span class='horario'>"+horario+"</span></div><div class='col-3'><a href='#' class='btn btn-sm btn-default horario' style='margin-top: 10%'>Ver Todos</a></div></div>";
+                            
+                            }
+                            
+                            $('#tabela').append($linha);
+                            
                         });
+                        
                     }
                 });
             }

@@ -1616,12 +1616,25 @@ class CircularRestController extends FOSRestController {
         $itinerarios = $em->getRepository('ApiBundle:ParadaItinerario')
                 ->listarTodosRESTSemDataPorId(null, $id);
         
-        $totalRegistros = count($itinerarios);
+        $it = array();
+        
+        foreach($itinerarios as $i){
+            $proximoHorario = $this->getProximoHorarioItinerarioTextoAction($request, $i['id'], null);
+            $paradas = $this->getParadasItinerarioTextoAction($request, $i['id']);
+            $its = array($i, $proximoHorario['horario'], $paradas, $proximoHorario['observacao']);
+            array_push($it, $its);
+        }
+        
+        usort($it, function($a, $b){
+            return $a[1] > $b[1];
+        });
+        
+        $totalRegistros = count($it);
         
             $view = View::create(
                     array(
                         "meta" => array(array("registros" => $totalRegistros, "status" => 200, "mensagem" => "ok")),
-                        "itinerarios_parada" => $itinerarios
+                        "itinerarios_parada" => $it
                     ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
 
 
@@ -1648,11 +1661,11 @@ class CircularRestController extends FOSRestController {
         
     }
     
-    public function getProximoHorarioItinerarioAction(Request $request, $itinerario) {
+    public function getProximoHorarioItinerarioAction(Request $request, $itinerario, $hora) {
         $em = $this->getDoctrine()->getManager();
         
         $horarios = $em->getRepository('ApiBundle:HorarioItinerario')
-                ->listarProximoHorarioREST(1, $itinerario);
+                ->listarProximoHorarioREST(1, $itinerario, $hora);
         
         $totalRegistros = count($horarios);
         
@@ -1667,11 +1680,21 @@ class CircularRestController extends FOSRestController {
         
     }
     
-    public function getHorarioAnteriorItinerarioAction(Request $request, $itinerario) {
+    public function getProximoHorarioItinerarioTextoAction(Request $request, $itinerario, $hora) {
         $em = $this->getDoctrine()->getManager();
         
         $horarios = $em->getRepository('ApiBundle:HorarioItinerario')
-                ->listarHorarioAnteriorREST(1, $itinerario);
+                ->listarProximoHorarioREST(1, $itinerario, $hora);
+        
+        return $horarios[0];
+        
+    }
+    
+    public function getHorarioAnteriorItinerarioAction(Request $request, $itinerario, $hora) {
+        $em = $this->getDoctrine()->getManager();
+        
+        $horarios = $em->getRepository('ApiBundle:HorarioItinerario')
+                ->listarHorarioAnteriorREST(1, $itinerario, $hora);
         
         $totalRegistros = count($horarios);
         
@@ -1740,6 +1763,35 @@ class CircularRestController extends FOSRestController {
 
 
             return $this->handleView($view);
+        
+    }
+    
+    public function getParadasItinerarioAction(Request $request, $itinerario) {
+        $em = $this->getDoctrine()->getManager();
+        
+        $paradas = $em->getRepository('ApiBundle:ParadaItinerario')
+                ->listarTodasParadasRESTSemDataComCidadeEBairro(null, $itinerario);
+        
+        $totalRegistros = count($paradas);
+        
+            $view = View::create(
+                    array(
+                        "meta" => array(array("registros" => $totalRegistros, "status" => 200, "mensagem" => "ok")),
+                        "paradas" => $paradas
+                    ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
+
+
+            return $this->handleView($view);
+        
+    }
+    
+    public function getParadasItinerarioTextoAction(Request $request, $itinerario) {
+        $em = $this->getDoctrine()->getManager();
+        
+        $paradas = $em->getRepository('ApiBundle:ParadaItinerario')
+                ->listarTodasParadasRESTSemDataComCidadeEBairro(null, $itinerario);
+        
+        return $paradas;
         
     }
     

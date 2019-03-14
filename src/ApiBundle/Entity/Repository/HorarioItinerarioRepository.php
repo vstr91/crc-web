@@ -77,7 +77,7 @@ class HorarioItinerarioRepository extends \Doctrine\ORM\EntityRepository
         
     }
     
-    public function listarProximoHorarioREST($limite = null, $itinerario){
+    public function listarProximoHorarioREST($limite = null, $itinerario, $hora){
         
         $date = new \DateTime('now');
         $dia = $date->format('D');
@@ -104,6 +104,10 @@ class HorarioItinerarioRepository extends \Doctrine\ORM\EntityRepository
             case 'Sat':
                 $dia = "sabado";
                 break;
+        }
+        
+        if(!$hora){
+            $hora = $date->format('H:i');
         }
         
         $qb = $this->createQueryBuilder('hi')
@@ -120,7 +124,7 @@ class HorarioItinerarioRepository extends \Doctrine\ORM\EntityRepository
                 ->innerJoin("ApiBundle:Horario", "h", "WITH", "h.id = hi.horario")
                 ->setParameter('itinerario', $itinerario)
                 ->setParameter('now', new \DateTime())
-                ->setParameter('hora', $date->format('H:i'))
+                ->setParameter('hora', $hora)
                 ->addOrderBy('SUBSTRING(h.nome, 12, 5)');
         
         if(false == is_null($limite)){
@@ -131,7 +135,7 @@ class HorarioItinerarioRepository extends \Doctrine\ORM\EntityRepository
         
     }
     
-    public function listarHorarioAnteriorREST($limite = null, $itinerario){
+    public function listarHorarioAnteriorREST($limite = null, $itinerario, $hora){
         
         $date = new \DateTime('now');
         $dia = $date->format('D');
@@ -160,6 +164,10 @@ class HorarioItinerarioRepository extends \Doctrine\ORM\EntityRepository
                 break;
         }
         
+        if(!$hora){
+            $hora = $date->format('H:i');
+        }
+        
         $qb = $this->createQueryBuilder('hi')
                 ->select('hi.id, hi.ativo, hi.dataCadastro, hi.dataRecebimento, '
                         . 'hi.ultimaAlteracao, hi.programadoPara, IDENTITY(hi.usuarioCadastro) AS usuarioCadastro, '
@@ -174,7 +182,7 @@ class HorarioItinerarioRepository extends \Doctrine\ORM\EntityRepository
                 ->innerJoin("ApiBundle:Horario", "h", "WITH", "h.id = hi.horario")
                 ->setParameter('itinerario', $itinerario)
                 ->setParameter('now', new \DateTime())
-                ->setParameter('hora', $date->format('H:i'))
+                ->setParameter('hora', $hora)
                 ->addOrderBy('SUBSTRING(h.nome, 12, 5)', 'DESC');
         
         if(false == is_null($limite)){

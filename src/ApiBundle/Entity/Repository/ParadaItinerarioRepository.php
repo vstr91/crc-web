@@ -123,5 +123,59 @@ class ParadaItinerarioRepository extends \Doctrine\ORM\EntityRepository
             return $qb->getQuery()->getResult();
 
         }
+        
+        public function listarTodasParadasRESTSemData($limite = null, $itinerario){
+            
+            $qb = $this->createQueryBuilder('pi')
+                    ->select("p.id, p.ativo, p.dataCadastro, p.dataRecebimento, 
+                        p.ultimaAlteracao, p.programadoPara, IDENTITY(p.usuarioCadastro) AS usuarioCadastro, 
+                        IDENTITY(p.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, p.nome, p.slug, p.imagem, 
+                        p.latitude, p.longitude, p.taxaDeEmbarque, IDENTITY(p.bairro) AS bairro, p.sentido")
+                    ->distinct()
+                    ->where("pi.ativo = 1")
+                    ->andWhere("p.ativo = 1")
+                    ->andWhere("pi.itinerario = :itinerario")
+                    ->andWhere("p.programadoPara IS NULL OR p.programadoPara <= :now")
+                    ->innerJoin("ApiBundle:Parada", "p", "WITH", "p.id = pi.parada")
+//                    ->innerJoin("ApiBundle:Empresa", "em", "WITH", "em.id = i.empresa")
+                    ->setParameter('itinerario', $itinerario)
+                    ->setParameter('now', new \DateTime())
+                    ->addOrderBy('pi.ordem');
+
+            if(false == is_null($limite)){
+                $qb->setMaxResults($limite);
+            }
+
+            return $qb->getQuery()->getResult();
+
+        }
+        
+        public function listarTodasParadasRESTSemDataComCidadeEBairro($limite = null, $itinerario){
+            
+            $qb = $this->createQueryBuilder('pi')
+                    ->select("p.id, p.ativo, p.dataCadastro, p.dataRecebimento, 
+                        p.ultimaAlteracao, p.programadoPara, IDENTITY(p.usuarioCadastro) AS usuarioCadastro, 
+                        IDENTITY(p.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, p.nome, p.slug, p.imagem, 
+                        p.latitude, p.longitude, p.taxaDeEmbarque, b.nome AS bairro, c.nome AS cidade, p.sentido")
+                    ->distinct()
+                    ->where("pi.ativo = 1")
+                    ->andWhere("p.ativo = 1")
+                    ->andWhere("pi.itinerario = :itinerario")
+                    ->andWhere("p.programadoPara IS NULL OR p.programadoPara <= :now")
+                    ->innerJoin("ApiBundle:Parada", "p", "WITH", "p.id = pi.parada")
+                    ->innerJoin("ApiBundle:Bairro", "b", "WITH", "b.id = p.bairro")
+                    ->innerJoin("ApiBundle:Cidade", "c", "WITH", "c.id = b.cidade")
+                    ->innerJoin("ApiBundle:Estado", "e", "WITH", "e.id = c.estado")
+                    ->setParameter('itinerario', $itinerario)
+                    ->setParameter('now', new \DateTime())
+                    ->addOrderBy('pi.ordem');
+
+            if(false == is_null($limite)){
+                $qb->setMaxResults($limite);
+            }
+
+            return $qb->getQuery()->getResult();
+
+        }
     
 }
