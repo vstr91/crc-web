@@ -1,0 +1,36 @@
+#pais : 
+#  type: rest
+#  resource:     "CircularSiteBundle:PaisRest"
+#  name_prefix:  api_
+
+circular_api_get_token:
+    pattern: /{id}/token/{tipo}/{versao}
+    defaults: {_controller: ApiBundle:CircularRest:getToken, tipo: -1, versao: -1}
+  
+circular_api_get_dados:
+    pattern: /recebe-dados/{hash}/{data}/{id}
+    defaults: {_controller: ApiBundle:CircularRest:getDados, id: -1}
+    
+circular_api_set_dados:
+    pattern: /envia-dados/{hash}
+    defaults: {method: POST, _controller: ApiBundle:CircularRest:setDados}
+    
+circular_api_valida_token:
+    pattern: /valida-token
+    defaults: {_controller: ApiBundle:CircularRest:validaToken}
+    
+circular_api_set_imagem:
+    pattern: /envia-imagem/{hash}
+    defaults: {method: POST, _controller: ApiBundle:CircularRest:setImagem}
+    
+circular_api_get_imagem:
+    pattern: /recebe-imagem/{nome}
+    defaults: {method: GET, _controller: ApiBundle:CircularRest:getImagem}
+    
+circular_api_get_preferencias:
+    pattern: /recebe-preferencias/{id}
+    defaults: {method: GET, _controller: ApiBundle:CircularRest:getPreferencias}
+    
+circular_api_valida_usuario:
+    pattern: /valida-usuario
+    defaults: {_controller: ApiBundle:CircularRest:validaUsuario}

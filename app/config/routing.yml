@@ -1,0 +1,31 @@
+hwi_oauth_redirect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
+    prefix:   /central/connect
+
+hwi_oauth_connect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/connect.xml"
+    prefix:   /central/connect
+
+hwi_oauth_login:
+    resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
+    prefix:   /central/login
+
+google_login:
+    path: /central/login/check-google
+
+central:
+    resource: "@CentralBundle/Resources/config/routing.yml"
+    prefix:   /
+
+api:
+    resource: "@ApiBundle/Resources/config/routing.yml"
+    prefix:   /
+
+app:
+    resource: '@AppBundle/Controller/'
+    type: annotation
+    
+rest: 
+  type: rest 
+  resource: "routing_rest.yml"
+  prefix: /api
