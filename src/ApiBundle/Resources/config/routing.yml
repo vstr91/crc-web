@@ -32,10 +32,6 @@ fos_user_security_logout:
 api_homepage:
     path:     /
     defaults: { _controller: ApiBundle:Page:index }
-    
-circular_homepage:
-    path:     /circular
-    defaults: { _controller: ApiBundle:Page:circular }
 
 central_homepage:
     path:     /central

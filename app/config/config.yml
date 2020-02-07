@@ -50,6 +50,7 @@ doctrine:
         user: '%database_user%'
         password: '%database_password%'
         charset: UTF8
+        unix_socket: /var/lib/mysql/mysql.sock
         # if using pdo_sqlite as your database driver:
         #   1. add the path in parameters.yml
         #     e.g. database_path: '%kernel.project_dir%/var/data/data.sqlite'
@@ -115,21 +116,14 @@ stof_doctrine_extensions:
             sluggable: true
             blameable: true
             
-web_profiler:
-    toolbar: true
-    intercept_redirects: false
+#web_profiler:
+#    toolbar: true
+#    intercept_redirects: false
     
 jms_serializer:
     property_naming: 
         id: 'jms_serializer.identical_property_naming_strategy'
-    visitors:
-        json:
-            options:
-#                - JSON_PRETTY_PRINT
-                - JSON_UNESCAPED_SLASHES
 
-
-        
 hwi_oauth:
     connect:
         account_connector: my_user_provider

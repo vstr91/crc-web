@@ -52,7 +52,7 @@ class ParadaItinerarioRepository extends \Doctrine\ORM\EntityRepository
         
     }
     
-        public function listarTodosRESTSemData($limite = null, $uf = "", $cidade = "", $bairro = "", $slug = ""){
+    public function listarTodosRESTSemData($limite = null, $uf = "", $cidade = "", $bairro = "", $slug = ""){
             
             $qb = $this->createQueryBuilder('pi')
                     ->select("i.id, i.ativo, i.dataCadastro, i.dataRecebimento, "

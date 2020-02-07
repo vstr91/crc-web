@@ -4,8 +4,8 @@
 #  name_prefix:  api_
 
 circular_api_get_token:
-    pattern: /{id}/token/{tipo}
-    defaults: {_controller: ApiBundle:CircularRest:getToken}
+    pattern: /{id}/token/{tipo}/{versao}
+    defaults: {_controller: ApiBundle:CircularRest:getToken, tipo: -1, versao: -1}
   
 circular_api_get_dados:
     pattern: /recebe-dados/{hash}/{data}/{id}
@@ -30,7 +30,11 @@ circular_api_get_imagem:
 circular_api_get_preferencias:
     pattern: /recebe-preferencias/{id}
     defaults: {method: GET, _controller: ApiBundle:CircularRest:getPreferencias}
-
+    
+circular_api_valida_usuario:
+    pattern: /valida-usuario
+    defaults: {_controller: ApiBundle:CircularRest:validaUsuario}
+    
 ## API INTERNA ##
 
 # EMPRESA
@@ -97,7 +101,3 @@ circular_api_get_horario_seguinte_itinerario:
     defaults: {method: GET, _controller: ApiBundle:CircularRest:getHorarioSeguinteItinerario, itinerario: '', hora: ''}
 
 ## FIM API INTERNA ##
-    
-circular_api_valida_usuario:
-    pattern: /valida-usuario
-    defaults: {_controller: ApiBundle:CircularRest:validaUsuario}

@@ -33,6 +33,25 @@ class CidadeRepository extends \Doctrine\ORM\EntityRepository
         
     }
     
+    public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('c')
+                ->select('c.id, c.ativo, c.dataCadastro, c.dataRecebimento, '
+                        . 'c.ultimaAlteracao, c.programadoPara, IDENTITY(c.usuarioCadastro) AS usuarioCadastro, '
+                        . 'IDENTITY(c.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, c.nome, c.slug, c.brasao, IDENTITY(c.estado) AS estado')
+                ->distinct()
+                ->where("c.ultimaAlteracao > :ultimaAlteracao")
+                //->andWhere("c.programadoPara IS NULL OR c.programadoPara <= :now")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->addOrderBy('c.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
     public function listarTodosRESTSemData($limite = null, $uf = null, $slug = null){
         
         if($uf && !$slug){
@@ -86,25 +105,6 @@ class CidadeRepository extends \Doctrine\ORM\EntityRepository
         }
         
         
-        
-        if(false == is_null($limite)){
-            $qb->setMaxResults($limite);
-        }
-        
-        return $qb->getQuery()->getResult();
-        
-    }
-    
-    public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
-        $qb = $this->createQueryBuilder('c')
-                ->select('c.id, c.ativo, c.dataCadastro, c.dataRecebimento, '
-                        . 'c.ultimaAlteracao, c.programadoPara, IDENTITY(c.usuarioCadastro) AS usuarioCadastro, '
-                        . 'IDENTITY(c.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, c.nome, c.slug, c.brasao, IDENTITY(c.estado) AS estado')
-                ->distinct()
-                ->where("c.ultimaAlteracao > :ultimaAlteracao")
-                //->andWhere("c.programadoPara IS NULL OR c.programadoPara <= :now")
-                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
-                ->addOrderBy('c.id');
         
         if(false == is_null($limite)){
             $qb->setMaxResults($limite);

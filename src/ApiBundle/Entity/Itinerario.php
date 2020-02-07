@@ -89,6 +89,13 @@ class Itinerario extends EntidadeBase {
      */
     private $observacao;
     
+    /**
+     * @ORM\Column(name="mostraRuas", type="boolean")
+     * @Gedmo\Versioned
+     * 
+     */
+    protected $mostraRuas = false;
+    
     public function __toString() {
         return $this->getNome();
     }
@@ -438,5 +445,29 @@ class Itinerario extends EntidadeBase {
     public function getUsuarioUltimaAlteracao()
     {
         return $this->usuarioUltimaAlteracao;
+    }
+
+    /**
+     * Set mostraRuas
+     *
+     * @param boolean $mostraRuas
+     *
+     * @return Itinerario
+     */
+    public function setMostraRuas($mostraRuas)
+    {
+        $this->mostraRuas = $mostraRuas;
+
+        return $this;
+    }
+
+    /**
+     * Get mostraRuas
+     *
+     * @return boolean
+     */
+    public function getMostraRuas()
+    {
+        return $this->mostraRuas;
     }
 }

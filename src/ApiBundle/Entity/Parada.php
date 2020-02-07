@@ -64,6 +64,24 @@ class Parada extends EntidadeSlug {
     /**
      * @var string
      *
+     * @ORM\Column(name="rua", type="string", length=500, nullable=true)
+     * @Gedmo\Versioned
+     * 
+     */
+    private $rua;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="cep", type="string", length=10, nullable=true)
+     * @Gedmo\Versioned
+     * 
+     */
+    private $cep;
+    
+    /**
+     * @var string
+     *
      * @ORM\Column(name="imagem", type="string", length=100, nullable=true)
      * @Gedmo\Versioned
      * 
@@ -86,6 +104,15 @@ class Parada extends EntidadeSlug {
      * 
      */
     private $sentido;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="servicos", type="string", length=500, nullable=true)
+     * @Gedmo\Versioned
+     * 
+     */
+    private $servicos;
     
     public function __toString() {
         return $this->getNome();
@@ -412,5 +439,77 @@ class Parada extends EntidadeSlug {
     public function getSentido()
     {
         return $this->sentido;
+    }
+
+    /**
+     * Set rua
+     *
+     * @param string $rua
+     *
+     * @return Parada
+     */
+    public function setRua($rua)
+    {
+        $this->rua = $rua;
+
+        return $this;
+    }
+
+    /**
+     * Get rua
+     *
+     * @return string
+     */
+    public function getRua()
+    {
+        return $this->rua;
+    }
+
+    /**
+     * Set cep
+     *
+     * @param string $cep
+     *
+     * @return Parada
+     */
+    public function setCep($cep)
+    {
+        $this->cep = $cep;
+
+        return $this;
+    }
+
+    /**
+     * Get cep
+     *
+     * @return string
+     */
+    public function getCep()
+    {
+        return $this->cep;
+    }
+
+    /**
+     * Set servicos
+     *
+     * @param string $servicos
+     *
+     * @return Parada
+     */
+    public function setServicos($servicos)
+    {
+        $this->servicos = $servicos;
+
+        return $this;
+    }
+
+    /**
+     * Get servicos
+     *
+     * @return string
+     */
+    public function getServicos()
+    {
+        return $this->servicos;
     }
 }

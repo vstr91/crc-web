@@ -30,6 +30,24 @@ class EmpresaRepository extends \Doctrine\ORM\EntityRepository
         
     }
     
+    public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
+        $qb = $this->createQueryBuilder('e')
+                ->select('e')
+                ->distinct()
+                ->where("e.ultimaAlteracao > :ultimaAlteracao")
+                //->andWhere("e.programadoPara IS NULL OR e.programadoPara <= :now")
+                //->andWhere("p.ativo = 1")
+                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
+                ->addOrderBy('e.id');
+        
+        if(false == is_null($limite)){
+            $qb->setMaxResults($limite);
+        }
+        
+        return $qb->getQuery()->getResult();
+        
+    }
+    
     public function listarTodosRESTSemData($limite = null, $slug){
         
         if($slug){
@@ -53,24 +71,6 @@ class EmpresaRepository extends \Doctrine\ORM\EntityRepository
         }
         
         
-        
-        if(false == is_null($limite)){
-            $qb->setMaxResults($limite);
-        }
-        
-        return $qb->getQuery()->getResult();
-        
-    }
-    
-    public function listarTodosRESTAdmin($limite = null, $dataUltimoAcesso){
-        $qb = $this->createQueryBuilder('e')
-                ->select('e')
-                ->distinct()
-                ->where("e.ultimaAlteracao > :ultimaAlteracao")
-                //->andWhere("e.programadoPara IS NULL OR e.programadoPara <= :now")
-                //->andWhere("p.ativo = 1")
-                ->setParameter('ultimaAlteracao', $dataUltimoAcesso)
-                ->addOrderBy('e.id');
         
         if(false == is_null($limite)){
             $qb->setMaxResults($limite);

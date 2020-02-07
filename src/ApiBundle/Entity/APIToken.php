@@ -57,6 +57,13 @@ class APIToken {
      */
     protected $tipo;
     
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="versao", nullable=true, type="string", length=50)
+     */
+    private $versao;
+    
 
     /**
      * Set puroTexto
@@ -167,4 +174,28 @@ class APIToken {
         $this->tipo = $tipo;
     }
     
+
+    /**
+     * Set versao
+     *
+     * @param string $versao
+     *
+     * @return APIToken
+     */
+    public function setVersao($versao)
+    {
+        $this->versao = $versao;
+
+        return $this;
+    }
+
+    /**
+     * Get versao
+     *
+     * @return string
+     */
+    public function getVersao()
+    {
+        return $this->versao;
+    }
 }

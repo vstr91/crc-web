@@ -10,9 +10,4 @@ class PageController extends Controller
     {
         return $this->render('@Api/Page/index.html.twig');
     }
-    
-    public function circularAction()
-    {
-        return $this->render('@Api/Page/circular.html.twig');
-    }
 }

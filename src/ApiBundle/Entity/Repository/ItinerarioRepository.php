@@ -16,7 +16,7 @@ class ItinerarioRepository extends \Doctrine\ORM\EntityRepository
                 ->select('i.id, i.ativo, i.dataCadastro, i.dataRecebimento, '
                         . 'i.ultimaAlteracao, i.programadoPara, IDENTITY(i.usuarioCadastro) AS usuarioCadastro, '
                         . 'IDENTITY(i.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, i.tarifa, i.sigla, i.distancia, i.tempo, i.acessivel, '
-                        . 'i.observacao, IDENTITY(i.empresa) AS empresa')
+                        . 'i.observacao, i.mostraRuas, IDENTITY(i.empresa) AS empresa')
                 ->distinct()
                 ->where("i.ultimaAlteracao > :ultimaAlteracao")
                 //->andWhere("c.programadoPara IS NULL OR c.programadoPara <= :now")
@@ -36,7 +36,7 @@ class ItinerarioRepository extends \Doctrine\ORM\EntityRepository
                 ->select('i.id, i.ativo, i.dataCadastro, i.dataRecebimento, '
                         . 'i.ultimaAlteracao, i.programadoPara, IDENTITY(i.usuarioCadastro) AS usuarioCadastro, '
                         . 'IDENTITY(i.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, i.tarifa, i.sigla, i.distancia, i.tempo, i.acessivel, '
-                        . 'i.observacao, IDENTITY(i.empresa) AS empresa')
+                        . 'i.observacao, i.mostraRuas, IDENTITY(i.empresa) AS empresa')
                 ->distinct()
                 ->where("i.ultimaAlteracao > :ultimaAlteracao")
                 ->andWhere("i.programadoPara IS NULL OR i.programadoPara <= :now")
