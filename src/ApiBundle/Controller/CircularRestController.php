@@ -1,3 +1,4 @@
+<<<<<<< OURS
 <?php
 
 /*
@@ -105,8 +106,19 @@ class CircularRestController extends FOSRestController {
                 
                 $historicos = $em->getRepository('ApiBundle:HistoricoItinerario')
                     ->listarTodosREST(null, $data);
+                    
+                $poisSugestao = $em->getRepository('ApiBundle:PontoInteresseSugestao')
+                    ->listarTodosREST(null, $data, $id);
                 
                 $acessos = array();
+                
+                $servicos = $em->getRepository('ApiBundle:Servico')
+                    ->listarTodosREST(null, $data, $id);
+                
+                $viagens = array();
+                
+                $feriados = $em->getRepository('ApiBundle:Feriado')
+                    ->listarTodosREST(null, $data, $id);
             } else{
                 $usuarios = $em->getRepository('ApiBundle:Usuario')
                         ->listarTodosRESTAdmin(null, $data);
@@ -149,9 +161,21 @@ class CircularRestController extends FOSRestController {
                 
                 $historicos = $em->getRepository('ApiBundle:HistoricoItinerario')
                     ->listarTodosRESTAdmin(null, $data);
+                    
+                $poisSugestao = $em->getRepository('ApiBundle:PontoInteresseSugestao')
+                    ->listarTodosRESTAdmin(null, $data);
                 
                 $acessos = $em->getRepository('ApiBundle:APIToken')
-                    ->listarTodosRESTAdmin(null, $data);
+                    ->listarTodosRESTAdmin(100, $data);
+                
+                $servicos = $em->getRepository('ApiBundle:Servico')
+                    ->listarTodosRESTAdmin(null, $data, $id);
+                
+                $viagens = $em->getRepository('ApiBundle:ViagemItinerario')
+                    ->listarTodosRESTAdmin(null, $data, $id);
+                
+                $feriados = $em->getRepository('ApiBundle:Feriado')
+                    ->listarTodosRESTAdmin(null, $data, $id);
             }
             
 //            $log = $em->getRepository('RepSiteBundle:LogEntry')
@@ -164,7 +188,11 @@ class CircularRestController extends FOSRestController {
                     + count($mensagens) + count($parametros) + count($pontosInteresse)
                     + count($usuarios) + count($paradasSugestao) + count($preferencias) 
                     + count($historicos)
+                    + count($poisSugestao)
                     + count($acessos)
+                    + count($servicos)
+                    + count($viagens)
+                    + count($feriados)
                     ;
             
             $view = View::create(
@@ -189,7 +217,11 @@ class CircularRestController extends FOSRestController {
                         "paradas_sugestoes" => $paradasSugestao,
                         "preferencias" => $preferencias,
                         "historicos_itinerarios" => $historicos,
-                        "acessos" => $acessos
+                        "pontos_interesse_sugestoes" => $poisSugestao,
+                        "acessos" => $acessos,
+                        "servicos" => $servicos,
+                        "viagens_itinerarios" => $viagens,
+                        "feriados" => $feriados
                     ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
             
             $em->getRepository('ApiBundle:APIToken')->atualizaToken($hashDescriptografado);
@@ -252,11 +284,11 @@ class CircularRestController extends FOSRestController {
                 $umPais->setNome($paises[$i]['nome']);
                 $umPais->setSigla($paises[$i]['sigla']);
                 $umPais->setSlug($paises[$i]['slug']);
-                $umPais->setDataCadastro(date_create_from_format('d-m-Y H:i', $paises[$i]['dataCadastro']));
-                $umPais->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $paises[$i]['ultimaAlteracao']));
+                $umPais->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $paises[$i]['dataCadastro']));
+                $umPais->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $paises[$i]['ultimaAlteracao']));
                 
                 if(isset($paises[$i]['programadoPara'])){
-                    $umPais->setProgramadoPara(date_create_from_format('d-m-Y H:i', $paises[$i]['programadoPara']));
+                    $umPais->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $paises[$i]['programadoPara']));
                 }
                 
                 $umPais->setAtivo($paises[$i]['ativo']);
@@ -312,11 +344,11 @@ class CircularRestController extends FOSRestController {
                 }
                 
                 $umEmpresa->setSlug($empresas[$i]['slug']);
-                $umEmpresa->setDataCadastro(date_create_from_format('d-m-Y H:i', $empresas[$i]['dataCadastro']));
-                $umEmpresa->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $empresas[$i]['ultimaAlteracao']));
+                $umEmpresa->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $empresas[$i]['dataCadastro']));
+                $umEmpresa->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $empresas[$i]['ultimaAlteracao']));
                 
                 if(isset($empresas[$i]['programadoPara'])){
-                    $umEmpresa->setProgramadoPara(date_create_from_format('d-m-Y H:i', $empresas[$i]['programadoPara']));
+                    $umEmpresa->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $empresas[$i]['programadoPara']));
                 }
                 
                 $umEmpresa->setAtivo($empresas[$i]['ativo']);
@@ -379,11 +411,11 @@ class CircularRestController extends FOSRestController {
                 
                 $umOnibus->setEmpresa($umaEmpresa);
                 
-                $umOnibus->setDataCadastro(date_create_from_format('d-m-Y H:i', $onibus[$i]['dataCadastro']));
-                $umOnibus->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $onibus[$i]['ultimaAlteracao']));
+                $umOnibus->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $onibus[$i]['dataCadastro']));
+                $umOnibus->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $onibus[$i]['ultimaAlteracao']));
                 
                 if(isset($onibus[$i]['programadoPara'])){
-                    $umOnibus->setProgramadoPara(date_create_from_format('d-m-Y H:i', $onibus[$i]['programadoPara']));
+                    $umOnibus->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $onibus[$i]['programadoPara']));
                 }
                 
                 $umOnibus->setAtivo($onibus[$i]['ativo']);
@@ -427,11 +459,11 @@ class CircularRestController extends FOSRestController {
                 $umEstado->setSigla($estados[$i]['sigla']);
                 $umEstado->setSlug($estados[$i]['slug']);
                 $umEstado->setPais($umPais);
-                $umEstado->setDataCadastro(date_create_from_format('d-m-Y H:i', $estados[$i]['dataCadastro']));
-                $umEstado->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $estados[$i]['ultimaAlteracao']));
+                $umEstado->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $estados[$i]['dataCadastro']));
+                $umEstado->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $estados[$i]['ultimaAlteracao']));
                 
                 if(isset($estados[$i]['programadoPara'])){
-                    $umEstado->setProgramadoPara(date_create_from_format('d-m-Y H:i', $estados[$i]['programadoPara']));
+                    $umEstado->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $estados[$i]['programadoPara']));
                 }
                 
                 $umEstado->setAtivo($estados[$i]['ativo']);
@@ -481,11 +513,11 @@ class CircularRestController extends FOSRestController {
                 
                 $umCidade->setSlug($cidades[$i]['slug']);
                 $umCidade->setEstado($umEstado);
-                $umCidade->setDataCadastro(date_create_from_format('d-m-Y H:i', $cidades[$i]['dataCadastro']));
-                $umCidade->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $cidades[$i]['ultimaAlteracao']));
+                $umCidade->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $cidades[$i]['dataCadastro']));
+                $umCidade->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $cidades[$i]['ultimaAlteracao']));
                 
                 if(isset($cidades[$i]['programadoPara'])){
-                    $umCidade->setProgramadoPara(date_create_from_format('d-m-Y H:i', $cidades[$i]['programadoPara']));
+                    $umCidade->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $cidades[$i]['programadoPara']));
                 }
                 
                 $umCidade->setAtivo($cidades[$i]['ativo']);
@@ -530,11 +562,11 @@ class CircularRestController extends FOSRestController {
                 $umBairro->setNome($bairros[$i]['nome']);
                 $umBairro->setSlug($bairros[$i]['slug']);
                 $umBairro->setCidade($umCidade);
-                $umBairro->setDataCadastro(date_create_from_format('d-m-Y H:i', $bairros[$i]['dataCadastro']));
-                $umBairro->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $bairros[$i]['ultimaAlteracao']));
+                $umBairro->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $bairros[$i]['dataCadastro']));
+                $umBairro->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $bairros[$i]['ultimaAlteracao']));
                 
                 if(isset($bairros[$i]['programadoPara'])){
-                    $umBairro->setProgramadoPara(date_create_from_format('d-m-Y H:i', $bairros[$i]['programadoPara']));
+                    $umBairro->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $bairros[$i]['programadoPara']));
                 }
                 
                 $umBairro->setAtivo($bairros[$i]['ativo']);
@@ -580,7 +612,15 @@ class CircularRestController extends FOSRestController {
                 $umParada->setSlug($paradas[$i]['slug']);
                 $umParada->setLatitude($paradas[$i]['latitude']);
                 $umParada->setLongitude($paradas[$i]['longitude']);
-                                
+                 
+                if(isset($paradas[$i]['rua'])){
+                    $umParada->setRua($paradas[$i]['rua']);
+                }
+                
+                if(isset($paradas[$i]['cep'])){
+                    $umParada->setCep($paradas[$i]['cep']);
+                }
+                
                 if(isset($paradas[$i]['sentido'])){
                     $umParada->setSentido($paradas[$i]['sentido']);
                 }
@@ -593,12 +633,16 @@ class CircularRestController extends FOSRestController {
                     $umParada->setImagem($paradas[$i]['imagem']);
                 }
                 
+                if(isset($paradas[$i]['servicos'])){
+                    $umParada->setServicos($paradas[$i]['servicos']);
+                }
+                
                 $umParada->setBairro($umBairro);
-                $umParada->setDataCadastro(date_create_from_format('d-m-Y H:i', $paradas[$i]['dataCadastro']));
-                $umParada->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $paradas[$i]['ultimaAlteracao']));
+                $umParada->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $paradas[$i]['dataCadastro']));
+                $umParada->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $paradas[$i]['ultimaAlteracao']));
                 
                 if(isset($paradas[$i]['programadoPara'])){
-                    $umParada->setProgramadoPara(date_create_from_format('d-m-Y H:i', $paradas[$i]['programadoPara']));
+                    $umParada->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $paradas[$i]['programadoPara']));
                 }
                 
                 $umParada->setAtivo($paradas[$i]['ativo']);
@@ -649,7 +693,7 @@ class CircularRestController extends FOSRestController {
                 }
                 
                 if(isset($itinerarios[$i]['tempo'])){
-                    $umItinerario->setTempo(date_create_from_format('d-m-Y H:i', $itinerarios[$i]['tempo']));
+                    $umItinerario->setTempo(date_create_from_format('d-m-Y H:i:s', $itinerarios[$i]['tempo']));
                 }
                 
                 $umItinerario->setAcessivel($itinerarios[$i]['acessivel']);
@@ -659,11 +703,15 @@ class CircularRestController extends FOSRestController {
                 }
                 
                 $umItinerario->setEmpresa($umEmpresa);
-                $umItinerario->setDataCadastro(date_create_from_format('d-m-Y H:i', $itinerarios[$i]['dataCadastro']));
-                $umItinerario->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $itinerarios[$i]['ultimaAlteracao']));
+                $umItinerario->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $itinerarios[$i]['dataCadastro']));
+                $umItinerario->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $itinerarios[$i]['ultimaAlteracao']));
                 
                 if(isset($itinerarios[$i]['programadoPara'])){
-                    $umItinerario->setProgramadoPara(date_create_from_format('d-m-Y H:i', $itinerarios[$i]['programadoPara']));
+                    $umItinerario->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $itinerarios[$i]['programadoPara']));
+                }
+                
+                if(isset($itinerarios[$i]['mostraRuas'])){
+                    $umItinerario->setMostraRuas($itinerarios[$i]['mostraRuas']);
                 }
                 
                 $umItinerario->setAtivo($itinerarios[$i]['ativo']);
@@ -700,13 +748,13 @@ class CircularRestController extends FOSRestController {
                 $metadata->setIdGenerator(new AssignedGenerator());
                 $umHorario->setId($horarios[$i]['id']);
                 
-                $umHorario->setNome(date_create_from_format('d-m-Y H:i', $horarios[$i]['nome']));
+                $umHorario->setNome(date_create_from_format('d-m-Y H:i:s', $horarios[$i]['nome']));
                 
-                $umHorario->setDataCadastro(date_create_from_format('d-m-Y H:i', $horarios[$i]['dataCadastro']));
-                $umHorario->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $horarios[$i]['ultimaAlteracao']));
+                $umHorario->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $horarios[$i]['dataCadastro']));
+                $umHorario->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $horarios[$i]['ultimaAlteracao']));
                 
                 if(isset($horarios[$i]['programadoPara'])){
-                    $umHorario->setProgramadoPara(date_create_from_format('d-m-Y H:i', $horarios[$i]['programadoPara']));
+                    $umHorario->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $horarios[$i]['programadoPara']));
                 }
                 
                 $umHorario->setAtivo($horarios[$i]['ativo']);
@@ -762,7 +810,7 @@ class CircularRestController extends FOSRestController {
                 }
                 
                 if(isset($paradasItinerarios[$i]['tempoSeguinte'])){
-                    $umParadaItinerario->setTempoSeguinte(date_create_from_format('d-m-Y H:i', $paradasItinerarios[$i]['tempoSeguinte']));
+                    $umParadaItinerario->setTempoSeguinte(date_create_from_format('d-m-Y H:i:s', $paradasItinerarios[$i]['tempoSeguinte']));
                 }
                 
                 $umParadaItinerario->setParada($umParada);
@@ -771,11 +819,11 @@ class CircularRestController extends FOSRestController {
                 $umParadaItinerario->setOrdem($paradasItinerarios[$i]['ordem']);
                 $umParadaItinerario->setDestaque($paradasItinerarios[$i]['destaque']);
                 
-                $umParadaItinerario->setDataCadastro(date_create_from_format('d-m-Y H:i', $paradasItinerarios[$i]['dataCadastro']));
-                $umParadaItinerario->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $paradasItinerarios[$i]['ultimaAlteracao']));
+                $umParadaItinerario->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $paradasItinerarios[$i]['dataCadastro']));
+                $umParadaItinerario->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $paradasItinerarios[$i]['ultimaAlteracao']));
                 
                 if(isset($paradasItinerarios[$i]['programadoPara'])){
-                    $umParadaItinerario->setProgramadoPara(date_create_from_format('d-m-Y H:i', $paradasItinerarios[$i]['programadoPara']));
+                    $umParadaItinerario->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $paradasItinerarios[$i]['programadoPara']));
                 }
                 
                 $umParadaItinerario->setAtivo($paradasItinerarios[$i]['ativo']);
@@ -833,11 +881,11 @@ class CircularRestController extends FOSRestController {
                 $umSecaoItinerario->setNome($secoesItinerarios[$i]['nome']);
                 $umSecaoItinerario->setTarifa($secoesItinerarios[$i]['tarifa']);
                 
-                $umSecaoItinerario->setDataCadastro(date_create_from_format('d-m-Y H:i', $secoesItinerarios[$i]['dataCadastro']));
-                $umSecaoItinerario->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $secoesItinerarios[$i]['ultimaAlteracao']));
+                $umSecaoItinerario->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $secoesItinerarios[$i]['dataCadastro']));
+                $umSecaoItinerario->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $secoesItinerarios[$i]['ultimaAlteracao']));
                 
                 if(isset($secoesItinerarios[$i]['programadoPara'])){
-                    $umSecaoItinerario->setProgramadoPara(date_create_from_format('d-m-Y H:i', $secoesItinerarios[$i]['programadoPara']));
+                    $umSecaoItinerario->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $secoesItinerarios[$i]['programadoPara']));
                 }
                 
                 $umSecaoItinerario->setAtivo($secoesItinerarios[$i]['ativo']);
@@ -895,11 +943,11 @@ class CircularRestController extends FOSRestController {
                 $umHorarioItinerario->setSexta($horariosItinerarios[$i]['sexta']);
                 $umHorarioItinerario->setSabado($horariosItinerarios[$i]['sabado']);
                 
-                $umHorarioItinerario->setDataCadastro(date_create_from_format('d-m-Y H:i', $horariosItinerarios[$i]['dataCadastro']));
-                $umHorarioItinerario->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $horariosItinerarios[$i]['ultimaAlteracao']));
+                $umHorarioItinerario->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $horariosItinerarios[$i]['dataCadastro']));
+                $umHorarioItinerario->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $horariosItinerarios[$i]['ultimaAlteracao']));
                 
                 if(isset($horariosItinerarios[$i]['programadoPara'])){
-                    $umHorarioItinerario->setProgramadoPara(date_create_from_format('d-m-Y H:i', $horariosItinerarios[$i]['programadoPara']));
+                    $umHorarioItinerario->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $horariosItinerarios[$i]['programadoPara']));
                 }
                 
                 $umHorarioItinerario->setAtivo($horariosItinerarios[$i]['ativo']);
@@ -947,12 +995,23 @@ class CircularRestController extends FOSRestController {
                 }
                 
                 $umMensagem->setDescricao($mensagens[$i]['descricao']);
-                $umMensagem->setDataCadastro(date_create_from_format('d-m-Y H:i', $mensagens[$i]['dataCadastro']));
-                $umMensagem->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $mensagens[$i]['ultimaAlteracao']));
+                
+                if(!date_create_from_format('d-m-Y H:i:s', $mensagens[$i]['dataCadastro'])){
+                        $umMensagem->setDataCadastro(date_create_from_format('d-m-Y H:i', $mensagens[$i]['dataCadastro']));
+                } else{
+                      $umMensagem->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $mensagens[$i]['dataCadastro']));  
+                }
+                
+                if(!date_create_from_format('d-m-Y H:i:s', $mensagens[$i]['ultimaAlteracao'])){
+                        $umMensagem->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $mensagens[$i]['ultimaAlteracao']));
+                } else{
+                      $umMensagem->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $mensagens[$i]['ultimaAlteracao']));  
+                }
+                
                 $umMensagem->setServidor($mensagens[$i]['servidor']);
                 
                 if(isset($mensagens[$i]['programadoPara'])){
-                    $umMensagem->setProgramadoPara(date_create_from_format('d-m-Y H:i', $mensagens[$i]['programadoPara']));
+                    $umMensagem->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $mensagens[$i]['programadoPara']));
                 }
                 
                 $umMensagem->setAtivo($mensagens[$i]['ativo']);
@@ -993,11 +1052,11 @@ class CircularRestController extends FOSRestController {
                 $umParametro->setNome($parametros[$i]['nome']);
                 $umParametro->setValor($parametros[$i]['valor']);
                 $umParametro->setSlug($parametros[$i]['slug']);
-                $umParametro->setDataCadastro(date_create_from_format('d-m-Y H:i', $parametros[$i]['dataCadastro']));
-                $umParametro->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $parametros[$i]['ultimaAlteracao']));
+                $umParametro->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $parametros[$i]['dataCadastro']));
+                $umParametro->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $parametros[$i]['ultimaAlteracao']));
                 
                 if(isset($parametros[$i]['programadoPara'])){
-                    $umParametro->setProgramadoPara(date_create_from_format('d-m-Y H:i', $parametros[$i]['programadoPara']));
+                    $umParametro->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $parametros[$i]['programadoPara']));
                 }
                 
                 $umParametro->setAtivo($parametros[$i]['ativo']);
@@ -1040,23 +1099,23 @@ class CircularRestController extends FOSRestController {
                 $umPontoInteresse->setLongitude($pontosInteresse[$i]['longitude']);
                 
                 if(isset($pontosInteresse[$i]['dataInicial'])){
-                        $umPontoInteresse->setDataInicial(date_create_from_format('d-m-Y H:i', $pontosInteresse[$i]['dataInicial']));
+                        $umPontoInteresse->setDataInicial(date_create_from_format('d-m-Y H:i:s', $pontosInteresse[$i]['dataInicial']));
                 }
                 
                 
                 if(isset($pontosInteresse[$i]['dataFinal'])){
-                        $umPontoInteresse->setDataFinal(date_create_from_format('d-m-Y H:i', $pontosInteresse[$i]['dataFinal']));
+                        $umPontoInteresse->setDataFinal(date_create_from_format('d-m-Y H:i:s', $pontosInteresse[$i]['dataFinal']));
                 }
                 
                 if(isset($pontosInteresse[$i]['imagem'])){
                     $umPontoInteresse->setImagem($pontosInteresse[$i]['imagem']);
                 }
                 
-                $umPontoInteresse->setDataCadastro(date_create_from_format('d-m-Y H:i', $pontosInteresse[$i]['dataCadastro']));
-                $umPontoInteresse->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $pontosInteresse[$i]['ultimaAlteracao']));
+                $umPontoInteresse->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $pontosInteresse[$i]['dataCadastro']));
+                $umPontoInteresse->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $pontosInteresse[$i]['ultimaAlteracao']));
                 
                 if(isset($pontosInteresse[$i]['programadoPara'])){
-                    $umPontoInteresse->setProgramadoPara(date_create_from_format('d-m-Y H:i', $pontosInteresse[$i]['programadoPara']));
+                    $umPontoInteresse->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $pontosInteresse[$i]['programadoPara']));
                 }
                 
                 $umPontoInteresse->setAtivo($pontosInteresse[$i]['ativo']);
@@ -1108,11 +1167,11 @@ class CircularRestController extends FOSRestController {
                     $umUsuario->setGoogleID($usuarios[$i]['idGoogle']);
                 }
                 
-                $umUsuario->setDataCadastro(date_create_from_format('d-m-Y H:i', $usuarios[$i]['dataCadastro']));
-                $umUsuario->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $usuarios[$i]['ultimaAlteracao']));
+                $umUsuario->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $usuarios[$i]['dataCadastro']));
+                $umUsuario->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $usuarios[$i]['ultimaAlteracao']));
                 
                 if(isset($usuarios[$i]['programadoPara'])){
-                    $umUsuario->setProgramadoPara(date_create_from_format('d-m-Y H:i', $usuarios[$i]['programadoPara']));
+                    $umUsuario->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $usuarios[$i]['programadoPara']));
                 }
                 
                 $umUsuario->setEnabled($usuarios[$i]['ativo']);
@@ -1173,25 +1232,35 @@ class CircularRestController extends FOSRestController {
                 
                 if(isset($paradasSugestoes[$i]['usuarioCadastro'])){
                     $umUsuarioCadastro = $em->getRepository('ApiBundle:Usuario')
-                        ->find($paradasSugestoes[$i]['usuarioCadastro']);
+                        ->findOneBy(array('googleID' => $paradasSugestoes[$i]['usuarioCadastro']));
                     
                     $umParada->setUsuarioCadastro($umUsuarioCadastro);
                 }
                 
                 if(isset($paradasSugestoes[$i]['usuarioUltimaAlteracao'])){
                     $umUsuario = $em->getRepository('ApiBundle:Usuario')
-                        ->find($paradasSugestoes[$i]['usuarioUltimaAlteracao']);
+                        ->findOneBy(array('googleID' => $paradasSugestoes[$i]['usuarioUltimaAlteracao']));
                     
                     $umParada->setUsuarioUltimaAlteracao($umUsuario);
                 }
                 
                 $umParada->setBairro($umBairro);
                 $umParada->setParada($umParadaVinculada);
-                $umParada->setDataCadastro(date_create_from_format('d-m-Y H:i', $paradasSugestoes[$i]['dataCadastro']));
-                $umParada->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $paradasSugestoes[$i]['ultimaAlteracao']));
+                
+                if(!date_create_from_format('d-m-Y H:i:s', $paradasSugestoes[$i]['dataCadastro'])){
+                        $umParada->setDataCadastro(date_create_from_format('d-m-Y H:i', $paradasSugestoes[$i]['dataCadastro']));
+                } else{
+                      $umParada->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $paradasSugestoes[$i]['dataCadastro']));  
+                }
+                
+                if(!date_create_from_format('d-m-Y H:i:s', $paradasSugestoes[$i]['ultimaAlteracao'])){
+                        $umParada->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $paradasSugestoes[$i]['ultimaAlteracao']));
+                } else{
+                      $umParada->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $paradasSugestoes[$i]['ultimaAlteracao']));  
+                }
                 
                 if(isset($paradasSugestoes[$i]['programadoPara'])){
-                    $umParada->setProgramadoPara(date_create_from_format('d-m-Y H:i', $paradasSugestoes[$i]['programadoPara']));
+                    $umParada->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $paradasSugestoes[$i]['programadoPara']));
                 }
                 
                 $umParada->setAtivo($paradasSugestoes[$i]['ativo']);
@@ -1202,6 +1271,169 @@ class CircularRestController extends FOSRestController {
             }
             
             // FIM PARADA SUGESTAO
+            
+            // POI SUGESTAO
+            
+            $poisSugestoes = $dados['pontos_interesse_sugestoes'];
+            
+            $total = count($poisSugestoes);
+            
+            for($i = 0; $i < $total; $i++){
+                
+                $existe = false;
+                $umPoi = null;
+                $umPoiVinculado = null;
+                
+                $umPoi = $em->getRepository('ApiBundle:PontoInteresseSugestao')
+                        ->findOneBy(array('id' => $poisSugestoes[$i]['id']));
+                
+                if($umPoi == null){
+                    $umPoi = new \ApiBundle\Entity\PontoInteresseSugestao();
+                    $umPoi->setId($poisSugestoes[$i]['id']);
+                } else{
+                    $existe = true;
+                }
+                
+                $metadata = $em->getClassMetaData(get_class($umPoi));
+                $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
+                $metadata->setIdGenerator(new AssignedGenerator());
+                $umPoi->setId($poisSugestoes[$i]['id']);
+                
+                $umBairro = $em->getRepository('ApiBundle:Bairro')
+                        ->find($poisSugestoes[$i]['bairro']);
+                
+                if(isset($poisSugestoes[$i]['pontoInteresse'])){
+                    $umPoiVinculado = $em->getRepository('ApiBundle:PontoInteresse')
+                        ->find($poisSugestoes[$i]['pontoInteresse']);
+                }
+                
+                $umPoi->setNome($poisSugestoes[$i]['nome']);
+                $umPoi->setSlug($poisSugestoes[$i]['slug']);
+                $umPoi->setLatitude($poisSugestoes[$i]['latitude']);
+                $umPoi->setLongitude($poisSugestoes[$i]['longitude']);
+                
+                if(isset($poisSugestoes[$i]['observacao'])){
+                    $umPoi->setObservacao($poisSugestoes[$i]['observacao']);
+                }
+                
+                if(isset($poisSugestoes[$i]['permanente'])){
+                    $umPoi->setPermanente($poisSugestoes[$i]['permanente']);
+                }
+                
+                if(isset($poisSugestoes[$i]['descricao'])){
+                    $umPoi->setDescricao($poisSugestoes[$i]['descricao']);
+                }
+                
+                if(isset($poisSugestoes[$i]['imagem'])){
+                    $umPoi->setImagem($poisSugestoes[$i]['imagem']);
+                }
+                
+                if(isset($poisSugestoes[$i]['usuarioCadastro'])){
+                    $umUsuarioCadastro = $em->getRepository('ApiBundle:Usuario')
+                        ->findOneBy(array('googleID' => $poisSugestoes[$i]['usuarioCadastro']));
+                    
+                    $umPoi->setUsuarioCadastro($umUsuarioCadastro);
+                }
+                
+                if(isset($poisSugestoes[$i]['usuarioUltimaAlteracao'])){
+                    $umUsuario = $em->getRepository('ApiBundle:Usuario')
+                        ->findOneBy(array('googleID' => $poisSugestoes[$i]['usuarioUltimaAlteracao']));
+                    
+                    $umPoi->setUsuarioUltimaAlteracao($umUsuario);
+                }
+                
+                $umPoi->setBairro($umBairro);
+                $umPoi->setPontoInteresse($umPoiVinculado);
+                
+                if(isset($poisSugestoes[$i]['dataInicial'])){
+                        if(!date_create_from_format('d-m-Y H:i:s', $poisSugestoes[$i]['dataInicial'])){
+                                $umPoi->setDataInicial(date_create_from_format('d-m-Y H:i', $poisSugestoes[$i]['dataInicial']));
+                        } else{
+                              $umPoi->setDataInicial(date_create_from_format('d-m-Y H:i:s', $poisSugestoes[$i]['dataInicial']));  
+                        }
+                }
+                
+                if(isset($poisSugestoes[$i]['dataFinal'])){
+                        if(!date_create_from_format('d-m-Y H:i:s', $poisSugestoes[$i]['dataFinal'])){
+                                $umPoi->setDataFinal(date_create_from_format('d-m-Y H:i', $poisSugestoes[$i]['dataFinal']));
+                        } else{
+                              $umPoi->setDataFinal(date_create_from_format('d-m-Y H:i:s', $poisSugestoes[$i]['dataFinal']));  
+                        }
+                }
+                
+                
+                if(!date_create_from_format('d-m-Y H:i:s', $poisSugestoes[$i]['dataCadastro'])){
+                        $umPoi->setDataCadastro(date_create_from_format('d-m-Y H:i', $poisSugestoes[$i]['dataCadastro']));
+                } else{
+                      $umPoi->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $poisSugestoes[$i]['dataCadastro']));  
+                }
+                
+                if(!date_create_from_format('d-m-Y H:i:s', $poisSugestoes[$i]['ultimaAlteracao'])){
+                        $umPoi->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $poisSugestoes[$i]['ultimaAlteracao']));
+                } else{
+                      $umPoi->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $poisSugestoes[$i]['ultimaAlteracao']));  
+                }
+                
+                if(isset($poisSugestoes[$i]['programadoPara'])){
+                    $umPoi->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $poisSugestoes[$i]['programadoPara']));
+                }
+                
+                $umPoi->setAtivo($poisSugestoes[$i]['ativo']);
+                $umPoi->setStatus($poisSugestoes[$i]['status']);
+                
+                $em->persist($umPoi);
+                
+            }
+            
+            // FIM POI SUGESTAO
+            
+            // SERVICO
+            
+            $servicos = $dados['servicos'];
+            
+            $total = count($servicos);
+            
+            for($i = 0; $i < $total; $i++){
+                
+                $existe = false;
+                $umServico = null;
+                
+                $umServico = $em->getRepository('ApiBundle:Servico')
+                        ->findOneBy(array('id' => $servicos[$i]['id']));
+                
+                if($umServico == null){
+                    $umServico = new \ApiBundle\Entity\Servico();
+                    $umServico->setId($servicos[$i]['id']);
+                } else{
+                    $existe = true;
+                }
+                
+                $metadata = $em->getClassMetaData(get_class($umServico));
+                $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
+                $metadata->setIdGenerator(new AssignedGenerator());
+                $umServico->setId($servicos[$i]['id']);
+                
+                $umServico->setNome($servicos[$i]['nome']);
+                $umServico->setSlug($servicos[$i]['slug']);
+                
+                if(isset($servicos[$i]['icone'])){
+                    $umServico->setIcone($servicos[$i]['icone']);
+                }
+                
+                $umServico->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $servicos[$i]['dataCadastro']));
+                $umServico->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $servicos[$i]['ultimaAlteracao']));
+                
+                if(isset($servicos[$i]['programadoPara'])){
+                    $umServico->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $servicos[$i]['programadoPara']));
+                }
+                
+                $umServico->setAtivo($servicos[$i]['ativo']);
+                
+                $em->persist($umServico);
+                
+            }
+            
+            // FIM SERVICO
             
             // PREFERENCIAS
             
@@ -1231,8 +1463,8 @@ class CircularRestController extends FOSRestController {
                 
                 $umPref->setUsuario($preferencias[$i]['usuario']);
                 $umPref->setPreferencia($preferencias[$i]['preferencia']);
-                $umPref->setDataCadastro(date_create_from_format('d-m-Y H:i', $preferencias[$i]['dataCadastro']));
-                $umPref->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $preferencias[$i]['ultimaAlteracao']));
+                $umPref->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $preferencias[$i]['dataCadastro']));
+                $umPref->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $preferencias[$i]['ultimaAlteracao']));
                 
                 $umPref->setAtivo($preferencias[$i]['ativo']);
 
@@ -1277,8 +1509,8 @@ class CircularRestController extends FOSRestController {
                 
                 $umHistoricoItinerario->setTarifa($historicosItinerarios[$i]['tarifa']);
                 
-                $umHistoricoItinerario->setDataCadastro(date_create_from_format('d-m-Y H:i', $historicosItinerarios[$i]['dataCadastro']));
-                $umHistoricoItinerario->setUltimaAlteracao(date_create_from_format('d-m-Y H:i', $historicosItinerarios[$i]['ultimaAlteracao']));
+                $umHistoricoItinerario->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $historicosItinerarios[$i]['dataCadastro']));
+                $umHistoricoItinerario->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $historicosItinerarios[$i]['ultimaAlteracao']));
                 
                 $umHistoricoItinerario->setAtivo($historicosItinerarios[$i]['ativo']);
                 
@@ -1287,6 +1519,119 @@ class CircularRestController extends FOSRestController {
             }
             
             // FIM HISTORICO ITINERARIO
+            
+            // VIAGEM ITINERARIO
+            
+            $viagensItinerarios = $dados['viagens_itinerarios'];
+            
+            $total = count($viagensItinerarios);
+            
+            for($i = 0; $i < $total; $i++){
+                
+                $existe = false;
+                $umViagemItinerario = null;
+                
+                $umViagemItinerario = $em->getRepository('ApiBundle:ViagemItinerario')
+                        ->findOneBy(array('id' => $viagensItinerarios[$i]['id']));
+                
+                if($umViagemItinerario == null){
+                    $umViagemItinerario = new \ApiBundle\Entity\ViagemItinerario();
+                    $umViagemItinerario->setId($viagensItinerarios[$i]['id']);
+                } else{
+                    $existe = true;
+                }
+                
+                $metadata = $em->getClassMetaData(get_class($umViagemItinerario));
+                $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
+                $metadata->setIdGenerator(new AssignedGenerator());
+                $umViagemItinerario->setId($viagensItinerarios[$i]['id']);
+                
+                $umItinerario = $em->getRepository('ApiBundle:Itinerario')
+                        ->find($viagensItinerarios[$i]['itinerario']);
+                
+                $umViagemItinerario->setItinerario($umItinerario);
+                
+                $umViagemItinerario->setTrajeto($viagensItinerarios[$i]['trajeto']);
+                
+                $umViagemItinerario->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $viagensItinerarios[$i]['dataCadastro']));
+                $umViagemItinerario->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $viagensItinerarios[$i]['ultimaAlteracao']));
+                
+                if(isset($viagensItinerarios[$i]['programadoPara'])){
+                    $umViagemItinerario->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $viagensItinerarios[$i]['programadoPara']));
+                }
+                
+                if(isset($viagensItinerarios[$i]['horaInicial'])){
+                    $umViagemItinerario->setHoraInicial(date_create_from_format('d-m-Y H:i:s', $viagensItinerarios[$i]['horaInicial']));
+                } else{
+                    $umViagemItinerario->setHoraInicial(date_create_from_format('d-m-Y H:i:s', '01-01-1900 00:00:00'));
+                }
+                
+                if(isset($viagensItinerarios[$i]['horaFinal'])){
+                    $umViagemItinerario->setHoraFinal(date_create_from_format('d-m-Y H:i:s', $viagensItinerarios[$i]['horaFinal']));
+                }
+                
+                $umViagemItinerario->setAtivo($viagensItinerarios[$i]['ativo']);
+                
+                $em->persist($umViagemItinerario);
+                
+            }
+            
+            // FIM VIAGEM ITINERARIO
+            
+            // FERIADO
+            
+            $feriados = $dados['feriados'];
+            
+            $total = count($feriados);
+            
+            for($i = 0; $i < $total; $i++){
+                
+                $existe = false;
+                $umFeriado = null;
+                
+                $umFeriado = $em->getRepository('ApiBundle:Feriado')
+                        ->findOneBy(array('id' => $feriados[$i]['id']));
+                
+                if($umFeriado == null){
+                    $umFeriado = new \ApiBundle\Entity\Feriado();
+                    $umFeriado->setId($feriados[$i]['id']);
+                } else{
+                    $existe = true;
+                }
+                
+                $metadata = $em->getClassMetaData(get_class($umFeriado));
+                $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
+                $metadata->setIdGenerator(new AssignedGenerator());
+                $umFeriado->setId($feriados[$i]['id']);
+                
+                if(isset($feriados[$i]['cidade'])){
+                    $umCidade = $em->getRepository('ApiBundle:Cidade')
+                        ->find($feriados[$i]['cidade']);
+                    $umFeriado->setCidade($umCidade);
+                }
+                
+                $umFeriado->setNome($feriados[$i]['nome']);
+                $umFeriado->setData(date_create_from_format('d-m-Y H:i:s', $feriados[$i]['data'], new \DateTimeZone('America/Sao_Paulo')));
+                $umFeriado->setDescricao($feriados[$i]['descricao']);
+                $umFeriado->setTipo($feriados[$i]['tipo']);
+                $umFeriado->setSlug($feriados[$i]['slug']);
+                
+                $umFeriado->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $feriados[$i]['dataCadastro']));
+                $umFeriado->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $feriados[$i]['ultimaAlteracao']));
+                
+                if(isset($feriados[$i]['programadoPara'])){
+                    $umFeriado->setProgramadoPara(date_create_from_format('d-m-Y H:i:s', $feriados[$i]['programadoPara']));
+                }
+                
+                $umFeriado->setAtivo($feriados[$i]['ativo']);
+
+                //dump($umEstado);
+                
+                $em->persist($umFeriado);
+                
+            }
+            
+            // FIM FERIADO
             
             $em->flush();
             
