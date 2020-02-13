@@ -119,6 +119,9 @@ class CircularRestController extends FOSRestController {
                 
                 $feriados = $em->getRepository('ApiBundle:Feriado')
                     ->listarTodosREST(null, $data, $id);
+                
+                $historicosSecoes = $em->getRepository('ApiBundle:HistoricoSecao')
+                    ->listarTodosREST(null, $data);
             } else{
                 $usuarios = $em->getRepository('ApiBundle:Usuario')
                         ->listarTodosRESTAdmin(null, $data);
@@ -176,6 +179,9 @@ class CircularRestController extends FOSRestController {
                 
                 $feriados = $em->getRepository('ApiBundle:Feriado')
                     ->listarTodosRESTAdmin(null, $data, $id);
+                
+                $historicosSecoes = $em->getRepository('ApiBundle:HistoricoSecao')
+                    ->listarTodosREST(null, $data);
             }
             
 //            $log = $em->getRepository('RepSiteBundle:LogEntry')
@@ -193,6 +199,7 @@ class CircularRestController extends FOSRestController {
                     + count($servicos)
                     + count($viagens)
                     + count($feriados)
+                    + count($historicosSecoes)
                     ;
             
             $view = View::create(
@@ -221,7 +228,8 @@ class CircularRestController extends FOSRestController {
                         "acessos" => $acessos,
                         "servicos" => $servicos,
                         "viagens_itinerarios" => $viagens,
-                        "feriados" => $feriados
+                        "feriados" => $feriados,
+                        "historicos_secoes" => $historicosSecoes,
                     ), 200, array('totalRegistros' => $totalRegistros))->setTemplateVar("u");
             
             $em->getRepository('ApiBundle:APIToken')->atualizaToken($hashDescriptografado);
@@ -1632,6 +1640,50 @@ class CircularRestController extends FOSRestController {
             }
             
             // FIM FERIADO
+            
+            // HISTORICO SECAO
+            
+            $historicosSecoes = $dados['historicos_secoes'];
+            
+            $total = count($historicosSecoes);
+            
+            for($i = 0; $i < $total; $i++){
+                
+                $existe = false;
+                $umHistoricoSecao = null;
+                
+                $umHistoricoSecao = $em->getRepository('ApiBundle:HistoricoSecao')
+                        ->findOneBy(array('id' => $historicosSecoes[$i]['id']));
+                
+                if($umHistoricoSecao == null){
+                    $umHistoricoSecao = new \ApiBundle\Entity\HistoricoSecao();
+                    $umHistoricoSecao->setId($historicosSecoes[$i]['id']);
+                } else{
+                    $existe = true;
+                }
+                
+                $metadata = $em->getClassMetaData(get_class($umHistoricoSecao));
+                $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
+                $metadata->setIdGenerator(new AssignedGenerator());
+                $umHistoricoSecao->setId($historicosSecoes[$i]['id']);
+                
+                $umSecao = $em->getRepository('ApiBundle:SecaoItinerario')
+                        ->find($historicosSecoes[$i]['secao']);
+                
+                $umHistoricoSecao->setItinerario($umSecao);
+                
+                $umHistoricoSecao->setTarifa($historicosSecoes[$i]['tarifa']);
+                
+                $umHistoricoSecao->setDataCadastro(date_create_from_format('d-m-Y H:i:s', $historicosSecoes[$i]['dataCadastro']));
+                $umHistoricoSecao->setUltimaAlteracao(date_create_from_format('d-m-Y H:i:s', $historicosSecoes[$i]['ultimaAlteracao']));
+                
+                $umHistoricoSecao->setAtivo($historicosSecoes[$i]['ativo']);
+                
+                $em->persist($umHistoricoSecao);
+                
+            }
+            
+            // FIM HISTORICO SECAO
             
             $em->flush();
             
