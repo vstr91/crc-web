@@ -1670,7 +1670,7 @@ class CircularRestController extends FOSRestController {
                 $umSecao = $em->getRepository('ApiBundle:SecaoItinerario')
                         ->find($historicosSecoes[$i]['secao']);
                 
-                $umHistoricoSecao->setItinerario($umSecao);
+                $umHistoricoSecao->setSecao($umSecao);
                 
                 $umHistoricoSecao->setTarifa($historicosSecoes[$i]['tarifa']);
                 
