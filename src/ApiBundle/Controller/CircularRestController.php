@@ -700,6 +700,10 @@ class CircularRestController extends FOSRestController {
                     $umItinerario->setDistancia($itinerarios[$i]['distancia']);
                 }
                 
+                if(isset($itinerarios[$i]['distanciaMetros'])){
+                    $umItinerario->setDistanciaMetros($itinerarios[$i]['distanciaMetros']);
+                }
+                
                 if(isset($itinerarios[$i]['tempo'])){
                     $umItinerario->setTempo(date_create_from_format('d-m-Y H:i:s', $itinerarios[$i]['tempo']));
                 }
@@ -815,6 +819,10 @@ class CircularRestController extends FOSRestController {
                 
                 if(isset($paradasItinerarios[$i]['distanciaSeguinte'])){
                     $umParadaItinerario->setDistanciaSeguinte($paradasItinerarios[$i]['distanciaSeguinte']);
+                }
+                
+                if(isset($paradasItinerarios[$i]['distanciaSeguinteMetros'])){
+                    $umParadaItinerario->setDistanciaSeguinteMetros($paradasItinerarios[$i]['distanciaSeguinteMetros']);
                 }
                 
                 if(isset($paradasItinerarios[$i]['tempoSeguinte'])){

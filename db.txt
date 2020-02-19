@@ -26,3 +26,7 @@ CREATE TABLE historico_secao (id VARCHAR(255) NOT NULL, secao VARCHAR(255) DEFAU
 ALTER TABLE historico_secao ADD CONSTRAINT FK_1E7FBF819FD23965 FOREIGN KEY (secao) REFERENCES secao_itinerario (id);
 ALTER TABLE historico_secao ADD CONSTRAINT FK_1E7FBF813FDEADFE FOREIGN KEY (usuarioCadastro) REFERENCES usuario (id);
 ALTER TABLE historico_secao ADD CONSTRAINT FK_1E7FBF81FE931A1C FOREIGN KEY (usuarioUltimaAlteracao) REFERENCES usuario (id);
+
+-- 19/02/2020
+ALTER TABLE itinerario ADD distanciaMetros NUMERIC(10, 2) DEFAULT NULL;
+ALTER TABLE parada_itinerario ADD distanciaSeguinteMetros NUMERIC(10, 2) DEFAULT NULL, CHANGE distanciaSeguinte distanciaSeguinte NUMERIC(10, 2) DEFAULT NULL;

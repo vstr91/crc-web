@@ -15,7 +15,8 @@ class ItinerarioRepository extends \Doctrine\ORM\EntityRepository
         $qb = $this->createQueryBuilder('i')
                 ->select('i.id, i.ativo, i.dataCadastro, i.dataRecebimento, '
                         . 'i.ultimaAlteracao, i.programadoPara, IDENTITY(i.usuarioCadastro) AS usuarioCadastro, '
-                        . 'IDENTITY(i.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, i.tarifa, i.sigla, i.distancia, i.tempo, i.acessivel, '
+                        . 'IDENTITY(i.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, i.tarifa, i.sigla, i.distancia, i.distanciaMetros, '
+                        . 'i.tempo, i.acessivel, '
                         . 'i.observacao, i.mostraRuas, IDENTITY(i.empresa) AS empresa')
                 ->distinct()
                 ->where("i.ultimaAlteracao > :ultimaAlteracao")
@@ -35,7 +36,8 @@ class ItinerarioRepository extends \Doctrine\ORM\EntityRepository
         $qb = $this->createQueryBuilder('i')
                 ->select('i.id, i.ativo, i.dataCadastro, i.dataRecebimento, '
                         . 'i.ultimaAlteracao, i.programadoPara, IDENTITY(i.usuarioCadastro) AS usuarioCadastro, '
-                        . 'IDENTITY(i.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, i.tarifa, i.sigla, i.distancia, i.tempo, i.acessivel, '
+                        . 'IDENTITY(i.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, i.tarifa, i.sigla, i.distancia, i.distanciaMetros, '
+                        . 'i.tempo, i.acessivel, '
                         . 'i.observacao, i.mostraRuas, IDENTITY(i.empresa) AS empresa')
                 ->distinct()
                 ->where("i.ultimaAlteracao > :ultimaAlteracao")

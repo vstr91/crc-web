@@ -92,6 +92,15 @@ class ParadaItinerario extends EntidadeBase {
     private $distanciaSeguinte;
     
     /**
+     * @var string
+     *
+     * @ORM\Column(name="distanciaSeguinteMetros", type="decimal", scale=2, nullable=true)
+     * @Gedmo\Versioned
+     * 
+     */
+    private $distanciaSeguinteMetros;
+    
+    /**
      * @ORM\Column(name="tempoSeguinte", type="datetime", nullable=true)
      */
     protected $tempoSeguinte;
@@ -469,5 +478,29 @@ class ParadaItinerario extends EntidadeBase {
     public function getTempoSeguinte()
     {
         return $this->tempoSeguinte;
+    }
+
+    /**
+     * Set distanciaSeguinteMetros
+     *
+     * @param string $distanciaSeguinteMetros
+     *
+     * @return ParadaItinerario
+     */
+    public function setDistanciaSeguinteMetros($distanciaSeguinteMetros)
+    {
+        $this->distanciaSeguinteMetros = $distanciaSeguinteMetros;
+
+        return $this;
+    }
+
+    /**
+     * Get distanciaSeguinteMetros
+     *
+     * @return string
+     */
+    public function getDistanciaSeguinteMetros()
+    {
+        return $this->distanciaSeguinteMetros;
     }
 }

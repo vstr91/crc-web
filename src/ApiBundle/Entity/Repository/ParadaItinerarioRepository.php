@@ -16,7 +16,7 @@ class ParadaItinerarioRepository extends \Doctrine\ORM\EntityRepository
                 ->select('pi.id, pi.ativo, pi.dataCadastro, pi.dataRecebimento, '
                         . 'pi.ultimaAlteracao, pi.programadoPara, IDENTITY(pi.usuarioCadastro) AS usuarioCadastro, '
                         . 'IDENTITY(pi.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, pi.ordem, pi.destaque, pi.valorAnterior, '
-                        . 'pi.valorSeguinte, pi.distanciaSeguinte, pi.tempoSeguinte, IDENTITY(pi.parada) AS parada, IDENTITY(pi.itinerario) AS itinerario')
+                        . 'pi.valorSeguinte, pi.distanciaSeguinte, pi.distanciaSeguinteMetros, pi.tempoSeguinte, IDENTITY(pi.parada) AS parada, IDENTITY(pi.itinerario) AS itinerario')
                 ->distinct()
                 ->where("pi.ultimaAlteracao > :ultimaAlteracao")
                 //->andWhere("c.programadoPara IS NULL OR c.programadoPara <= :now")
@@ -36,7 +36,7 @@ class ParadaItinerarioRepository extends \Doctrine\ORM\EntityRepository
                 ->select('pi.id, pi.ativo, pi.dataCadastro, pi.dataRecebimento, '
                         . 'pi.ultimaAlteracao, pi.programadoPara, IDENTITY(pi.usuarioCadastro) AS usuarioCadastro, '
                         . 'IDENTITY(pi.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, pi.ordem, pi.destaque, pi.valorAnterior, '
-                        . 'pi.valorSeguinte, pi.distanciaSeguinte, pi.tempoSeguinte, IDENTITY(pi.parada) AS parada, IDENTITY(pi.itinerario) AS itinerario')
+                        . 'pi.valorSeguinte, pi.distanciaSeguinte, pi.distanciaSeguinteMetros, pi.tempoSeguinte, IDENTITY(pi.parada) AS parada, IDENTITY(pi.itinerario) AS itinerario')
                 ->distinct()
                 ->where("pi.ultimaAlteracao > :ultimaAlteracao")
                 ->andWhere("pi.programadoPara IS NULL OR pi.programadoPara <= :now")
@@ -57,7 +57,8 @@ class ParadaItinerarioRepository extends \Doctrine\ORM\EntityRepository
             $qb = $this->createQueryBuilder('pi')
                     ->select("i.id, i.ativo, i.dataCadastro, i.dataRecebimento, "
                             . "i.ultimaAlteracao, i.programadoPara, IDENTITY(i.usuarioCadastro) AS usuarioCadastro, "
-                            . "IDENTITY(i.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, i.tarifa, i.sigla, i.distancia, i.tempo, i.acessivel, "
+                            . "IDENTITY(i.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, i.tarifa, i.sigla, i.distancia, i.distanciaMetros, "
+                            . "i.tempo, i.acessivel, "
                             . "i.observacao, "
                             . "IDENTITY(i.empresa) AS empresa"
 //                            . "CONCAT('http://localhost/crc-web/web/app_dev.php/api/empresas/', em.slug) AS empresa"
@@ -96,7 +97,8 @@ class ParadaItinerarioRepository extends \Doctrine\ORM\EntityRepository
             $qb = $this->createQueryBuilder('pi')
                     ->select("i.id, i.ativo, i.dataCadastro, i.dataRecebimento, "
                             . "i.ultimaAlteracao, i.programadoPara, IDENTITY(i.usuarioCadastro) AS usuarioCadastro, "
-                            . "IDENTITY(i.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, i.tarifa, i.sigla, i.distancia, i.tempo, i.acessivel, "
+                            . "IDENTITY(i.usuarioUltimaAlteracao) AS usuarioUltimaAlteracao, i.tarifa, i.sigla, i.distancia, i.distanciaMetros, "
+                            . "i.tempo, i.acessivel, "
                             . "i.observacao, "
                             . "IDENTITY(i.empresa) AS empresa"
 //                            . "CONCAT('http://localhost/crc-web/web/app_dev.php/api/empresas/', em.slug) AS empresa"

@@ -61,6 +61,15 @@ class Itinerario extends EntidadeBase {
     private $distancia;
     
     /**
+     * @var string
+     *
+     * @ORM\Column(name="distanciaMetros", type="decimal", scale=2, nullable=true)
+     * @Gedmo\Versioned
+     * 
+     */
+    private $distanciaMetros;
+    
+    /**
      * @ORM\Column(type="datetime", nullable=true)
      */
     protected $tempo;
@@ -469,5 +478,29 @@ class Itinerario extends EntidadeBase {
     public function getMostraRuas()
     {
         return $this->mostraRuas;
+    }
+
+    /**
+     * Set distanciaMetros
+     *
+     * @param string $distanciaMetros
+     *
+     * @return Itinerario
+     */
+    public function setDistanciaMetros($distanciaMetros)
+    {
+        $this->distanciaMetros = $distanciaMetros;
+
+        return $this;
+    }
+
+    /**
+     * Get distanciaMetros
+     *
+     * @return string
+     */
+    public function getDistanciaMetros()
+    {
+        return $this->distanciaMetros;
     }
 }
